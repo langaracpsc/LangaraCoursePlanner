@@ -253,9 +253,14 @@ class Course {
                 return ""
             return value
         }
-
-        html += `<h2><a href="https://langara.ca/programs-and-courses/courses/${this.subject}/${this.course_code}.html">${this.subject} ${this.course_code} ${this.year}${this.semester} ${this.section} ${this.crn}: ${courseInfo[3]}</a></h2>`
-        html += `<p>${courseInfo[4]}</p>`
+        
+        if (courseInfo == undefined) {
+            html += `<h2><a href="https://langara.ca/programs-and-courses/courses/${this.subject}/${this.course_code}.html">${this.subject} ${this.course_code} ${this.year}${this.semester} ${this.section} ${this.crn}: ${this.title}</a></h2>`
+            html += `<p>No description found.</p>`
+        } else {
+            html += `<h2><a href="https://langara.ca/programs-and-courses/courses/${this.subject}/${this.course_code}.html">${this.subject} ${this.course_code} ${this.year}${this.semester} ${this.section} ${this.crn}: ${courseInfo[3]}</a></h2>`
+            html += `<p>${courseInfo[4]}</p>`
+        }
 
         html += "<h2>Section Information</h2>"
         
