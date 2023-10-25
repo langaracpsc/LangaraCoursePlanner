@@ -142,8 +142,15 @@ class Course {
         return out
     }
 
+    fmtCC(course_code) {
+        if (course_code < 1000 && course_code > 9)
+            return `00${course_code}`
+        return course_code
+    }
+
     // html in the courselist on the sidebar
     generateCourseListHTML(){
+
         let scheduleHTML = "<div>"
 
         for(const sch of this.schedule) {
@@ -155,7 +162,7 @@ class Course {
         }
         
         let html = `
-            <h3>${this.subject} ${this.course_code} ${this.section} : ${this.title}</h3>
+            <h3>${this.subject} ${this.fmtCC(this.course_code)} ${this.section} : ${this.title}</h3>
         `
         let color = ""
 
@@ -253,9 +260,9 @@ class Course {
                 return ""
             return value
         }
-        
+
         if (courseInfo == undefined) {
-            html += `<h2><a href="https://langara.ca/programs-and-courses/courses/${this.subject}/${this.course_code}.html">${this.subject} ${this.course_code} ${this.year}${this.semester} ${this.section} ${this.crn}: ${this.title}</a></h2>`
+            html += `<h2><a href="https://langara.ca/programs-and-courses/courses/${this.subject}/${this.fmtCC(this.course_code)}.html">${this.subject} ${this.fmtCC(this.course_code)} ${this.year}${this.semester} ${this.section} ${this.crn}: ${this.title}</a></h2>`
             html += `<p>No description found.</p>`
         } else {
             html += `<h2><a href="https://langara.ca/programs-and-courses/courses/${this.subject}/${this.course_code}.html">${this.subject} ${this.course_code} ${this.year}${this.semester} ${this.section} ${this.crn}: ${courseInfo[3]}</a></h2>`
@@ -277,7 +284,7 @@ class Course {
             html += `<p># On Waitlist</p><p>${un(this.waitlist)}</p>`
             html += `<p>CRN</p><p>${this.crn}</p>`
             html += `<p>Subject</p><p>${this.subject}</p>`
-            html += `<p>Course</p><p>${this.course_code}</p>`
+            html += `<p>Course</p><p>${this.fmtCC(this.course_code)}</p>`
             html += `<p>Section</p><p>${this.section}</p>`
             html += `<p>Credits</p><p>${this.credits}</p>`
             html += `<p>Title</p><p>${this.title}</p>`
