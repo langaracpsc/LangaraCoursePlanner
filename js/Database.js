@@ -129,7 +129,15 @@ class Database {
         return rows
     }    
 
+    getAvailableSemesters() {
+        const query = `
+            SELECT DISTINCT year, term
+            FROM Sections
+            ORDER BY year DESC, term DESC
+        `;
 
-
+        const rows = this.executeQuery(query);
+        return rows
+    }
 
 }

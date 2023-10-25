@@ -27,19 +27,45 @@ class Calendar {
         document.getElementById("searchResults").textContent = "Parsing courses..."
         console.log("Parsing section information from database.")
 
+        // retrieve courses from loaded database
         this.courses = this.db.getSections()
 
         document.getElementById("searchResults").textContent = "Generating HTML..."
         console.log("Retrieved sections from database.")
 
-                
-        var courselist = document.getElementById("courselist")
+        // hydrate courselist on sidebar
+        let courselist = document.getElementById("courselist")
         courselist.innerHTML = ""
 
         for (const c of this.courses) {
             c.Calendar = this
             courselist.appendChild(c.courseListHTML)
         }
+
+        // update available semesters
+        let termSelector = document.getElementById("termSelector")
+        console.log(termSelector)
+        const sems = this.db.getAvailableSemesters()
+
+        let inopt = []
+        for (const t of termSelector) {
+            inopt.unshift(t.value)
+        }
+
+        function intToStr(int) {
+            if (int == 10)
+                return "Spring"
+            if (int == 20)
+                return "Summer"
+            if (int == 30)
+                return "Fall"
+        }
+
+        for (const t of sems) {
+            if (!inopt.includes(`${t[0]}-${t[1]}`))
+                termSelector.add(new Option(`${t[0]} ${intToStr(t[1])}`, `${t[0]}-${t[1]}`))
+        }   
+
     }
 
 
