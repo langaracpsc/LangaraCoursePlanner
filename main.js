@@ -156,7 +156,13 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   // conflicting courses
   document.getElementById("conflictCheckbox").addEventListener("input", function (event) {
-    c.courselistUpdate()
+    if (this.checked && c.courses_shown.length > 2000) {
+      if (!confirm("You have a large number of courses shown; enabling this option will cause some lag. Continue?")) {
+        this.checked = false;
+        return
+      }
+      c.courselistUpdate();
+    }
   })
 
   // toggle all

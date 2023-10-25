@@ -155,7 +155,7 @@ class Course {
         }
         
         let html = `
-            <h3 class="courselisttitle">${this.subject} ${this.course_code} ${this.section} : ${this.title} </h3>
+            <h3>${this.subject} ${this.course_code} ${this.section} : ${this.title}</h3>
         `
         let color = ""
 

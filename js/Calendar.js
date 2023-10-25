@@ -13,8 +13,7 @@ class Calendar {
         this.db = db
 
         this.datetime_retrieved = null
-        this.year = null
-        this.semester = null
+
         this.courses_first_day = "2023-01-01"
         this.courses_last_day = null
     }
@@ -329,6 +328,10 @@ class Calendar {
             if (sch.type == "Exam")
                 continue
 
+            // Don't need to check schedules that don't have a set time
+            if (sch.time == "-") 
+                continue
+
             let starthour = +sch.time.slice(0, 2)
             let startmin = +sch.time.slice(2, 4)
             let endhour = +sch.time.slice(5, 7)
@@ -430,12 +433,12 @@ class Calendar {
         const count = this.courses_shown.length
         let results = document.getElementById("searchResults")
 
-        const max_shown = 1500
+        const max_shown = 2000
 
         if (count == 0) 
             results.innerText = "No courses found. Try a different search query!"
         else if (count >= max_shown)
-            results.innerText = `${count} courses shown. Hiding courselist until courses are below ${max_shown} to reduce lag.`
+            results.innerText = `${count} courses found. Only showing ${max_shown} courses to reduce lag.`
         else 
             results.innerText = `${count} courses shown.`
 
