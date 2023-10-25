@@ -1,0 +1,126 @@
+p {
+    margin: 2px;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: small;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+    display: flex;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0;
+    flex: 1;
+}
+
+.sidebar {
+    flex: 0 0 30%;
+    padding: 0;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.search {
+    margin: 10px;
+    margin-right: 20px
+}
+
+.search-options,
+.courselist {
+    margin: 10px;
+    margin-top: 0;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-options label {
+    display: block;
+}
+
+
+/* Make the course list scrollable if it overflows */
+.courselist {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.course {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.course * {
+    margin: 5px;
+}
+
+.courselistcourse {
+    padding: 2px;
+    margin: 5px;
+}
+
+.courselistcourse * {
+    padding: 0px;
+    margin: 2px;
+}
+
+.footer {
+    margin: 10px;
+    text-align: center;
+}
+
+.calendar {
+    width: 70%;
+    margin: 10px;
+    overflow-y: auto; /* Make the calendar div scrollable if it overflows */
+    height: calc( 100vh - 20px );
+}
+
+
+.red {
+    background-color: rgb(229, 168, 168);
+}
+
+.yellow {
+    background-color: rgb(252, 252, 179);
+}
+
+.green {
+    background-color: rgb(189, 237, 189);
+}
+
+.gray {
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+}
+
+.dark-gray {
+    background-color: #9a9a9a;
+}
+
+.blue {
+    background-color: #4386ce;
+    border: 1px solid #ddd;
+}
+
+.hidden {
+    display: none;
+}

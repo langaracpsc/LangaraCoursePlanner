@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Langara Course Browser</title>
+
+    <!--Load font (montserrat)-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+    <!--Load stylesheet-->
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+    <!--Load Fullcalendar -->
+    <script src='libraries/fullcalendar/dist/index.global.min.js'></script>
+    <!--Load Fuse.js -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js"></script> 
+    <!--Load sql.js-->
+    <script src ='libraries/sql/sql.js'> </script>
+
+    <!--Load javascript-->
+    <script src='js/Database.js'> </script>
+    <script src='js/Calendar.js'> </script>
+    <script src='js/Course.js'> </script>
+
+    <script src='main.js'> </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+
+            <div class="search">
+                <input type="text" id="courseSearchBar" placeholder="Search courses">
+            </div>
+
+            <div class="search-options">
+
+                <label>
+                    <p id="searchResults">Loading courses...</p>
+                </label>
+
+                <label>Select term: 
+                    <select id="termSelector">
+                        <option value="2024-10">2024 Spring</option>
+                        <option value="2023-30">2023 Fall</option>
+                        <option value="ALL">All Semesters</option>
+                    </select>
+                </label> 
+                
+                <label>
+                    <input type="checkbox" id="weekendCheckbox" > Show Saturday & Sunday.
+                </label>
+                <label>
+                    <input type="checkbox" id="conflictCheckbox"> Hide courses that conflict with selected courses.
+                </label>
+                <label>
+                    <input type="checkbox" id="showAllCheckbox"> Show all courses in list.
+                </label>
+                <label>
+                    <input type="checkbox" id="showColors"> Highlight courses by seats available.
+                </label>
+            </div>
+
+            <div id="courselist" class="courselist">
+                
+                <!--
+                    <div class="course">
+                    <h3>ABST 1100 001: Canadian Aboriginal Experience</h3>
+                    <p>3 seats available. 7 on waitlist.</p>
+                    <p>Lecture -T----- 1030-1320 A167 . TBA</p>
+                </div>
+                -->
+                
+                
+                <!-- Add more course entries here -->
+            </div>
+
+            <div class="footer">
+                <a href="about">About</a>
+                 •  
+                <a href="https://github.com/highfire1/LangaraCourseBrowser">Github</a>
+            </div>
+
+        </div>
+        <div class="calendar">
+            <div id='calendar'></div>
+        </div>
+    </div>
+</body>
+
+</html>
+</body>
+
+</html>
