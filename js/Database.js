@@ -112,6 +112,8 @@ class Database {
             query = `SELECT * FROM Schedules WHERE year=${year} AND term=${term} AND crn=${crn}`;
         }
 
+        query += ` ORDER BY Schedules.type DESC`;
+
         const rows = this.executeQuery(query);
         return rows
     }

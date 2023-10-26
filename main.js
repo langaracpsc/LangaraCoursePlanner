@@ -13,13 +13,29 @@ document.addEventListener('DOMContentLoaded', async function() {
       c.courselistUpdate()
       c.reloadCourseList()
 
-      //c.FCalendar.addResource(c.generateResources(), false)
+      // Generate resources 
+      c.FCalendar.refetchResources()
     })
     .catch(error => {console.error(error);});
 
   c = new Calendar(db)
   console.log(c)
 
+  
+  function timelineLabelApplier(name) {
+    let names = {
+      "A" : "A Building",
+      "B" : "B Building",
+      "C" : "C Building",
+      "G" : "Gymnasium",
+      "L" : "Library",
+      "T" : "T Building",
+      "O" : "Off Campus",
+      "W" : "WWW / Online",
+      "?" : "Other",
+    } 
+    return names[name]
+  }
 
 
   var calendarElement = document.getElementById('calendar');
@@ -45,8 +61,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
-      //right: 'resourceTimelineDay,resourceTimelineWeek dayGridMonth,timeGridWeek,timeGridDay'
+      //right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      right: 'resourceTimelineDay,resourceTimelineWeek dayGridMonth,timeGridWeek,timeGridDay'
     },
     weekends: document.getElementById("weekendCheckbox").checked,
     //initialDate: new Date(new Date(calendarClass.courses_first_day).getTime() + 604800000), // start on the second week of courses
