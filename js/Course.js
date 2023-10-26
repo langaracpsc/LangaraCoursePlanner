@@ -350,7 +350,7 @@ class Course {
                 if (t[6] != "present") 
                     classes += "hidden "
 
-                if (t[4] == "No credit")
+                if (t[4] == "No credit" || (t[4] == "No Credit"))
                     classes += "red "
                 
                 //if (t.credit != undefined)
@@ -418,6 +418,7 @@ class Course {
     }
 
     toggleFShown(FCalendar) {
+        // TODO: automatically show weekends if a saturday course is clicked, and weekends is not enabled
         if (this.ghost) {
             this.hideFCalendar(FCalendar)
             this.showFCalendar(FCalendar)
@@ -441,10 +442,11 @@ class Course {
         
         this.shown = false
         // fix weird bug with changing terms - i should fix this properly at some point
-        if (document.getElementById(this.id) != null)
+        if (document.getElementById(this.id) != null) {
             document.getElementById(this.id).classList.remove(color_class)
             document.getElementById(this.id).classList.remove("dark-gray") // TODO: workaround to fix ghosting, should fix this properly in the future
             //document.getElementById(this.id).style.backgroundColor = null // change the color of the courselist div back to normal
+        }
     }
 
     showFCalendar(FCalendar, color_class="blue") {
