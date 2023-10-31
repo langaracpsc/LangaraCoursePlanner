@@ -58,79 +58,42 @@ class Course {
         this.shown = false
         this.ghost = false
         this.courseListHTML = this.generateCourseListHTML()
-        
+
+        let temp = false
+        for (const sch of this.schedule) {
+            if (sch.days.includes("S")) {
+                temp = true
+                break
+            }
+        }
+        this.hasWeekend = temp
+
+    }
+
+    generateFuzzySearch() {
         // Create search for fuzzy search
-        this.scheduleSearch = []
+        let scheduleSearch = []
         for (const sch of this.schedule) {
-            this.scheduleSearch.push(sch["type"])
-            this.scheduleSearch.push(sch["time"])
-            this.scheduleSearch.push(sch["room"])
-            this.scheduleSearch.push(sch["instructor"])
+            scheduleSearch.push(sch["type"])
+            scheduleSearch.push(sch["time"])
+            scheduleSearch.push(sch["room"])
+            scheduleSearch.push(sch["instructor"])
         }
+
+        // This slows down page loading significantly
+        //let CourseInfo = this.Calendar.db.getCourseInfos(this.subject, this.course_code)
+
         // remove duplicate values i know its not efficient to add then remove duplicates shush
         // ie if there's a lecture and lab with the same teacher, we only put the teacher in search once, instead of twice
-        this.scheduleSearch = [...new Set(this.scheduleSearch)] 
-        this.scheduleSearch = this.scheduleSearch.join(" ")
+        scheduleSearch = [...new Set(scheduleSearch)] 
+        scheduleSearch = scheduleSearch.join(" ")
         
         // used with fuse
-        this.fuzzySearch = `${this.subject} ${this.course_code} ${this.crn} ${this.title} ${this.scheduleSearch}`
+        this.fuzzySearch = `${this.subject} ${this.course_code} ${this.crn} ${this.title} ${scheduleSearch}`
         if (this.notes != null) 
             this.fuzzySearch += " " + this.notes
-
     }
 
-    // TODO: remove me
-    constructor2(data, Calendar, year, semester) {    
-        this.Calendar = Calendar // BAD BAD VIOLATES OOP THIS WHOLE CODEBASE NEEDS A REWRITE
-                
-        this.RP = format_data(data["RP"])
-        this.seats = format_data(data["seats"])
-        this.waitlist = format_data(data["waitlist"])
-        this.crn = format_data(data["crn"])
-        this.subject = format_data(data["subject"])
-        this.course_code = format_data(data["course_code"])
-        
-        if (this.course_code == undefined) {
-            this.course_code = format_data(data["course"])
-        }
-
-        this.section = format_data(data["section"])
-        this.credits = format_data(data["credits"])
-        this.title = format_data(data["title"])
-        this.add_fees = format_data(data["add_fees"])
-        this.rpt_limit = format_data(data["rpt_limit"])
-        this.notes = format_data(data["notes"])
-        this.schedule = format_data(data["schedule"])
-
-        this.year = year
-        this.semester = semester
-        this.id = `${year}_${semester}_${this.crn}` // 2023_20_20123 # unique id for each course
-
-
-        this.subjectCourse = this.subject + " " + this.course_code
-        
-        this.scheduleSearch = []
-        for (const sch of this.schedule) {
-            this.scheduleSearch.push(sch["type"])
-            this.scheduleSearch.push(sch["time"])
-            this.scheduleSearch.push(sch["room"])
-            this.scheduleSearch.push(sch["instructor"])
-        }
-        // remove duplicate values i know its not efficient to add then remove duplicates shush
-        // ie if there's a lecture and lab with the same teacher, we only put the teacher in search once, instead of twice
-        this.scheduleSearch = [...new Set(this.scheduleSearch)] 
-        this.scheduleSearch = this.scheduleSearch.join(" ")
-        
-        // used with fuse
-        this.fuzzySearch = `${this.subject} ${this.course_code} ${this.crn} ${this.title} ${this.scheduleSearch}`
-        if (this.notes != null) 
-            this.fuzzySearch += " " + this.notes
-
-
-        this.shown = false
-        this.ghost = false
-        this.courseListHTML = this.generateCourseListHTML()
-    }
 
     toString() {
         let out = `${this.RP} ${this.seats} ${this.waitlist} ${this.crn} ${this.subject} ${this.course_code} ${this.section} ${this.credits} ${this.title} ${this.add_fees}`
@@ -447,6 +410,18 @@ class Course {
             document.getElementById(this.id).classList.remove("dark-gray") // TODO: workaround to fix ghosting, should fix this properly in the future
             //document.getElementById(this.id).style.backgroundColor = null // change the color of the courselist div back to normal
         }
+
+        let show_weekends = false
+        for(const c of this.Calendar.courses_oncalendar) {
+            if (c.hasWeekend) {
+                show_weekends = true
+                break
+            }
+        }
+        if (show_weekends == false && !document.getElementById("weekendCheckbox").checked) {
+            FCalendar.setOption('hiddenDays', [ 0, 6 ])
+        }
+        
     }
 
     showFCalendar(FCalendar, color_class="blue") {
@@ -459,6 +434,10 @@ class Course {
             if (sch.days.trim() === "") {
                 console.log("No time data for ", this)
                 continue // temporary workaround to badly parsed json
+            }
+
+            if (this.hasWeekend) {
+                FCalendar.setOption('hiddenDays', [ 0 ])
             }
 
             // convert M-W---- to [1, 3]

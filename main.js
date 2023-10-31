@@ -64,7 +64,8 @@ document.addEventListener('DOMContentLoaded', async function() {
       //right: 'dayGridMonth,timeGridWeek,timeGridDay'
       right: 'resourceTimelineDay,resourceTimelineWeek dayGridMonth,timeGridWeek,timeGridDay'
     },
-    weekends: document.getElementById("weekendCheckbox").checked,
+    //weekends: document.getElementById("weekendCheckbox").checked,
+    //hiddenDays: [ 0 ],
     //initialDate: new Date(new Date(calendarClass.courses_first_day).getTime() + 604800000), // start on the second week of courses
     slotEventOverlap:false,
     
@@ -91,9 +92,20 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Set up event listeners for modifying the calendar.
 
   document.getElementById("weekendCheckbox").addEventListener("input", function (event) {
-    FCalendar.setOption('weekends', event.target.checked)
-    FCalendar.render()
+    setSaturday(event.target.checked)
   })
+
+  function setSaturday(show) {
+    if (show) {
+      FCalendar.setOption('hiddenDays', [ 0 ])
+    } else {
+      FCalendar.setOption('hiddenDays', [ 0, 6 ])
+    }
+  }
+
+  setSaturday(document.getElementById("weekendCheckbox").checked)
+  
+
 
   // Color course element based on availability
   // bit of a misnomer of a comment
