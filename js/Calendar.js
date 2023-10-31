@@ -70,8 +70,32 @@ class Calendar {
 
     }
 
+    changeSemester() {
+        let yearterm = document.getElementById("termSelector").value
 
+        if (yearterm == "ALL")
+            return
+
+        const year = parseInt(yearterm.split("-")[0])
+        const term = parseInt(yearterm.split("-")[1])
+            
+        const query = `SELECT start_date FROM Schedules WHERE year = ${year} AND term = ${term} AND start_date IS NOT NULL GROUP BY start_date ORDER BY COUNT(*) ASC;`
+        let start_date = this.db.executeQuery(query)
+
+        let start = start_date[0]
+        console.log(start_date)
+        this.FCalendar.gotoDate(new Date(new Date(start).getTime() + 604800000))
+
+
+    }
+
+    
     newCourseDataLoaded() {
+        
+        let start_date = this.db.executeQuery("SELECT start_date FROM Schedules WHERE year = 2024 AND term = 10 GROUP BY start_date ORDER BY COUNT(*) DESC LIMIT 1;")
+
+        console.log(start_date)
+
         this.FCalendar.gotoDate(new Date(new Date(calendarClass.courses_first_day).getTime() + 604800000))
       
         this.courselistUpdate()
@@ -461,7 +485,7 @@ class Calendar {
         const count = this.courses_shown.length
         let results = document.getElementById("searchResults")
 
-        const max_shown = 2000
+        const max_shown = 1500
 
         if (count == 0) 
             results.innerText = "No courses found. Try a different search query!"

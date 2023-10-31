@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       c.parseFromDB()
       // Render calendar
       // Render courses
+      c.changeSemester()
       c.courselistUpdate()
       c.reloadCourseList()
 
@@ -207,15 +208,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   let ts = document.getElementById("termSelector")
 
   ts.addEventListener("input", async function (event) {
-    //if (allCoursesShown)
-    //  c.toggleAllFCalendar(false) // get rid of courses from previous term
-    
-    // set the current date to the first day of semester plus a week
-    //c.newCourseDataLoaded()
-
-    //if (allCoursesShown)
-    //  c.toggleAllFCalendar(true) // continue showing all courses
-
+    c.changeSemester()
     c.courselistUpdate()
   })
 
