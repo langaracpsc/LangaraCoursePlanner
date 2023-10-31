@@ -94,6 +94,10 @@ input[type="text"] {
     height: calc( 100vh - 20px );
 }
 
+#calendar {
+    height: 100%;
+}
+
 
 .red {
     background-color: rgb(229, 168, 168);
