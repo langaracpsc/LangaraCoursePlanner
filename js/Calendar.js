@@ -39,6 +39,8 @@ class Calendar {
 
         for (const c of this.courses) {
             c.Calendar = this
+            c.generateFuzzySearch() // THIS IS BAD
+            
             courselist.appendChild(c.courseListHTML)
         }
 
