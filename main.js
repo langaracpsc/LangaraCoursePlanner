@@ -194,24 +194,12 @@ document.addEventListener('DOMContentLoaded', async function() {
   })
 
   // toggle all
-  let allCoursesShown = false
-  document.getElementById("showAllCheckbox").addEventListener("click", function (event) {
+  document.getElementById("showAllButton").addEventListener("click", function (event) {
+    c.toggleAllFCalendar(true)
+  })
 
-    if (!allCoursesShown) {
-      let state = FCalendar.getOption('weekends')
-      
-      FCalendar.setOption('weekends', true) // must toggle weekends for them to render properly idk why
-      c.toggleAllFCalendar(true)
-      FCalendar.setOption('weekends', state)
-      event.target.value = "Hide all courses in list."
-      
-
-    } else {
-      c.toggleAllFCalendar(false)
-      event.target.value = "Show all courses in list."
-    }
-
-    allCoursesShown = !allCoursesShown
+  document.getElementById("hideAllButton").addEventListener("click", function (event) {
+    c.toggleAllFCalendar(false)
   })
 
   // TODO: redo this

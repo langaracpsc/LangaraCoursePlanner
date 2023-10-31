@@ -426,6 +426,10 @@ class Course {
 
     showFCalendar(FCalendar, color_class="blue") {
 
+        // This looks like technical debt that I will pay for but it is a quick fix
+        if (this.shown) 
+            return
+
         for (const sch of this.schedule) {
 
             if (sch.days === "-------"){
