@@ -119,6 +119,7 @@ class Course {
         for (const sch of this.schedule) {
             scheduleHTML += `<p>${sch.type} ${sch.days} ${sch.time} ${sch.room} ${sch.instructor}</p>`
         }
+        scheduleHTML += "</div>"
 
         if (!(this.notes === null)) {
             scheduleHTML += `<p>${this.notes}</p>`
@@ -160,7 +161,8 @@ class Course {
         let temp = document.createElement('div');
         temp.innerHTML = html
         temp.id = this.id
-        temp.className = `course courselistcourse hidden ${color}`
+        
+        temp.className = `csidebar hidden ${color}`
         if (!document.getElementById("showColors").checked) {
             temp.classList.add("gray")
         }
