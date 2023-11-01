@@ -498,11 +498,15 @@ class Calendar {
 
     storeShownCourses() {
         // Don't overwrite storage if no courses were put on the calendar
-        if (this.courses_oncalendar.length == 0)
-            return
+        //if (this.courses_oncalendar.length == 0)
+        //    return
     
         // Store the course IDs in localStorage
         localStorage.setItem('courses_oncalendar', JSON.stringify(this.courses_oncalendar));
+    }
+
+    checkRestoreAvailable() {
+        return localStorage.getItem('courses_oncalendar') != null && localStorage.getItem('courses_oncalendar') != "[]"
     }
 
     restoreShownCourses() {
@@ -513,15 +517,13 @@ class Calendar {
         if (storedCourseIDs) {
             // Parse the stored course IDs back to an array
             const courseIDs = JSON.parse(storedCourseIDs);
-    
-            // Find the corresponding course objects for the IDs
-            const restoredCourses = courseIDs.map(id => this.coursesMap.get(id));
-    
+        
             // Update the courses_oncalendar array with the restored courses
-            this.courses_oncalendar = restoredCourses;
+            this.courses_oncalendar = courseIDs;
         }
 
-        for (const c of this.courses_oncalendar) {
+        for (const cID of this.courses_oncalendar) {
+            let c = this.coursesMap.get(cID)
             c.showFCalendar(this.FCalendar)
         }
     }

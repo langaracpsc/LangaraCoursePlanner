@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       c.reloadCourseList()
 
       // restore courses from localstorage
-      if (localStorage.getItem('courses_oncalendar') != null && localStorage.getItem('courses_oncalendar') != "[]" && confirm("Found previous calendar data - would you like to restore it?"))
+      if (c.checkRestoreAvailable() && confirm("Found previous calendar data - would you like to restore it?"))
         c.restoreShownCourses()
 
       // Generate resources 
@@ -138,15 +138,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     // open info about course if title is clicked
     if (target.nodeName == "H3") {
       c.showCourseInfo(event.target.parentElement.id)
+      return
+    } 
     
     // else put it on the calendar
-    } else if (target.nodeName != "DIV") {
-      target = event.target.parentElement
-    } 
-
-    if (target.nodeName == 'DIV' && target.id == "") {
+    if (target.nodeName != "DIV")
       target = target.parentElement
-    }
+    if (target.nodeName == 'DIV' && target.id == "") 
+      target = target.parentElement
     
     if (target.classList.contains("courselistcourse")) {
       c.toggleFCalendar(target.id)
@@ -168,8 +167,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       
     
     if (target.classList.contains("courselistcourse"))
-    
-    c.setGhostFCalendar(target.id)
+      c.setGhostFCalendar(target.id)
   })
 
   // make sure ghosting stops when mouse leaves
