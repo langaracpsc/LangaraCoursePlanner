@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,16 +13,16 @@
     <!--Load Fullcalendar -->
     <script src='libraries/fullcalendar/dist/index.global.min.js'></script>
     <!--Load Fuse.js -->
-    <script src="libraries/fuse/fuse.js"></script> 
+    <script src="libraries/fuse/fuse.js" defer></script>
     <!--Load sql.js-->
-    <script src ='libraries/sql/sql.js'> </script>
+    <script src='libraries/sql/sql.js' defer></script>
 
     <!--Load javascript-->
-    <script src='js/Database.js'> </script>
-    <script src='js/Calendar.js'> </script>
-    <script src='js/Course.js'> </script>
+    <script src='js/Database.js' defer></script>
+    <script src='js/Calendar.js' defer></script>
+    <script src='js/Course.js' defer></script>
 
-    <script src='main.js'> </script>
+    <script src='main.js' defer></script>
 </head>
 
 <body>
@@ -38,7 +39,7 @@
                     <p id="searchResults">Loading courses...</p>
                 </label>
 
-                <label>Select term: 
+                <label>Select term:
                     <select id="termSelector">
                         <option value="2024-10">2024 Spring</option>
                         <option value="2023-30">2023 Fall</option>
@@ -116,12 +117,12 @@
                         <option value="2000-10">2000 Spring</option>
                         <option value="1999-30">1999 Fall</option>
                         <option value="1999-20">1999 Summer</option>
-                     </select>
-                     
-                </label> 
-                
+                    </select>
+
+                </label>
+
                 <label>
-                    <input type="checkbox" id="weekendCheckbox" > Always show Saturday.
+                    <input type="checkbox" id="weekendCheckbox"> Always show Saturday.
                 </label>
                 <label>
                     <input type="checkbox" id="conflictCheckbox"> Hide courses that conflict with selected courses.
@@ -145,7 +146,7 @@
 
             <div class="footer">
                 <a href="about" target="_blank">About</a>
-                 •  
+                •
                 <a href="https://github.com/highfire1/LangaraCourseBrowser" target="_blank">Github</a>
             </div>
 
