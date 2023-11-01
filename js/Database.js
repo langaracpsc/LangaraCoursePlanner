@@ -10,7 +10,7 @@ class Database {
         const initSqlJs = window.initSqlJs;
 
         const sqlPromise = await initSqlJs({
-        locateFile: file => `libraries/sql/sql.wasm`
+            locateFile: file => `libraries/sql/sql.wasm`
         });
 
         const DB_API = "https://api2.langaracs.tech/courseDB.db"
@@ -22,10 +22,10 @@ class Database {
                 }
                 return res.arrayBuffer();
             });
-    
+
             const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
             const db = new SQL.Database(new Uint8Array(buf));
-    
+
             this.db = db;
 
         } catch (error) {
@@ -50,7 +50,7 @@ class Database {
         let query
         if (subject != null && course_code != null) {
             query = `SELECT * FROM CourseInfo WHERE subject='${subject}' AND course_code=${course_code} `
-        } else if (subject != null ){
+        } else if (subject != null) {
             query = `SELECT * FROM CourseInfo WHERE subject='${subject}'`
         } else if (course_code != null) {
             // I cannot imagine what you would use this for
@@ -87,23 +87,23 @@ class Database {
         }
 
         query += ` ORDER BY Sections.year DESC, Sections.term DESC, Sections.subject ASC, Sections.course_code ASC`
-        
+
         const rows = this.executeQuery(query);
 
         // hhhhh
         // must efficiently extract schedule and course information and insubstantiate them into classes for fuzzy search
         let out = []
 
-        for (let i=0; i<rows.length; i++) {
+        for (let i = 0; i < rows.length; i++) {
 
             let init = rows[i]
-            let schedule = [init.slice(17, 23+1)]
+            let schedule = [init.slice(17, 23 + 1)]
 
             let j = i + 1
             let next = rows[j]
 
             while (next != undefined && init[0] == next[0] && init[1] == next[1] && init[5] == next[5]) {
-                schedule.push(next.slice(17, 23+1))
+                schedule.push(next.slice(17, 23 + 1))
                 j += 1
                 next = rows[j]
             }
@@ -119,7 +119,7 @@ class Database {
 
     getSchedules(year, term, crn) {
         let query
-        if (year == null || term == null || crn==null) {
+        if (year == null || term == null || crn == null) {
             query = "SELECT * FROM Schedules";
         } else {
             query = `SELECT * FROM Schedules WHERE year=${year} AND term=${term} AND crn=${crn}`;
@@ -131,7 +131,7 @@ class Database {
         return rows
     }
 
-    getTransfers(subject=null, course_code=null) {
+    getTransfers(subject = null, course_code = null) {
 
         let query
         if (subject == null || course_code == null) {
@@ -142,7 +142,7 @@ class Database {
 
         const rows = this.executeQuery(query);
         return rows
-    }    
+    }
 
     getAvailableSemesters() {
         const query = `

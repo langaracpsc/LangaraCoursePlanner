@@ -1,8 +1,8 @@
 function format_data(data) {
-    if (data === null) 
+    if (data === null)
         return ""
     return data
-    
+
 }
 
 class Schedule {
@@ -25,7 +25,7 @@ class Schedule {
 
 class Course {
     constructor(data, schedules) {
-        
+
         if (data.length != 14) {
             console.log(data)
             alert("Section information loaded from database is wrong length.")
@@ -48,7 +48,7 @@ class Course {
         this.notes = data[13]
 
         this.schedule = []
-        
+
         for (const sch of schedules) {
             this.schedule.push(new Schedule(sch))
         }
@@ -85,12 +85,12 @@ class Course {
 
         // remove duplicate values i know its not efficient to add then remove duplicates shush
         // ie if there's a lecture and lab with the same teacher, we only put the teacher in search once, instead of twice
-        scheduleSearch = [...new Set(scheduleSearch)] 
+        scheduleSearch = [...new Set(scheduleSearch)]
         scheduleSearch = scheduleSearch.join(" ")
-        
+
         // used with fuse
         this.fuzzySearch = `${this.subject} ${this.course_code} ${this.crn} ${this.title} ${scheduleSearch}`
-        if (this.notes != null) 
+        if (this.notes != null)
             this.fuzzySearch += " " + this.notes
     }
 
@@ -112,18 +112,18 @@ class Course {
     }
 
     // html in the courselist on the sidebar
-    generateCourseListHTML(){
+    generateCourseListHTML() {
 
         let scheduleHTML = "<div>"
 
-        for(const sch of this.schedule) {
+        for (const sch of this.schedule) {
             scheduleHTML += `<p>${sch.type} ${sch.days} ${sch.time} ${sch.room} ${sch.instructor}</p>`
         }
 
         if (!(this.notes === null)) {
             scheduleHTML += `<p>${this.notes}</p>`
         }
-        
+
         let html = `
             <h3>${this.subject} ${this.fmtCC(this.course_code)} ${this.section} : ${this.title}</h3>
         `
@@ -141,7 +141,7 @@ class Course {
         } else if (this.seats != 0 && (this.waitlist == " " || this.waitlist == "" || this.waitlist == null || this.waitlist == "null")) {
             html += `<p>${this.seats} seats available.</p>`
             color = "green"
-        } else if (this.waitlist == "N/A"){
+        } else if (this.waitlist == "N/A") {
             html += `<p>${this.seats} seats available. Waitlist N/A.</p>`
             color = "yellow"
         } else if (this.seats != 0 && this.waitlist != "Full") {
@@ -150,10 +150,10 @@ class Course {
         } else if (this.seats == 0 && this.waitlist > 30) {
             // if waitlist is above 30 you very likely aren't getting through 
             html += `<p>${this.seats} seats available. ${this.waitlist} on waitlist.</p>`
-            color = "red" 
+            color = "red"
         } else if (this.seats == 0 && this.waitlist != "Full") {
             html += `<p>No seats available. ${this.waitlist} on waitlist.</p>`
-            color = "yellow" 
+            color = "yellow"
         }
         html += scheduleHTML
 
@@ -168,10 +168,10 @@ class Course {
         return temp
     }
 
-    
+
 
     // html for the course info that opens in a new window
-    generateCourseInfoHTML(){
+    generateCourseInfoHTML() {
 
         let html = "<!DOCTYPE html>"
         html += `<style>
@@ -233,7 +233,7 @@ class Course {
         }
 
         html += "<h2>Section Information</h2>"
-        
+
         html += `<div class="sched">`
         html += `<p>Type</p><p>Day(s)</p><p>Time</p><p>Non Standard Start</p><p>Non Standard End</p><p>Room</p><p>Instructor(s)</p>`
         for (const sch of this.schedule) {
@@ -242,23 +242,23 @@ class Course {
         html += "</div><br>"
 
         html += `<div class="grid">`
-            html += `<p>RP</p><p>${un(this.RP)}</p>`
-            html += `<p>Seats Available</p><p>${un(this.seats)}</p>`
-            html += `<p># On Waitlist</p><p>${un(this.waitlist)}</p>`
-            html += `<p>CRN</p><p>${this.crn}</p>`
-            html += `<p>Subject</p><p>${this.subject}</p>`
-            html += `<p>Course</p><p>${this.fmtCC(this.course_code)}</p>`
-            html += `<p>Section</p><p>${this.section}</p>`
-            html += `<p>Credits</p><p>${this.credits}</p>`
-            html += `<p>Title</p><p>${this.title}</p>`
-            html += `<p>Additional Fees</p><p>${un(this.add_fees)}</p>`
-            html += `<p>Repeat Limit</p><p>${un(this.rpt_limit)}</p>`
-            html += `<p>Notes</p><p>${un(this.notes)}</p>`
+        html += `<p>RP</p><p>${un(this.RP)}</p>`
+        html += `<p>Seats Available</p><p>${un(this.seats)}</p>`
+        html += `<p># On Waitlist</p><p>${un(this.waitlist)}</p>`
+        html += `<p>CRN</p><p>${this.crn}</p>`
+        html += `<p>Subject</p><p>${this.subject}</p>`
+        html += `<p>Course</p><p>${this.fmtCC(this.course_code)}</p>`
+        html += `<p>Section</p><p>${this.section}</p>`
+        html += `<p>Credits</p><p>${this.credits}</p>`
+        html += `<p>Title</p><p>${this.title}</p>`
+        html += `<p>Additional Fees</p><p>${un(this.add_fees)}</p>`
+        html += `<p>Repeat Limit</p><p>${un(this.rpt_limit)}</p>`
+        html += `<p>Notes</p><p>${un(this.notes)}</p>`
         html += "</div>"
 
 
         html += "<h2>Course Information</h2>"
-        
+
 
         if (courseInfo == null)
             html += "<p><b>No course attributes available.</b></p>"
@@ -310,12 +310,12 @@ class Course {
             for (t of transferInfo) {
 
                 let classes = ""
-                if (t[6] != "present") 
+                if (t[6] != "present")
                     classes += "hidden "
 
                 if (t[4] == "No credit" || (t[4] == "No Credit"))
                     classes += "red "
-                
+
                 //if (t.credit != undefined)
                 //    console.log(t.credit.split("(").at(-1).split(")").at(0))
 
@@ -367,7 +367,7 @@ class Course {
                     <td rowspan="${s.length}">${un(c.waitlist)}</td>            
                     ${s[0]}
                     </tr>
-                `        
+                `
                 for (const string of s.slice(1)) {
                     html += `<tr>${string}</tr>`
                 }
@@ -397,12 +397,12 @@ class Course {
 
     }
 
-    hideFCalendar(FCalendar, color_class="blue") {
+    hideFCalendar(FCalendar, color_class = "blue") {
         // getEventById only returns one event at a time
         // but getEvents doesn't get events that aren't currently shown so it doesn't work
-        while (FCalendar.getEventById(this.id) != null) 
+        while (FCalendar.getEventById(this.id) != null)
             FCalendar.getEventById(this.id).remove()
-        
+
         this.shown = false
         // fix weird bug with changing terms - i should fix this properly at some point
         if (document.getElementById(this.id) != null) {
@@ -412,7 +412,7 @@ class Course {
         }
 
         let show_weekends = false
-        for(const id of this.Calendar.courses_oncalendar) {
+        for (const id of this.Calendar.courses_oncalendar) {
             let c = this.Calendar.coursesMap.get(id)
 
             if (c.hasWeekend) {
@@ -421,20 +421,20 @@ class Course {
             }
         }
         if (show_weekends == false && !document.getElementById("weekendCheckbox").checked) {
-            FCalendar.setOption('hiddenDays', [ 0, 6 ])
+            FCalendar.setOption('hiddenDays', [0, 6])
         }
-        
+
     }
 
-    showFCalendar(FCalendar, color_class="blue") {
+    showFCalendar(FCalendar, color_class = "blue") {
 
         // This looks like technical debt that I will pay for but it is a quick fix
-        if (this.shown) 
+        if (this.shown)
             return
 
         for (const sch of this.schedule) {
 
-            if (sch.days === "-------"){
+            if (sch.days === "-------") {
                 continue // if there's no time slot then we don't need to render it
             }
             if (sch.days.trim() === "") {
@@ -443,7 +443,7 @@ class Course {
             }
 
             if (this.hasWeekend) {
-                FCalendar.setOption('hiddenDays', [ 0 ])
+                FCalendar.setOption('hiddenDays', [0])
             }
 
             // convert M-W---- to [1, 3]
@@ -451,15 +451,15 @@ class Course {
             let days = []
             for (const c of sch.days) {
                 if (!(c === '-')) {
-                days.push(value)
+                    days.push(value)
                 }
-                value = (value + 1) % 7        
+                value = (value + 1) % 7
             }
-            
+
             let times = sch.time.split("-")
             let s_time = times[0].slice(0, 2) + ":" + times[0].slice(2, 4)
             let e_time = times[1].slice(0, 2) + ":" + times[1].slice(2, 4)
-            
+
             let start = sch["start"]
             if (start === null)
                 start = this.Calendar.courses_first_day
@@ -482,18 +482,18 @@ class Course {
                 resourceId: sch.room,
                 overlap: false,
                 extendedProps: {
-                    course_code : this
+                    course_code: this
                 },
                 source: "json"
-              }
-            
+            }
+
             FCalendar.addEvent(f)
 
         }
 
         this.shown = true
         document.getElementById(this.id).classList.add(color_class)
-    }   
+    }
 
 
 }

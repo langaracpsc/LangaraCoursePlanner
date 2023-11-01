@@ -53,7 +53,7 @@ class Calendar {
         for (const c of this.courses) {
             c.Calendar = this
             c.generateFuzzySearch() // THIS IS BAD
-            
+
             courselist.appendChild(c.courseListHTML)
 
             this.coursesMap.set(c.id, c)
@@ -80,8 +80,8 @@ class Calendar {
         for (const t of sems) {
             if (!inopt.includes(`${t[0]}-${t[1]}`))
                 termSelector.add(new Option(`${t[0]} ${intToStr(t[1])}`, `${t[0]}-${t[1]}`))
-        }   
-        
+        }
+
     }
 
     // Call when the term is changed
@@ -96,7 +96,7 @@ class Calendar {
 
         const year = parseInt(yearterm.split("-")[0])
         const term = parseInt(yearterm.split("-")[1])
-            
+
         const query = `SELECT start_date FROM Schedules WHERE year = ${year} AND term = ${term} AND start_date IS NOT NULL GROUP BY start_date ORDER BY COUNT(*) ASC;`
         let start_date = this.db.executeQuery(query)
 
@@ -144,7 +144,7 @@ class Calendar {
         }
         return resources
     }
-    
+
     // Toggles visibility of course in calendar
     toggleFCalendar(id) {
 
@@ -194,7 +194,7 @@ class Calendar {
                 // don't do ghost stuff if its shown
                 if (c.shown)
                     return
-                    
+
                 c.showFCalendar(this.FCalendar, "dark-gray")
                 this.ghostCourse = c
                 this.ghostCourse.ghost = true
@@ -206,7 +206,7 @@ class Calendar {
     showCourseInfo(id) {
 
         let c = this.coursesMap.get(id)
-        
+
         let new_window = window.open("", "_blank", "toolbar=no,width=800,height=700")
         new_window.document.body.innerHTML = c.generateCourseInfoHTML()
     }
@@ -214,13 +214,13 @@ class Calendar {
     // Toggles all courses
     toggleAllFCalendar(show) {
         let i = 0
-            
+
         for (const c of this.courses_shown) {
-            if (this.courses_shown.length > 3000 && i % 500 ==0) 
+            if (this.courses_shown.length > 3000 && i % 500 == 0)
                 console.log(`${i}/${this.courses_shown.length}`)
             i += 1
 
-            if (show)  {
+            if (show) {
                 c.showFCalendar(this.FCalendar)
             } else {
                 c.hideFCalendar(this.FCalendar)
@@ -248,14 +248,14 @@ class Calendar {
         if (yearterm != "ALL") {
             const year = parseInt(yearterm.split("-")[0])
             const term = parseInt(yearterm.split("-")[1])
-            
+
             this.courses_shown = this.courses.filter(c => (c.year == year && c.semester == term));
             this.courses_hidden = this.courses.filter(c => (c.year != year || c.semester != term));
         } else {
             this.courses_shown = [...this.courses]
             this.courses_hidden = []
         }
-        
+
 
 
         // don't run fuzzy search if there's nothing to search for
@@ -264,10 +264,10 @@ class Calendar {
 
             // fuzzy search is hard
             // we'll come back to this
-            let thresh = 0.2  
-            if (search.length >= 9) 
+            let thresh = 0.2
+            if (search.length >= 9)
                 thresh = 0.09
-                    
+
             const fuse_options = {
                 includeScore: true,
                 shouldSort: false,
@@ -312,12 +312,12 @@ class Calendar {
         // schedule:lab -> courses with lab
         // TODO: implement this (possibly make this a seperate menu??)
 
-        
+
         // hide courses that conflict by schedule
         // this approach doesn't support outside events ie gcal but that is too much hassle to setup anyways
         let conflicts = document.getElementById("conflictCheckbox").checked
 
-        if (conflicts) {            
+        if (conflicts) {
 
             for (const courseID of [...this.courses_oncalendar]) {
 
@@ -370,31 +370,31 @@ class Calendar {
                 continue
 
             // Don't need to check schedules that don't have a set time
-            if (sch.time == "-") 
+            if (sch.time == "-")
                 continue
 
             let starthour = +sch.time.slice(0, 2)
             let startmin = +sch.time.slice(2, 4)
             let endhour = +sch.time.slice(5, 7)
             let endmin = +sch.time.slice(7, 10)
-            
+
             // turn :25 -> :20
-            startmin = Math.round((startmin-1) / 10) * 10
+            startmin = Math.round((startmin - 1) / 10) * 10
             // turn :25 -> :30
-            endmin = Math.round((endmin+1) / 10) * 10
+            endmin = Math.round((endmin + 1) / 10) * 10
 
             for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
-                
+
                 if (sch.days[dayIndex] == '-')
                     continue
 
-                const start = (144 * dayIndex) + ((starthour * 60) / 10 ) + (startmin / 10)
-                const end = (144 * dayIndex) + ((endhour * 60) / 10 ) + (endmin / 10)
+                const start = (144 * dayIndex) + ((starthour * 60) / 10) + (startmin / 10)
+                const end = (144 * dayIndex) + ((endhour * 60) / 10) + (endmin / 10)
 
                 console.assert(end > start, "Time conflict checker failed unexpectedly.", course1, course2)
 
-                for(let i=start; i<=end; i++) {
-                    if (time[i]) 
+                for (let i = start; i <= end; i++) {
+                    if (time[i])
                         return true
                     time[i] = true
                 }
@@ -416,27 +416,27 @@ class Calendar {
     dateExtractor(string) {
 
         const lookup = {
-            "mo" : 1,
-            "mon" : 1,
-            "monday" : 1,
-            "tu" : 2,
-            "tue" : 2,
-            "tuesday" : 2,
-            "we" : 3,
-            "wed" : 3,
-            "wednesday" : 3,
-            "th" : 4,
-            "thu" : 4,
-            "thursday" : 4,
-            "fr" : 5,
-            "fri" : 5,
-            "friday" : 5,
-            "sa" : 6,
-            "sat" : 6,
-            "saturday" : 6,
-            "su" : 7,
-            "sun" : 7,
-            "sunday" : 7,
+            "mo": 1,
+            "mon": 1,
+            "monday": 1,
+            "tu": 2,
+            "tue": 2,
+            "tuesday": 2,
+            "we": 3,
+            "wed": 3,
+            "wednesday": 3,
+            "th": 4,
+            "thu": 4,
+            "thursday": 4,
+            "fr": 5,
+            "fri": 5,
+            "friday": 5,
+            "sa": 6,
+            "sat": 6,
+            "saturday": 6,
+            "su": 7,
+            "sun": 7,
+            "sunday": 7,
         }
 
         const split = string.split(" ")
@@ -444,13 +444,13 @@ class Calendar {
         let out = ""
         let days = []
         let days_out = {
-            1 : false,
-            2 : false,
-            3 : false,
-            4 : false,
-            5 : false,
-            6 : false,
-            7 : false,
+            1: false,
+            2: false,
+            3: false,
+            4: false,
+            5: false,
+            6: false,
+            7: false,
         }
         let day_param_found = false
 
@@ -458,12 +458,12 @@ class Calendar {
             if (term.toLowerCase() in lookup) {
                 days_out[lookup[term]] = true
                 day_param_found = true
-            } else 
+            } else
                 out += term + " "
         }
 
         if (!day_param_found) {
-            for (const i in days_out) 
+            for (const i in days_out)
                 days_out[i] = true
         }
 
@@ -474,9 +474,9 @@ class Calendar {
         const count = this.courses_shown.length;
         const results = document.getElementById("searchResults");
         const maxShown = 1500;
-    
+
         const fragment = document.createDocumentFragment(); // Create a document fragment to batch DOM updates
-    
+
         if (count == 0) {
             results.innerText = "No courses found. Try a different search query!";
         } else if (count >= maxShown) {
@@ -484,12 +484,12 @@ class Calendar {
         } else {
             results.innerText = `${count} courses shown.`;
         }
-    
+
         // Hide all courses
         for (const c of this.courses) {
             c.courseListHTML.classList.add("hidden");
         }
-    
+
         // Show filtered courses and add them to the fragment
         let i = 0;
         for (const c of this.courses_shown) {
@@ -498,7 +498,7 @@ class Calendar {
             if (i > maxShown) break;
             fragment.appendChild(c.courseListHTML); // Add the course element to the document fragment
         }
-    
+
         // Replace the content of the courselist container with the fragment
         const courselist = document.getElementById("courselist");
         courselist.innerHTML = ''; // Clear the current content
@@ -509,7 +509,7 @@ class Calendar {
         // Don't overwrite storage if no courses were put on the calendar
         //if (this.courses_oncalendar.length == 0)
         //    return
-    
+
         // Store the course IDs in localStorage
         localStorage.setItem('courses_oncalendar', JSON.stringify(this.courses_oncalendar));
     }
@@ -522,11 +522,11 @@ class Calendar {
         console.log("Restoring sections from LocalStorage")
         // Retrieve the course IDs from localStorage
         const storedCourseIDs = localStorage.getItem('courses_oncalendar');
-    
+
         if (storedCourseIDs) {
             // Parse the stored course IDs back to an array
             const courseIDs = JSON.parse(storedCourseIDs);
-        
+
             // Update the courses_oncalendar array with the restored courses
             this.courses_oncalendar = courseIDs;
         }

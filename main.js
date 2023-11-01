@@ -1,7 +1,7 @@
 'use strict'
 var c
 
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
 
 
   const db = new Database()
@@ -25,26 +25,27 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Generate resources 
     c.FCalendar.refetchResources()
 
-    }).catch(
-      error => {console.error("Error while initializing calendar: ", error)
+  }).catch(
+    error => {
+      console.error("Error while initializing calendar: ", error)
     })
 
   c = new Calendar(db)
   console.log(c)
 
-  
+
   function timelineLabelApplier(name) {
     let names = {
-      "A" : "A Building",
-      "B" : "B Building",
-      "C" : "C Building",
-      "G" : "Gymnasium",
-      "L" : "Library",
-      "T" : "T Building",
-      "O" : "Off Campus",
-      "W" : "WWW / Online",
-      "?" : "Other",
-    } 
+      "A": "A Building",
+      "B": "B Building",
+      "C": "C Building",
+      "G": "Gymnasium",
+      "L": "Library",
+      "T": "T Building",
+      "O": "Off Campus",
+      "W": "WWW / Online",
+      "?": "Other",
+    }
     return names[name]
   }
 
@@ -57,8 +58,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // resource stuff
     resourceGroupField: 'groupId',
-    resourceGroupLabelContent: function(arg) {return timelineLabelApplier(arg.groupValue)},
-    resources: function(fetchInfo, successCallback, failureCallback) {successCallback(c.generateResources())},
+    resourceGroupLabelContent: function (arg) { return timelineLabelApplier(arg.groupValue) },
+    resources: function (fetchInfo, successCallback, failureCallback) { successCallback(c.generateResources()) },
     resourceAreaWidth: "120px",
     // show class info when clicked
     //eventClick: function(eventClickInfo) {console.log(calendarClass.showCourseInfo(eventClickInfo.event.id))},
@@ -66,8 +67,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // calendar stuff
     timeZone: 'America/Vancouver',
     initialView: 'timeGridWeek', // 'resourceTimelineDay'
-    slotMinTime:"07:00", // classes start 7:30 and end 9:30
-    slotMaxTime:"22:00",
+    slotMinTime: "07:00", // classes start 7:30 and end 9:30
+    slotMaxTime: "22:00",
     displayEventTime: false, // honestly not sure what this does
     headerToolbar: {
       left: 'prev,next today',
@@ -78,11 +79,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     //weekends: document.getElementById("weekendCheckbox").checked,
     //hiddenDays: [ 0 ],
     //initialDate: new Date(new Date(calendarClass.courses_first_day).getTime() + 604800000), // start on the second week of courses
-    slotEventOverlap:false,
+    slotEventOverlap: false,
     allDaySlot: false, // don't show the allday row on the calendar
-    
+
     // fires when event is created, adds a second line of text to event because you can't by default ._.
-    eventContent: function(info) {
+    eventContent: function (info) {
       let p = document.createElement('p')
       p.innerHTML = info.event.extendedProps["description"]
       return { domNodes: [p] }
@@ -100,9 +101,9 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Render courses
   //c.courselistUpdate()
 
-  window.addEventListener("beforeunload", function(e){
+  window.addEventListener("beforeunload", function (e) {
     c.storeShownCourses()
- });
+  });
 
 
 
@@ -114,24 +115,24 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   function setSaturday(show) {
     if (show) {
-      FCalendar.setOption('hiddenDays', [ 0 ])
+      FCalendar.setOption('hiddenDays', [0])
     } else {
-      FCalendar.setOption('hiddenDays', [ 0, 6 ])
+      FCalendar.setOption('hiddenDays', [0, 6])
     }
   }
 
   setSaturday(document.getElementById("weekendCheckbox").checked)
-  
+
 
 
   // Color course element based on availability
   // bit of a misnomer of a comment
   document.getElementById("showColors").addEventListener("input", function (event) {
     if (document.getElementById("showColors").checked) {
-      for (const e of document.getElementById("courselist").children )
+      for (const e of document.getElementById("courselist").children)
         e.classList.remove("gray")
     } else {
-      for (const e of document.getElementById("courselist").children )
+      for (const e of document.getElementById("courselist").children)
         e.classList.add("gray")
     }
   })
@@ -145,14 +146,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (target.nodeName == "H3") {
       c.showCourseInfo(event.target.parentElement.id)
       return
-    } 
-    
+    }
+
     // else put it on the calendar
     if (target.nodeName != "DIV")
       target = target.parentElement
-    if (target.nodeName == 'DIV' && target.id == "") 
+    if (target.nodeName == 'DIV' && target.id == "")
       target = target.parentElement
-    
+
     if (target.classList.contains("courselistcourse")) {
       c.toggleFCalendar(target.id)
       c.courselistUpdate()
@@ -168,10 +169,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     if (target.nodeName != "DIV")
       target = target.parentElement
-    if (target.nodeName == 'DIV' && target.id == "") 
+    if (target.nodeName == 'DIV' && target.id == "")
       target = target.parentElement
-      
-    
+
+
     if (target.classList.contains("courselistcourse"))
       c.setGhostFCalendar(target.id)
   })
@@ -187,13 +188,13 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // When we have to search lots of courses, use debounce so the page doesn't lag as much
     if (c.courses_shown.length > 2000) {
-        clearTimeout(debounceTimeout);
-        debounceTimeout = setTimeout(function() {
-            c.courselistUpdate();
-        }, 250); // 250 milliseconds (0.25 seconds) debounce delay
-    } else {
-        // Perform immediate update if the condition is not met
+      clearTimeout(debounceTimeout);
+      debounceTimeout = setTimeout(function () {
         c.courselistUpdate();
+      }, 250); // 250 milliseconds (0.25 seconds) debounce delay
+    } else {
+      // Perform immediate update if the condition is not met
+      c.courselistUpdate();
     }
   });
 
