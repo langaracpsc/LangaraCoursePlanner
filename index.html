@@ -33,7 +33,7 @@
                 <input type="text" id="courseSearchBar" placeholder="Search courses">
             </div>
 
-            <div class="search-options">
+            <fieldset class="search-options">
 
                 <label>
                     <p id="searchResults">Loading courses...</p>
@@ -118,7 +118,6 @@
                         <option value="1999-30">1999 Fall</option>
                         <option value="1999-20">1999 Summer</option>
                     </select>
-
                 </label>
 
                 <label>
@@ -130,11 +129,17 @@
                 <label>
                     <input type="checkbox" id="showColors" checked> Highlight courses by seats available.
                 </label>
-                <label>
-                    <input type="button" id="showAllButton" value="Show all courses in list.">
-                    <input type="button" id="hideAllButton" value="Hide all courses in list.">
-                </label>
-            </div>
+
+                <div class="button-container">
+                    <label>
+                        <input type="button" id="showAllButton" value="Show all courses in list.">
+                    </label>
+                    <label>
+                        <input type="button" id="hideAllButton" value="Hide all courses in list.">
+                    </label>
+                </div>
+
+            </fieldset>
 
             <div id="courselist" class="courselist">
                 <div class="course">
