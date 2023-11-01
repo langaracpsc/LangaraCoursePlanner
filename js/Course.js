@@ -53,7 +53,7 @@ class Course {
             this.schedule.push(new Schedule(sch))
         }
 
-        //this.Calendar = Calendar
+        // An ID that uniquely identifies a section of a course in the database
         this.id = `${this.year}-${this.semester}-${this.crn}`
         this.shown = false
         this.ghost = false
@@ -412,7 +412,9 @@ class Course {
         }
 
         let show_weekends = false
-        for(const c of this.Calendar.courses_oncalendar) {
+        for(const id of this.Calendar.courses_oncalendar) {
+            let c = this.Calendar.coursesMap.get(id)
+
             if (c.hasWeekend) {
                 show_weekends = true
                 break

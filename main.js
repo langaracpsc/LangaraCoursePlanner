@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', async function() {
       c.courselistUpdate()
       c.reloadCourseList()
 
+      // restore courses from localstorage
+      if (localStorage.getItem('courses_oncalendar') != null && localStorage.getItem('courses_oncalendar') != "[]" && confirm("Found previous calendar data - would you like to restore it?"))
+        c.restoreShownCourses()
+
       // Generate resources 
       c.FCalendar.refetchResources()
     })
@@ -69,6 +73,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     //hiddenDays: [ 0 ],
     //initialDate: new Date(new Date(calendarClass.courses_first_day).getTime() + 604800000), // start on the second week of courses
     slotEventOverlap:false,
+    allDaySlot: false, // don't show the allday row on the calendar
     
     // fires when event is created, adds a second line of text to event because you can't by default ._.
     eventContent: function(info) {
@@ -78,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     },
 
   })
-  FCalendar.eventTextColor = 'black'
+  FCalendar.eventTextColor = 'black' // doesn't work??
 
 
   c.FCalendar = FCalendar
@@ -88,6 +93,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   // Render courses
   //c.courselistUpdate()
+
+  window.addEventListener("beforeunload", function(e){
+    c.storeShownCourses()
+ });
+
 
 
   // Set up event listeners for modifying the calendar.
@@ -170,15 +180,17 @@ document.addEventListener('DOMContentLoaded', async function() {
   // automatically update results when searching
   let debounceTimeout;
   document.getElementById("courseSearchBar").addEventListener("input", function (event) {
-      if (c.courses_shown.length > 2000) {
-          clearTimeout(debounceTimeout);
-          debounceTimeout = setTimeout(function() {
-              c.courselistUpdate();
-          }, 250); // 250 milliseconds (0.25 seconds) debounce delay
-      } else {
-          // Perform immediate update if the condition is not met
-          c.courselistUpdate();
-      }
+
+    // When we have to search lots of courses, use debounce so the page doesn't lag as much
+    if (c.courses_shown.length > 2000) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(function() {
+            c.courselistUpdate();
+        }, 250); // 250 milliseconds (0.25 seconds) debounce delay
+    } else {
+        // Perform immediate update if the condition is not met
+        c.courselistUpdate();
+    }
   });
 
 

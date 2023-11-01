@@ -2,15 +2,25 @@
 
 class Calendar {
     constructor(db) {
-        this.FCalendar = null
-        this.ghostCourse = null
-        this.courses_shown = []
+        // A list of all courses
         this.courses = []
+
+        // A map of all courses
+        this.coursesMap = null
+
+        // A list of courses currently shown on the sidebar
+        this.courses_shown = []
+
+        // A list of courses currently not shown on the sidebar
         this.courses_hidden = []
 
+        // A list of courses currently selected and shown on the calendar
         this.courses_oncalendar = []
 
+        this.FCalendar = null
         this.db = db
+
+        this.ghostCourse = null
 
         this.datetime_retrieved = null
 
@@ -37,16 +47,20 @@ class Calendar {
         let courselist = document.getElementById("courselist")
         courselist.innerHTML = ""
 
+        // Generate map for quickly searching for courses.
+        this.coursesMap = new Map()
+
         for (const c of this.courses) {
             c.Calendar = this
             c.generateFuzzySearch() // THIS IS BAD
             
             courselist.appendChild(c.courseListHTML)
+
+            this.coursesMap.set(c.id, c)
         }
 
         // update available semesters
         let termSelector = document.getElementById("termSelector")
-        console.log(termSelector)
         const sems = this.db.getAvailableSemesters()
 
         let inopt = []
@@ -67,12 +81,16 @@ class Calendar {
             if (!inopt.includes(`${t[0]}-${t[1]}`))
                 termSelector.add(new Option(`${t[0]} ${intToStr(t[1])}`, `${t[0]}-${t[1]}`))
         }   
-
+        
     }
 
+    // Call when the term is changed
+    // Sets the FCalendar date to the start of that term
+    // TODO: also set the start / end date of each course on the calendar
     changeSemester() {
         let yearterm = document.getElementById("termSelector").value
 
+        // If looking at all than date doesn't matter
         if (yearterm == "ALL")
             return
 
@@ -83,27 +101,15 @@ class Calendar {
         let start_date = this.db.executeQuery(query)
 
         let start = start_date[0]
-        console.log(start_date)
+        //console.log(start_date)
         this.FCalendar.gotoDate(new Date(new Date(start).getTime() + 604800000))
 
 
     }
 
-    
-    newCourseDataLoaded() {
-        
-        let start_date = this.db.executeQuery("SELECT start_date FROM Schedules WHERE year = 2024 AND term = 10 GROUP BY start_date ORDER BY COUNT(*) DESC LIMIT 1;")
-
-        console.log(start_date)
-
-        this.FCalendar.gotoDate(new Date(new Date(calendarClass.courses_first_day).getTime() + 604800000))
-      
-        this.courselistUpdate()
-        this.FCalendar.refetchResources()
-        
-    }
-
-    // Generates a list of 
+    // Generates a list of resources for the resourceview
+    // This is a list of locations for each class - ie. A130, L215, etc, etc
+    // Only needs to be called once when setting up FCalendar
     generateResources() {
         let unique_locations_set = new Set()
 
@@ -138,41 +144,26 @@ class Calendar {
         }
         return resources
     }
-
-
-    getCourseFromAllCourses(subject, code) {
-
-        for(const c of this.courses) {
-            if (c.subject == subject && (c.course_code == code || c.code == code ))
-                return c
-        }
-
-        return null
-    }
-    
     
     // Toggles visibility of course in calendar
     toggleFCalendar(id) {
 
-        for (const c of this.courses) {
-            if (c.id == id) {
-                let status = c.toggleFShown(this.FCalendar)
-                this.ghostCourse = null
-                c.ghost = false
+        let c = this.coursesMap.get(id)
 
+        let status = c.toggleFShown(this.FCalendar)
+        this.ghostCourse = null
+        c.ghost = false
 
+        if (status) {
+            this.courses_oncalendar.push(c.id)
+        } else {
+            const index = this.courses_oncalendar.findIndex(idd => idd == id);
 
-                if (status) {
-                    this.courses_oncalendar.push(c)
-                } else {
-                    this.courses_oncalendar.splice(this.courses_oncalendar.indexOf(c))
-                    this.setGhostFCalendar(id)
-                }
-                return
+            if (index !== -1) {
+                this.courses_oncalendar.splice(index, 1);
             }
+            this.setGhostFCalendar(id)
         }
-
-        console.log(`Could not find course with id ${id}`)
     }
 
     // Sets the current ghost in FullCalendar
@@ -213,16 +204,11 @@ class Calendar {
     }
 
     showCourseInfo(id) {
-        let c = null
-        for (const course of this.courses) {
-            if (course.id == id) {
-                c = course
-                break
-            }
-        }
-        const html = c.generateCourseInfoHTML()
+
+        let c = this.coursesMap.get(id)
+        
         let new_window = window.open("", "_blank", "toolbar=no,width=800,height=700")
-        new_window.document.body.innerHTML = html
+        new_window.document.body.innerHTML = c.generateCourseInfoHTML()
     }
 
     // Toggles all courses
@@ -333,7 +319,9 @@ class Calendar {
 
         if (conflicts) {            
 
-            for (const course of [...this.courses_oncalendar]) {
+            for (const courseID of [...this.courses_oncalendar]) {
+
+                let course = this.coursesMap.get(courseID)
 
                 for (const potential_course of [...this.courses_shown]) {
 
@@ -505,6 +493,36 @@ class Calendar {
             i += 1
             if (i > max_shown) 
                 break
+        }
+    }
+
+    storeShownCourses() {
+        // Don't overwrite storage if no courses were put on the calendar
+        if (this.courses_oncalendar.length == 0)
+            return
+    
+        // Store the course IDs in localStorage
+        localStorage.setItem('courses_oncalendar', JSON.stringify(this.courses_oncalendar));
+    }
+
+    restoreShownCourses() {
+        console.log("Restoring sections from LocalStorage")
+        // Retrieve the course IDs from localStorage
+        const storedCourseIDs = localStorage.getItem('courses_oncalendar');
+    
+        if (storedCourseIDs) {
+            // Parse the stored course IDs back to an array
+            const courseIDs = JSON.parse(storedCourseIDs);
+    
+            // Find the corresponding course objects for the IDs
+            const restoredCourses = courseIDs.map(id => this.coursesMap.get(id));
+    
+            // Update the courses_oncalendar array with the restored courses
+            this.courses_oncalendar = restoredCourses;
+        }
+
+        for (const c of this.courses_oncalendar) {
+            c.showFCalendar(this.FCalendar)
         }
     }
 
