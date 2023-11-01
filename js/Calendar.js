@@ -339,7 +339,8 @@ class Calendar {
         }
 
         // force re-add courses that are selected
-        for (const c of this.courses_oncalendar) {
+        for (const cID of this.courses_oncalendar) {
+            const c = this.coursesMap.get(cID)
             if (this.courses_hidden.indexOf(c) != -1) {
                 let remove = this.courses_hidden.indexOf(c)
                 this.courses_hidden.splice(remove, 1)

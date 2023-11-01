@@ -13,11 +13,24 @@ class Database {
         locateFile: file => `libraries/sql/sql.wasm`
         });
 
-        const dataPromise = fetch("https://api2.langaracs.tech/courseDB.db").then(res => res.arrayBuffer());
-        const [SQL, buf] = await Promise.all([sqlPromise, dataPromise])
-        const db = new SQL.Database(new Uint8Array(buf));
+        const DB_API = "https://api2.langaracs.tech/courseDB.db"
 
-        this.db = db
+        try {
+            const dataPromise = fetch(DB_API).then(res => {
+                if (!res.ok) {
+                    throw new Error(`Failed to fetch data from ${DB_API}`);
+                }
+                return res.arrayBuffer();
+            });
+    
+            const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
+            const db = new SQL.Database(new Uint8Array(buf));
+    
+            this.db = db;
+
+        } catch (error) {
+            throw error
+        }
     }
 
     executeQuery(sql) {

@@ -1,3 +1,4 @@
+'use strict'
 var c
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -5,23 +6,28 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   const db = new Database()
 
-  db.fetchDB()
-    .then(() => {
-      c.parseFromDB()
-      // Render calendar
-      // Render courses
-      c.changeSemester()
-      c.courselistUpdate()
-      c.reloadCourseList()
+  db.fetchDB().then(() => {
 
-      // restore courses from localstorage
-      if (c.checkRestoreAvailable() && confirm("Found previous calendar data - would you like to restore it?"))
-        c.restoreShownCourses()
+    // Load Database
+    c.parseFromDB()
 
-      // Generate resources 
-      c.FCalendar.refetchResources()
+    // set Calendar Semester
+    c.changeSemester()
+
+    // Initialize courselist
+    c.courselistUpdate()
+    c.reloadCourseList()
+
+    // restore courses from localstorage
+    if (c.checkRestoreAvailable() && confirm("Found previous calendar data - would you like to restore it?"))
+      c.restoreShownCourses()
+
+    // Generate resources 
+    c.FCalendar.refetchResources()
+
+    }).catch(
+      error => {console.error("Error while initializing calendar: ", error)
     })
-    .catch(error => {console.error(error);});
 
   c = new Calendar(db)
   console.log(c)
