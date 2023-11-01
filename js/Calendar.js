@@ -470,30 +470,38 @@ class Calendar {
     }
 
     reloadCourseList() {
-        const count = this.courses_shown.length
-        let results = document.getElementById("searchResults")
-
-        const max_shown = 1500
-
-        if (count == 0) 
-            results.innerText = "No courses found. Try a different search query!"
-        else if (count >= max_shown)
-            results.innerText = `${count} courses found. Only showing ${max_shown} courses to reduce lag.`
-        else 
-            results.innerText = `${count} courses shown.`
-
+        const count = this.courses_shown.length;
+        const results = document.getElementById("searchResults");
+        const maxShown = 1500;
+    
+        const fragment = document.createDocumentFragment(); // Create a document fragment to batch DOM updates
+    
+        if (count == 0) {
+            results.innerText = "No courses found. Try a different search query!";
+        } else if (count >= maxShown) {
+            results.innerText = `${count} courses found. Only showing ${maxShown} courses to reduce lag.`;
+        } else {
+            results.innerText = `${count} courses shown.`;
+        }
+    
+        // Hide all courses
         for (const c of this.courses) {
-            c.courseListHTML.classList.add("hidden")
+            c.courseListHTML.classList.add("hidden");
         }
-        
-        // show filtered courses
-        let i = 0
-        for(const c of this.courses_shown) {
-            c.courseListHTML.classList.remove("hidden")
-            i += 1
-            if (i > max_shown) 
-                break
+    
+        // Show filtered courses and add them to the fragment
+        let i = 0;
+        for (const c of this.courses_shown) {
+            c.courseListHTML.classList.remove("hidden");
+            i += 1;
+            if (i > maxShown) break;
+            fragment.appendChild(c.courseListHTML); // Add the course element to the document fragment
         }
+    
+        // Replace the content of the courselist container with the fragment
+        const courselist = document.getElementById("courselist");
+        courselist.innerHTML = ''; // Clear the current content
+        courselist.appendChild(fragment); // Add the fragment to the DOM in a single operation
     }
 
     storeShownCourses() {
