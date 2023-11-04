@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   }).catch(
     error => {
-      console.error("Error while initializing calendar: ", error)
+      console.error("Error while initializing: ", error)
     })
 
   c = new Calendar(db)
