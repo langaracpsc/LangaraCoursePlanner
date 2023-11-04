@@ -216,6 +216,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         return
       }
       c.courselistUpdate();
+    } else {
+      c.courselistUpdate();
     }
   })
 

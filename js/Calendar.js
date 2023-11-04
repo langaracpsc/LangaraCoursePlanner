@@ -235,13 +235,79 @@ class Calendar {
         let search = document.getElementById("courseSearchBar").value
         let yearterm = document.getElementById("termSelector").value
 
-        this.filterCoursesBySearch(search, yearterm)
+        this.filterCoursesBySearch(this.parseSearch(search), yearterm)
         this.reloadCourseList()
     }
 
     // INTERNAL FUNCTION - DO NOT CALL
+    // parses a search string into an array of syntactically useful search terms
+    parseSearch(string) {
+        // must parse AND and OR
+        const sep = "🖥️"
+        console.assert(!string.includes(sep))
+
+        const aS = sep + "AND" + sep
+        const oS = sep + "OR" + sep
+
+        string = string.toLowerCase().replace("and", aS).replace("&&", aS).replace("&", aS).replace("or", oS).replace("||", oS).replace("|", oS)
+        const split = string.split(sep)
+
+        let results = new Array()
+
+        let storedCondition = "OR"
+
+        for (let term of split) {
+            term = term.trim()
+
+            if (term == "AND" || term == "&" || term == "&&") {
+                storedCondition = "AND"
+                continue
+            } else if (term == "OR" || term == "||" || term == "|" ) {
+                storedCondition = "OR"
+                continue
+            }
+
+            if (term == "") {
+                /* Do nothing */
+            }
+            
+            // crn (5 digits and numeric)
+            else if (term.length == 5 || /^\d+$/.test(term)) {
+                results.push({
+                    type: "crn",
+                    condition: storedCondition,
+                    search: term
+                })
+            }
+
+            else if(term == "www" || term == "lab" || term == "lecture" || term == "exam" || term == "seminar" || term == "practicum") {
+                results.push({
+                    type: "schedule.type",
+                    condition: storedCondition,
+                    search: term
+                })
+            }
+
+            else {
+                results.push({
+                    type: "fuzzy",
+                    condition: storedCondition,
+                    search: term
+                })
+            }
+
+            storedCondition = "OR"
+        }
+        return results
+    }
+
+    // INTERNAL FUNCTION - DO NOT CALL
     // filters courselists internally into courses_hidden and courses_shown
-    filterCoursesBySearch(search, yearterm) {
+    filterCoursesBySearch(search, yearterm, use_calendar=true) {
+
+        console.assert(Array.isArray(search))
+        let c_shown = []
+        let c_hidden = []
 
         // reset internal search arrays
         // First search pass - filter by date and term.
@@ -249,89 +315,96 @@ class Calendar {
             const year = parseInt(yearterm.split("-")[0])
             const term = parseInt(yearterm.split("-")[1])
 
-            this.courses_shown = this.courses.filter(c => (c.year == year && c.semester == term));
-            this.courses_hidden = this.courses.filter(c => (c.year != year || c.semester != term));
+            c_shown = this.courses.filter(c => (c.year == year && c.semester == term));
+            c_hidden = this.courses.filter(c => (c.year != year || c.semester != term));
         } else {
-            this.courses_shown = [...this.courses]
-            this.courses_hidden = []
+            c_shown = [...this.courses]
+            c_hidden = []
         }
 
+        let c_filtered = new Set()
 
+        for (const s of search) {
+            console.assert(s.type != null && (s.condition == "AND" || s.condition == "OR") && s.search != null)
+            console.assert(s.type == "fuzzy" || s.type == "crn" || s.type == "schedule.type")
 
-        // don't run fuzzy search if there's nothing to search for
-        search = search.trim()
-        if (search != "") {
+            let searchResult = []
 
-            // fuzzy search is hard
-            // we'll come back to this
-            let thresh = 0.2
-            if (search.length >= 9)
-                thresh = 0.09
-
-            const fuse_options = {
-                includeScore: true,
-                shouldSort: false,
-                threshold: thresh,
-                //useExtendedSearch: true,
-                ignoreLocation: true,
-                keys: [
-                    "fuzzySearch"
-                ]
+            if (s.type == "crn") {
+                searchResult = c_shown.filter(c => c.crn == s.search).map(c => c.id)
             }
 
-            const fuse = new Fuse(this.courses_shown, fuse_options)
-            let search_results = fuse.search(search)
-
-
-            /* Old code, preserved here for clarity
-            
-            // Update courses_shown and courses_hidden
-            // remove courses from courses_shown that did not appear in search results
-            let new_courses_shown = []
-            for (const search_result of search_results) {
-                new_courses_shown.push(search_result.item)
-                const removeIndex = this.courses_shown.indexOf(search_result.item)
-                this.courses_shown.splice(removeIndex, 1)
+            else if (s.type == "schedule.type") {
+                searchResult = c_shown.filter(c => c.schedule.filter(sch => sch == s.type)).map(c => c.id)
             }
-            this.courses_hidden = this.courses_hidden.concat(this.courses_shown)
-            this.courses_shown = new_courses_shown
-            */
 
-            // Extract matched items from search_results
-            const matchedItems = search_results.map(result => result.item);
+            else {
+                let thresh = 0.2
+                if (search.length >= 9)
+                    thresh = 0.09
 
-            // Remove matched items from courses_shown and move them to courses_hidden
-            this.courses_hidden.push(...this.courses_shown.filter(item => !matchedItems.includes(item)));
-            this.courses_shown = this.courses_shown.filter(item => matchedItems.includes(item));
+                const fuse_options = {
+                    includeScore: true,
+                    shouldSort: false,
+                    threshold: thresh,
+                    //useExtendedSearch: true,
+                    ignoreLocation: true,
+                    keys: [
+                        "fuzzySearch"
+                    ]
+                }
+
+                const fuse = new Fuse(c_shown, fuse_options)
+                let fuseSearch = fuse.search(s.search)
+                searchResult = fuseSearch.map(result => result.item.id)
+            }
+
+            //c_hidden.push(...this.courses_shown.filter(item => !matchedItems.includes(item)));
+            //c_shown = this.courses_shown.filter(item => matchedItems.includes(item));
+            if (s.condition == "OR") {
+                searchResult.forEach(item => c_filtered.add(item))
+
+            } else if (s.condition == "AND") {
+                let new_filtered = new Set()
+
+                for (const c of searchResult) {
+                    if (c_filtered.has(c)) {
+                        new_filtered.add(c)
+                    }
+                }
+
+                c_filtered = new_filtered
+            }
         }
 
+        //console.log(search)
+        //console.log(c_filtered)
 
-        // overrides 
-        // ie online -> show online only courses only
-        // TP:R -> restricted courses
-        // schedule:lab -> courses with lab
-        // TODO: implement this (possibly make this a seperate menu??)
+        // turn the course ids back into course objects
+        c_hidden.push(...c_shown.filter(item => !c_filtered.has(item.id)))
+        c_shown = c_shown.filter(item => c_filtered.has(item.id))
 
+        //console.log(c_hidden, c_shown)
 
         // hide courses that conflict by schedule
-        // this approach doesn't support outside events ie gcal but that is too much hassle to setup anyways
         let conflicts = document.getElementById("conflictCheckbox").checked
 
-        if (conflicts) {
+        if (conflicts && use_calendar) {
 
+            // only check conflicts for required courses
             for (const courseID of [...this.courses_oncalendar]) {
 
                 let course = this.coursesMap.get(courseID)
 
-                for (const potential_course of [...this.courses_shown]) {
+                for (const potential_course of [...c_shown]) {
 
                     const conflict = this.findTimeConflict(course, potential_course)
                     //console.log(conflict, potential_course, shown_course)
 
                     if (conflict) {
-                        let remove = this.courses_shown.indexOf(potential_course)
-                        this.courses_shown.splice(remove, 1)
-                        this.courses_hidden.push(potential_course)
+                        let remove = c_shown.indexOf(potential_course)
+                        c_shown.splice(remove, 1)
+                        c_hidden.push(potential_course)
                     }
                 }
             }
@@ -339,15 +412,19 @@ class Calendar {
         }
 
         // force re-add courses that are selected
-        for (const cID of this.courses_oncalendar) {
-            const c = this.coursesMap.get(cID)
-            if (this.courses_hidden.indexOf(c) != -1) {
-                let remove = this.courses_hidden.indexOf(c)
-                this.courses_hidden.splice(remove, 1)
-                this.courses_shown.push(c)
+        if (use_calendar) {
+            for (const cID of this.courses_oncalendar) {
+                const c = this.coursesMap.get(cID)
+                if (c_hidden.indexOf(c) != -1) {
+                    let remove = c_hidden.indexOf(c)
+                    c_hidden.splice(remove, 1)
+                    c_shown.push(c)
+                }
             }
         }
-        //console.log("SHOWN COURSES:", this.courses_oncalendar, this.courses_shown)
+
+        this.courses_shown = c_shown
+        this.courses_hidden = c_hidden
     }
 
     // takes 2 Course's and determines if they conflict.
