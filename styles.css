@@ -19,6 +19,7 @@ body {
     background-color: #f2f2f2;
     display: flex;
     height: 100vh;
+    overflow-x: hidden;
 }
 
 .container {
@@ -27,32 +28,37 @@ body {
     align-items: flex-start;
     margin: 0;
     flex: 1;
+
+    padding: 0;    
 }
 
 .sidebar {
-    flex: 0 0 30%;
     padding: 0;
     margin: 0;
     background-color: #fff;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     display: flex;
+
+
+    padding: 12px;
+    padding-bottom: 0;
+    gap: 8px;
+
     flex-direction: column;
-    height: 100%;
+    height: calc(100% - 12px); /*for some reason this doesn't account for padding-top */
+
+    resize: horizontal; /* Enable horizontal resizing */
+    overflow: auto;
+    width: 25%;
+    max-width: 800px;
+    min-width: 150px;
 }
 
-.search {
-    margin: 10px;
-    margin-right: 20px;
-    margin-bottom: 5px;
+#courseSearchBar {
+    width: 96%
 }
 
-.search-options,
-.courselist {
-    margin: 10px;
-    margin-top: 0;
-    padding-top: 8px;
-}
 
 .search-options {
     display: flex;
@@ -60,15 +66,15 @@ body {
     gap: 2px;
 }
 
+.search-options  * {
+    overflow-wrap: break-word;
+}
+
 input[type="text"] {
     width: 100%;
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
-}
-
-.search-options label {
-    display: block;
 }
 
 
@@ -98,7 +104,7 @@ input[type="text"] {
 }
 
 .calendar {
-    width: 70%;
+    width: 75vw;
     margin: 10px;
     overflow-y: auto; /* Make the calendar div scrollable if it overflows */
     height: calc( 100vh - 20px );

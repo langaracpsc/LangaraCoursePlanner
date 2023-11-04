@@ -237,4 +237,22 @@ document.addEventListener('DOMContentLoaded', async function () {
     c.courselistUpdate()
   })
 
+
+  function onResize(event) {
+    console.log("RESIZE")
+    const sidebarWidth = document.getElementById("sidebar").offsetWidth
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+
+    const newwidth = `${vw - sidebarWidth - 20}px`
+
+    document.getElementById("calendarwrapper").style.width = newwidth
+    console.log(newwidth, event)
+
+    FCalendar.updateSize()
+
+  }
+
+  addEventListener("mouseup", onResize);
+  addEventListener("resize", onResize);
+
 })
