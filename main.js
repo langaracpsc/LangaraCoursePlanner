@@ -1,6 +1,11 @@
 'use strict'
 var c
 
+var CONSTANTS = {
+  "db_api_url" : "https://api2.langaracs.tech/courseDB.db",
+  "max_shown_courses" : 1500
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
 
 
@@ -24,6 +29,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Generate resources 
     c.FCalendar.refetchResources()
+
+    document.getElementById("search-options").disabled = false
+    document.getElementById("courseSearchBar").disabled = false
 
   }).catch(
     error => {
@@ -154,7 +162,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (target.nodeName == 'DIV' && target.id == "")
       target = target.parentElement
 
-    if (target.classList.contains("courselistcourse")) {
+    if (target.classList.contains("csidebar")) {
       c.toggleFCalendar(target.id)
       c.courselistUpdate()
     }
@@ -173,7 +181,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       target = target.parentElement
 
 
-    if (target.classList.contains("courselistcourse"))
+    if (target.classList.contains("csidebar"))
       c.setGhostFCalendar(target.id)
   })
 
@@ -203,7 +211,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   // conflicting courses
   document.getElementById("conflictCheckbox").addEventListener("input", function (event) {
     if (this.checked && c.courses_shown.length > 2000) {
-      if (!confirm("You have a large number of courses shown; enabling this option will cause some lag. Continue?")) {
+      if (!confirm("You have a large number of courses shown - enabling conflict checking will cause some lag. Continue?")) {
         this.checked = false;
         return
       }

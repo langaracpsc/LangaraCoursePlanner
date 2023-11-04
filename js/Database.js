@@ -13,7 +13,7 @@ class Database {
             locateFile: file => `libraries/sql/sql.wasm`
         });
 
-        const DB_API = "https://api2.langaracs.tech/courseDB.db"
+        const DB_API = CONSTANTS["db_api_url"]
 
         try {
             const dataPromise = fetch(DB_API).then(res => {

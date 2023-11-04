@@ -30,13 +30,13 @@
         <div class="sidebar">
 
             <div class="search">
-                <input type="text" id="courseSearchBar" placeholder="Search courses">
+                <input type="text" id="courseSearchBar" placeholder="Search courses" disabled>
                 <label>
                     <p id="searchResults">Loading courses...</p>
                 </label>
             </div>
 
-            <fieldset class="search-options">
+            <fieldset class="search-options" id="search-options" disabled>
 
                 <label>Select term:
                     <select id="termSelector">
@@ -141,9 +141,9 @@
             </fieldset>
 
             <div id="courselist" class="courselist">
-                <div class="course">
+                <div class="csidebar">
                     <h3>Loading courses...</h3>
-                    <p>This will only take a few seconds.</p>
+                    <p>This should only take a few seconds.</p>
                 </div>
                 <!-- Add more course entries here -->
             </div>
