@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     resources: function (fetchInfo, successCallback, failureCallback) { successCallback(c.generateResources()) },
     resourceAreaWidth: "120px",
     // show class info when clicked
-    //eventClick: function(eventClickInfo) {console.log(calendarClass.showCourseInfo(eventClickInfo.event.id))},
+    eventClick: function(eventClickInfo) {console.log(c.showCourseInfo(eventClickInfo.event.id))},
 
     // calendar stuff
     timeZone: 'America/Vancouver',
