@@ -57,8 +57,12 @@ body {
 
 #courseSearchBar {
     width: calc(100% - 16px); /* idek */
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: medium;
+    font-family:inherit;
 }
-
 
 .search-options {
     display: flex;
@@ -66,17 +70,12 @@ body {
     gap: 2px;
 }
 
-.search-options  * {
-    overflow-wrap: break-word;
-}
 
-input[type="text"] {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
 }
-
 
 /* Make the course list scrollable if it overflows */
 .courselist {
@@ -96,6 +95,14 @@ input[type="text"] {
 .csidebar * {
     padding: 0px;
     margin: 2px;
+}
+
+h3 {
+    width: fit-content;
+}
+
+h3:hover {
+    text-decoration: underline;
 }
 
 .footer {
@@ -143,10 +150,4 @@ input[type="text"] {
 
 .hidden {
     display: none;
-}
-
-.button-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
 }

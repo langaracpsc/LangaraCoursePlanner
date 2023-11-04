@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     FCalendar.updateSize()
 
   }
-
+  onResize()
   addEventListener("mouseup", onResize);
   addEventListener("resize", onResize);
 
