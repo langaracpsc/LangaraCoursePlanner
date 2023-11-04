@@ -30,130 +30,71 @@
         
         <div id="sidebar" class="sidebar">
 
-            <div class="search">
-                <input type="text" id="courseSearchBar" placeholder="Search courses" disabled>
+            <fieldset id="modeSelector" class="hidden">
                 <label>
-                    <p id="searchResults">Loading courses...</p>
-                </label>
-            </div>
-
-            <fieldset class="search-options" id="search-options" disabled>
-
-                <label>Select term:
-                    <select id="termSelector">
-                        <option value="2024-10">2024 Spring</option>
-                        <option value="2023-30">2023 Fall</option>
-                        <option value="ALL">All Semesters</option>
-                        <option value="2023-20">2023 Summer</option>
-                        <option value="2023-10">2023 Spring</option>
-                        <option value="2022-30">2022 Fall</option>
-                        <option value="2022-20">2022 Summer</option>
-                        <option value="2022-10">2022 Spring</option>
-                        <option value="2021-30">2021 Fall</option>
-                        <option value="2021-20">2021 Summer</option>
-                        <option value="2021-10">2021 Spring</option>
-                        <option value="2020-30">2020 Fall</option>
-                        <option value="2020-20">2020 Summer</option>
-                        <option value="2020-10">2020 Spring</option>
-                        <option value="2019-30">2019 Fall</option>
-                        <option value="2019-20">2019 Summer</option>
-                        <option value="2019-10">2019 Spring</option>
-                        <option value="2018-30">2018 Fall</option>
-                        <option value="2018-20">2018 Summer</option>
-                        <option value="2018-10">2018 Spring</option>
-                        <option value="2017-30">2017 Fall</option>
-                        <option value="2017-20">2017 Summer</option>
-                        <option value="2017-10">2017 Spring</option>
-                        <option value="2016-30">2016 Fall</option>
-                        <option value="2016-20">2016 Summer</option>
-                        <option value="2016-10">2016 Spring</option>
-                        <option value="2015-30">2015 Fall</option>
-                        <option value="2015-20">2015 Summer</option>
-                        <option value="2015-10">2015 Spring</option>
-                        <option value="2014-30">2014 Fall</option>
-                        <option value="2014-20">2014 Summer</option>
-                        <option value="2014-10">2014 Spring</option>
-                        <option value="2013-30">2013 Fall</option>
-                        <option value="2013-20">2013 Summer</option>
-                        <option value="2013-10">2013 Spring</option>
-                        <option value="2012-30">2012 Fall</option>
-                        <option value="2012-20">2012 Summer</option>
-                        <option value="2012-10">2012 Spring</option>
-                        <option value="2011-30">2011 Fall</option>
-                        <option value="2011-20">2011 Summer</option>
-                        <option value="2011-10">2011 Spring</option>
-                        <option value="2010-30">2010 Fall</option>
-                        <option value="2010-20">2010 Summer</option>
-                        <option value="2010-10">2010 Spring</option>
-                        <option value="2009-30">2009 Fall</option>
-                        <option value="2009-20">2009 Summer</option>
-                        <option value="2009-10">2009 Spring</option>
-                        <option value="2008-30">2008 Fall</option>
-                        <option value="2008-20">2008 Summer</option>
-                        <option value="2008-10">2008 Spring</option>
-                        <option value="2007-30">2007 Fall</option>
-                        <option value="2007-20">2007 Summer</option>
-                        <option value="2007-10">2007 Spring</option>
-                        <option value="2006-30">2006 Fall</option>
-                        <option value="2006-20">2006 Summer</option>
-                        <option value="2006-10">2006 Spring</option>
-                        <option value="2005-30">2005 Fall</option>
-                        <option value="2005-20">2005 Summer</option>
-                        <option value="2005-10">2005 Spring</option>
-                        <option value="2004-30">2004 Fall</option>
-                        <option value="2004-20">2004 Summer</option>
-                        <option value="2004-10">2004 Spring</option>
-                        <option value="2003-30">2003 Fall</option>
-                        <option value="2003-20">2003 Summer</option>
-                        <option value="2003-10">2003 Spring</option>
-                        <option value="2002-30">2002 Fall</option>
-                        <option value="2002-20">2002 Summer</option>
-                        <option value="2002-10">2002 Spring</option>
-                        <option value="2001-30">2001 Fall</option>
-                        <option value="2001-20">2001 Summer</option>
-                        <option value="2001-10">2001 Spring</option>
-                        <option value="2000-30">2000 Fall</option>
-                        <option value="2000-20">2000 Summer</option>
-                        <option value="2000-10">2000 Spring</option>
-                        <option value="1999-30">1999 Fall</option>
-                        <option value="1999-20">1999 Summer</option>
-                    </select>
-                </label>
-
-                <label>
-                    <input type="checkbox" id="weekendCheckbox"> Always show Saturday.
+                    <input type="button" id="mode1Button" value="Course Search">
                 </label>
                 <label>
-                    <input type="checkbox" id="conflictCheckbox"> Hide courses that conflict with selected courses.
+                    <input type="button" id="mode2Button" value="Timetable Generator">
                 </label>
-                <label>
-                    <input type="checkbox" id="showColors" checked> Highlight courses by seats available.
-                </label>
-
-                <div class="button-container">
-                    <label>
-                        <input type="button" id="showAllButton" value="Show all courses in list.">
-                    </label>
-                    <label>
-                        <input type="button" id="hideAllButton" value="Hide all courses in list.">
-                    </label>
-                </div>
-
             </fieldset>
-
-            <div id="courselist" class="courselist">
-                <div class="csidebar">
-                    <h3>Loading courses...</h3>
-                    <p>This should only take a few seconds.</p>
+            
+            <div id="sidebar_mode1">
+                <div class="search">
+                    <input type="text" id="courseSearchBar" placeholder="Search courses" disabled>
+                    <label>
+                        <p id="searchResults">Loading courses...</p>
+                    </label>
                 </div>
-                <!-- Add more course entries here -->
+
+                <fieldset class="search-options" id="search-options" disabled>
+
+                    <label>Select term:
+                        <select id="termSelector">
+                            <option value="2024-10">2024 Spring</option> <option value="2023-30">2023 Fall</option> <option value="ALL">All Semesters</option> <option value="2023-20">2023 Summer</option> <option value="2023-10">2023 Spring</option> <option value="2022-30">2022 Fall</option> <option value="2022-20">2022 Summer</option> <option value="2022-10">2022 Spring</option> <option value="2021-30">2021 Fall</option> <option value="2021-20">2021 Summer</option> <option value="2021-10">2021 Spring</option> <option value="2020-30">2020 Fall</option> <option value="2020-20">2020 Summer</option> <option value="2020-10">2020 Spring</option> <option value="2019-30">2019 Fall</option> <option value="2019-20">2019 Summer</option> <option value="2019-10">2019 Spring</option> <option value="2018-30">2018 Fall</option> <option value="2018-20">2018 Summer</option> <option value="2018-10">2018 Spring</option> <option value="2017-30">2017 Fall</option> <option value="2017-20">2017 Summer</option> <option value="2017-10">2017 Spring</option> <option value="2016-30">2016 Fall</option> <option value="2016-20">2016 Summer</option> <option value="2016-10">2016 Spring</option> <option value="2015-30">2015 Fall</option> <option value="2015-20">2015 Summer</option> <option value="2015-10">2015 Spring</option> <option value="2014-30">2014 Fall</option> <option value="2014-20">2014 Summer</option> <option value="2014-10">2014 Spring</option> <option value="2013-30">2013 Fall</option> <option value="2013-20">2013 Summer</option> <option value="2013-10">2013 Spring</option> <option value="2012-30">2012 Fall</option> <option value="2012-20">2012 Summer</option> <option value="2012-10">2012 Spring</option> <option value="2011-30">2011 Fall</option> <option value="2011-20">2011 Summer</option> <option value="2011-10">2011 Spring</option> <option value="2010-30">2010 Fall</option> <option value="2010-20">2010 Summer</option> <option value="2010-10">2010 Spring</option> <option value="2009-30">2009 Fall</option> <option value="2009-20">2009 Summer</option> <option value="2009-10">2009 Spring</option> <option value="2008-30">2008 Fall</option> <option value="2008-20">2008 Summer</option> <option value="2008-10">2008 Spring</option> <option value="2007-30">2007 Fall</option> <option value="2007-20">2007 Summer</option> <option value="2007-10">2007 Spring</option> <option value="2006-30">2006 Fall</option> <option value="2006-20">2006 Summer</option> <option value="2006-10">2006 Spring</option> <option value="2005-30">2005 Fall</option> <option value="2005-20">2005 Summer</option> <option value="2005-10">2005 Spring</option> <option value="2004-30">2004 Fall</option> <option value="2004-20">2004 Summer</option> <option value="2004-10">2004 Spring</option> <option value="2003-30">2003 Fall</option> <option value="2003-20">2003 Summer</option> <option value="2003-10">2003 Spring</option> <option value="2002-30">2002 Fall</option> <option value="2002-20">2002 Summer</option> <option value="2002-10">2002 Spring</option> <option value="2001-30">2001 Fall</option> <option value="2001-20">2001 Summer</option> <option value="2001-10">2001 Spring</option> <option value="2000-30">2000 Fall</option> <option value="2000-20">2000 Summer</option> <option value="2000-10">2000 Spring</option> <option value="1999-30">1999 Fall</option> <option value="1999-20">1999 Summer</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        <input type="checkbox" id="weekendCheckbox"> Always show Saturday.
+                    </label>
+                    <label>
+                        <input type="checkbox" id="conflictCheckbox"> Hide courses that conflict with selected courses.
+                    </label>
+                    <label>
+                        <input type="checkbox" id="showColors" checked> Highlight courses by seats available.
+                    </label>
+
+                    <div class="button-container">
+                        <label>
+                            <input type="button" id="showAllButton" value="Show all courses in list.">
+                        </label>
+                        <label>
+                            <input type="button" id="hideAllButton" value="Hide all courses in list.">
+                        </label>
+                    </div>
+
+                </fieldset>
+
+                <div id="courselist" class="courselist">
+                    <div class="csidebar">
+                        <h3>Loading courses...</h3>
+                        <p>This should only take a few seconds.</p>
+                    </div>
+                    <!-- Add more course entries here -->
+                </div>
+
+                <div class="footer">
+                    <a href="about" target="_blank">About</a>
+                    •
+                    <a href="https://github.com/highfire1/LangaraCourseBrowser" target="_blank">Github</a>
+                </div>
             </div>
 
-            <div class="footer">
-                <a href="about" target="_blank">About</a>
-                •
-                <a href="https://github.com/highfire1/LangaraCourseBrowser" target="_blank">Github</a>
+            <div id="sidebar_mode2" class="hidden">
+
             </div>
+
 
         </div>
 

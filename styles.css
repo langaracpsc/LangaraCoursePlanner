@@ -19,6 +19,7 @@ body {
     background-color: #f2f2f2;
     display: flex;
     height: 100vh;
+    width: 100vw;
     overflow-x: hidden;
 }
 
@@ -38,21 +39,28 @@ body {
     background-color: #fff;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
-    display: flex;
 
-
-    padding: 12px;
-    padding-bottom: 0;
-    gap: 8px;
-
-    flex-direction: column;
-    height: calc(100% - 12px); /*for some reason this doesn't account for padding-top */
+    height: 100vh;
+    max-height: calc(100vh - 24px);
 
     resize: horizontal; /* Enable horizontal resizing */
     overflow: auto;
     width: 25vw;
     max-width: 1000px;
     min-width: 200px;
+
+    padding: 12px;
+    gap:8px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar > div {
+    height: 100%; /* idek */
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
 }
 
 #courseSearchBar {
@@ -81,6 +89,9 @@ body {
 .courselist {
     overflow-y: auto;
     flex-grow: 1;
+    background-color: rgba(245, 245, 245, 0.971);
+    border-radius: 5px;
+    flex-basis: 0;
 }
 
 
@@ -149,5 +160,26 @@ h3:hover {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
+}
+
+
+#modeSelector {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    display:block;
+    gap: 2px;
+    border: 0;
+    width:auto;
+}
+
+#modeSelector > label > input {
+    display: inline-block;
+    border: none;
+    margin: 0;
+    font-size: medium;
+    margin: 0px;
+    padding: 5px;
+    border-radius: 4px;
 }

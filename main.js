@@ -239,14 +239,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
   function onResize(event) {
-    console.log("RESIZE")
     const sidebarWidth = document.getElementById("sidebar").offsetWidth
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
 
     const newwidth = `${vw - sidebarWidth - 20}px`
 
     document.getElementById("calendarwrapper").style.width = newwidth
-    console.log(newwidth, event)
 
     FCalendar.updateSize()
 
@@ -254,5 +252,18 @@ document.addEventListener('DOMContentLoaded', async function () {
   onResize()
   addEventListener("mouseup", onResize);
   addEventListener("resize", onResize);
+
+
+  document.getElementById("mode1Button").addEventListener("click", function (event) {
+    document.getElementById("sidebar_mode1").classList.remove("hidden")
+
+    document.getElementById("sidebar_mode2").classList.add("hidden")
+  })
+
+  document.getElementById("mode2Button").addEventListener("click", function (event) {
+    document.getElementById("sidebar_mode2").classList.remove("hidden")
+
+    document.getElementById("sidebar_mode1").classList.add("hidden")
+  })
 
 })
