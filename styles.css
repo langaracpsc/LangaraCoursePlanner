@@ -51,8 +51,8 @@ body {
     resize: horizontal; /* Enable horizontal resizing */
     overflow: auto;
     width: 25%;
-    max-width: 800px;
-    min-width: 150px;
+    max-width: 1000px;
+    min-width: 200px;
 }
 
 #courseSearchBar {
@@ -104,7 +104,7 @@ input[type="text"] {
 }
 
 .calendar {
-    width: 75vw;
+    width: 100vw;
     margin: 10px;
     overflow-y: auto; /* Make the calendar div scrollable if it overflows */
     height: calc( 100vh - 20px );
@@ -147,5 +147,6 @@ input[type="text"] {
 
 .button-container {
     display: flex;
+    flex-wrap: wrap;
     gap: 5px;
 }
