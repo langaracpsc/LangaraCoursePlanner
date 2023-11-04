@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     document.getElementById("search-options").disabled = false
     document.getElementById("courseSearchBar").disabled = false
+    document.getElementById("timetableGeneratorSearch").disabled = false
 
   }).catch(
     error => {
@@ -164,7 +165,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (target.classList.contains("csidebar")) {
       c.toggleFCalendar(target.id)
-      c.courselistUpdate()
+      if (document.getElementById("conflictCheckbox").checked)
+        c.courselistUpdate()
     }
 
   })
@@ -268,4 +270,68 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById("sidebar_mode1").classList.add("hidden")
   })
 
+  document.getElementById("generateTimetableButton").addEventListener("click", function (event) {
+    c.getTimetableInput()
+  })
+
+
+  document.getElementById("timetablecourselist").addEventListener("mouseover", function (event) {
+
+    let target = event.target
+
+    if (target.nodeName != "DIV")
+      target = target.parentElement
+    if (target.nodeName == 'DIV' && target.id == "")
+      target = target.parentElement
+
+
+    if (target.classList.contains("csidebar")) {
+      c.setGhostFCalendar(target.id)
+
+      if(target.id != c.timetableghost && c.timetableghost != null) {
+        document.getElementById(c.timetableghost).classList.remove("dark-gray")
+      }
+      c.timetableghost = target.id
+    }
+
+  })
+
+  // make sure ghosting stops when mouse leaves
+  document.getElementById("timetablecourselist").addEventListener("mouseleave", function (event) {
+    c.setGhostFCalendar(null)
+    document.getElementById(c.timetableghost).classList.remove("dark-gray") // MASSIVE VIOLATION OF OOP
+    //console.log("removed gray from", c.timetableghost) 
+    c.timetableghost = null
+  })
+
+  
+  // show/hide courses on calendar when they are clicked on
+  document.getElementById("timetablecourselist").addEventListener("click", function (event) {
+    let target = event.target
+
+    // open info about course if title is clicked
+    if (target.nodeName == "H3") {
+      c.showCourseInfo(event.target.parentElement.id)
+      return
+    }
+
+    // else put it on the calendar
+    if (target.nodeName != "DIV")
+      target = target.parentElement
+    if (target.nodeName == 'DIV' && target.id == "")
+      target = target.parentElement
+
+    if (target.classList.contains("csidebar")) {
+      c.toggleFCalendar(target.id)
+
+      if (document.getElementById("conflictCheckbox").checked)
+        c.courselistUpdate()
+
+      if (target.classList.contains("blue"))
+        target.classList.remove("blue")
+      else 
+        target.classList.add("blue")
+    }
+
+  })
 })

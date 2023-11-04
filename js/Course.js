@@ -57,7 +57,7 @@ class Course {
         this.id = `${this.year}-${this.semester}-${this.crn}`
         this.shown = false
         this.ghost = false
-        this.courseListHTML = this.generateCourseListHTML()
+        this.courseListHTML = null
 
         let temp = false
         for (const sch of this.schedule) {
@@ -111,6 +111,15 @@ class Course {
         return course_code
     }
 
+    getCourseListHTML() {
+        if (this.courseListHTML == null)
+            this.courseListHTML = this.generateCourseListHTML()
+
+        return this.courseListHTML
+    }
+    
+
+    // INTERNAL USE ONLY
     // html in the courselist on the sidebar
     generateCourseListHTML() {
 
@@ -387,7 +396,6 @@ class Course {
         if (this.ghost) {
             this.hideFCalendar(FCalendar)
             this.showFCalendar(FCalendar)
-            this.ghost = false
             return true
         } else if (this.shown) {
             this.hideFCalendar(FCalendar)
@@ -399,7 +407,7 @@ class Course {
 
     }
 
-    hideFCalendar(FCalendar, color_class = "blue") {
+    hideFCalendar(FCalendar, color_class = "blue", sourceElementID) {
         // getEventById only returns one event at a time
         // but getEvents doesn't get events that aren't currently shown so it doesn't work
         while (FCalendar.getEventById(this.id) != null)
@@ -407,11 +415,19 @@ class Course {
 
         this.shown = false
         // fix weird bug with changing terms - i should fix this properly at some point
-        if (document.getElementById(this.id) != null) {
-            document.getElementById(this.id).classList.remove(color_class)
-            document.getElementById(this.id).classList.remove("dark-gray") // TODO: workaround to fix ghosting, should fix this properly in the future
-            //document.getElementById(this.id).style.backgroundColor = null // change the color of the courselist div back to normal
+
+        let colorChange = sourceElementID == null ? this.id : sourceElementID
+
+        try {
+            if (document.getElementById(colorChange) != null) {
+                document.getElementById(colorChange).classList.remove(color_class)
+                document.getElementById(colorChange).classList.remove("dark-gray") // TODO: workaround to fix ghosting, should fix this properly in the future
+                //document.getElementById(this.id).style.backgroundColor = null // change the color of the courselist div back to normal
+            }
+        } catch (error){
+            console.log("ERROR:", error)
         }
+        
 
         let show_weekends = false
         for (const id of this.Calendar.courses_oncalendar) {
@@ -428,7 +444,7 @@ class Course {
 
     }
 
-    showFCalendar(FCalendar, color_class = "blue") {
+    showFCalendar(FCalendar, color_class = "blue", sourceElementID) {
 
         // This looks like technical debt that I will pay for but it is a quick fix
         if (this.shown)
@@ -440,7 +456,7 @@ class Course {
                 continue // if there's no time slot then we don't need to render it
             }
             if (sch.days.trim() === "") {
-                // console.log("No time data for ", this)
+                // console.log("No time data for .ghost", this)
                 continue // cancelled courses have no time data
             }
 
@@ -480,7 +496,7 @@ class Course {
                 daysOfWeek: days,
                 startTime: s_time,
                 endTime: e_time,
-                classNames: ["calendartxt", color_class],
+                classNames: ["calendartxt", `${this.id}fc`, color_class],
                 resourceId: sch.room,
                 overlap: false,
                 extendedProps: {
@@ -493,8 +509,14 @@ class Course {
 
         }
 
-        this.shown = true
-        document.getElementById(this.id).classList.add(color_class)
+        let colorChange = sourceElementID == null ? this.id : sourceElementID
+
+        try {
+            document.getElementById(colorChange).classList.add(color_class)
+        } catch (error){
+            // I cannot fix this right now, too much abstraction, its horrible, i need to learn react
+            //console.log("ERROR:", error)
+        }
     }
 
 

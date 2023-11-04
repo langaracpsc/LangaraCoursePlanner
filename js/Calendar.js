@@ -20,7 +20,8 @@ class Calendar {
         this.FCalendar = null
         this.db = db
 
-        this.ghostCourse = null
+        this.ghostCourses = []
+        this.timetableghost = null
 
         this.datetime_retrieved = null
 
@@ -30,7 +31,6 @@ class Calendar {
 
     parseFromDB() {
         // clear current data
-        this.ghostCourse = null
         this.courses = []
 
         //document.getElementById("courselist").textContent =''
@@ -54,7 +54,7 @@ class Calendar {
             c.Calendar = this
             c.generateFuzzySearch() // THIS IS BAD
 
-            courselist.appendChild(c.courseListHTML)
+            courselist.appendChild(c.getCourseListHTML())
 
             this.coursesMap.set(c.id, c)
         }
@@ -147,61 +147,65 @@ class Calendar {
 
     // Toggles visibility of course in calendar
     toggleFCalendar(id) {
+        let id_arr = id.split("_")
 
-        let c = this.coursesMap.get(id)
+        for (const id of id_arr) {
+            let c = this.coursesMap.get(id)
 
-        let status = c.toggleFShown(this.FCalendar)
-        this.ghostCourse = null
-        c.ghost = false
+            
+            let status = c.toggleFShown(this.FCalendar)
+            c.ghost = false
 
-        if (status) {
-            this.courses_oncalendar.push(c.id)
-        } else {
-            const index = this.courses_oncalendar.findIndex(idd => idd == id);
+            if (status) {
+                this.courses_oncalendar.push(c.id)
+                c.shown = true
+            } else {
+                const index = this.courses_oncalendar.findIndex(idd => idd == id);
 
-            if (index !== -1) {
-                this.courses_oncalendar.splice(index, 1);
-            }
-            this.setGhostFCalendar(id)
-        }
-    }
-
-    // Sets the current ghost in FullCalendar
-    setGhostFCalendar(id) {
-        //console.log(id, this.ghostCourse, this.ghostCourse === null ? "" : this.ghostCourse.ghost)
-        // if nothing is ghosted don't try to delete previous ghost
-        if (this.ghostCourse != null) {
-            // if its the same course do nothing
-            if (this.ghostCourse.id === id)
-                return
-
-            // if its a different course then we need to delete the current ghost
-            if (this.ghostCourse.id != id)
-                if (this.ghostCourse.ghost) {
-                    this.ghostCourse.hideFCalendar(this.FCalendar)
-                    this.ghostCourse.ghost = false
-                    this.ghostCourse = null
+                if (index !== -1) {
+                    this.courses_oncalendar.splice(index, 1);
                 }
-        }
-
-        if (id === null) {
-            this.ghostCourse = null
-            return
-        }
-
-        for (const c of this.courses) {
-            if (c.id == id) {
-                // don't do ghost stuff if its shown
-                if (c.shown)
-                    return
-
-                c.showFCalendar(this.FCalendar, "dark-gray")
-                this.ghostCourse = c
-                this.ghostCourse.ghost = true
-                return
+                c.shown = false
+                this.setGhostFCalendar(id)
             }
+
+        }
+
+    }
+
+    setGhostFCalendar(id) {
+        if (this.ghostCourses == null || this.ghostCourses == undefined)
+            this.ghostCourses = []
+
+        let id_arr = []
+        if (id != null)
+            id_arr = id.split("_");
+
+        this.clearAllGhosts();
+
+        // Show ghosts for matching courses
+        for (const cID of id_arr) {
+            let c = this.coursesMap.get(cID)
+            if (c.shown || c.ghost)
+                continue
+            c.showFCalendar(this.FCalendar, "dark-gray", id);
+            c.ghost = true;
+            this.ghostCourses.push(c)
         }
     }
+
+    clearAllGhosts() {
+
+        for (const c of this.ghostCourses) {
+            if(c.shown && !c.ghost)
+                continue
+            c.hideFCalendar(this.FCalendar);
+            c.ghost = false;
+        }
+        this.ghostCourses = []
+
+    }
+
 
     showCourseInfo(id) {
 
@@ -244,7 +248,7 @@ class Calendar {
     parseSearch(string) {
         // must parse AND and OR
         const sep = "🖥️"
-        console.assert(!string.includes(sep))
+        console.assert(!string.includes(sep), "search string contains seperator character...why did you do that")
 
         const aS = sep + "AND" + sep
         const oS = sep + "OR" + sep
@@ -288,6 +292,16 @@ class Calendar {
                 })
             }
 
+            // if first 4 letter is string and last 4 letter are char, then match exactly
+            else if (/^[a-z]{4} \d{4}$/.test(term)) {
+                results.push({
+                    type: "course",
+                    condition: storedCondition,
+                    search: term
+                })
+
+            }
+
             else {
                 results.push({
                     type: "fuzzy",
@@ -305,7 +319,7 @@ class Calendar {
     // filters courselists internally into courses_hidden and courses_shown
     filterCoursesBySearch(search, yearterm, use_calendar=true) {
 
-        console.assert(Array.isArray(search))
+        console.assert(Array.isArray(search), `Search array is not an array: ${search}`)
         let c_shown = []
         let c_hidden = []
 
@@ -325,8 +339,8 @@ class Calendar {
         let c_filtered = new Set()
 
         for (const s of search) {
-            console.assert(s.type != null && (s.condition == "AND" || s.condition == "OR") && s.search != null)
-            console.assert(s.type == "fuzzy" || s.type == "crn" || s.type == "schedule.type")
+            console.assert(s.type != null && (s.condition == "AND" || s.condition == "OR") && s.search != null, `something wrong with search ${s}`)
+            console.assert(s.type == "fuzzy" || s.type == "crn" || s.type == "schedule.type" || s.type == "course", `something wrong with search ${s}`)
 
             let searchResult = []
 
@@ -336,6 +350,13 @@ class Calendar {
 
             else if (s.type == "schedule.type") {
                 searchResult = c_shown.filter(c => c.schedule.filter(sch => sch == s.type)).map(c => c.id)
+            }
+
+            else if (s.type == "course") {
+                let subject = s.search.substring(0, 4).toUpperCase()
+                let code = parseInt(s.search.slice(-4))
+
+                searchResult = c_shown.filter(c => c.subject == subject && c.course_code == code).map(c => c.id)
             }
 
             else {
@@ -381,8 +402,11 @@ class Calendar {
         //console.log(c_filtered)
 
         // turn the course ids back into course objects
-        c_hidden.push(...c_shown.filter(item => !c_filtered.has(item.id)))
-        c_shown = c_shown.filter(item => c_filtered.has(item.id))
+        if (search.length >= 1) {
+            c_hidden.push(...c_shown.filter(item => !c_filtered.has(item.id)))
+            c_shown = c_shown.filter(item => c_filtered.has(item.id))
+        }
+        
 
         //console.log(c_hidden, c_shown)
 
@@ -421,10 +445,14 @@ class Calendar {
                     c_shown.push(c)
                 }
             }
+
+            this.courses_shown = c_shown
+            this.courses_hidden = c_hidden
         }
 
-        this.courses_shown = c_shown
-        this.courses_hidden = c_hidden
+        return c_shown
+
+    
     }
 
     // takes 2 Course's and determines if they conflict.
@@ -564,16 +592,16 @@ class Calendar {
 
         // Hide all courses
         for (const c of this.courses) {
-            c.courseListHTML.classList.add("hidden");
+            c.getCourseListHTML().classList.add("hidden");
         }
 
         // Show filtered courses and add them to the fragment
         let i = 0;
         for (const c of this.courses_shown) {
-            c.courseListHTML.classList.remove("hidden");
+            c.getCourseListHTML().classList.remove("hidden");
             i += 1;
             if (i > maxShown) break;
-            fragment.appendChild(c.courseListHTML); // Add the course element to the document fragment
+            fragment.appendChild(c.getCourseListHTML()); // Add the course element to the document fragment
         }
 
         // Replace the content of the courselist container with the fragment
@@ -614,4 +642,145 @@ class Calendar {
         }
     }
 
+    getTimetableInput() {
+        const yearterm = document.getElementById("termSelector2").value;
+        const queryElements = Array.from(document.querySelectorAll('[id^="timetableField"]'));
+        const queries = queryElements.map((element) => element.value);
+    
+        let results = queries
+            .filter((query) => query !== "")
+            .map((query) => this.filterCoursesBySearch(this.parseSearch(query), yearterm, false));
+        
+        results.sort((a, b) => a.length - b.length)
+
+        let timetables = this.combineCourses(results)
+
+        timetables = Array.from(new Set(timetables)).sort();
+
+
+        let crns = new Set()
+        for (const t of timetables) {
+            let str = ""
+            for (const c of t) 
+                str += `${c.crn}`
+
+            if(crns.has(str))
+                continue
+            crns.add(str)
+        }
+
+        //console.log("TIMETABLES", timetables, crns)
+        
+
+        let msg = ""
+        const len = crns.size
+        const MAX_TIMETABLES = 20
+
+        if (len == 0) {
+            msg = "Could not create a time table for that query."
+        } else if (len <= MAX_TIMETABLES) {
+            msg = `${len} possible time tables found.`
+        } else if (len > MAX_TIMETABLES) {
+            msg = `${len} possible time tables found. Displaying the first ${MAX_TIMETABLES}.`
+        }
+
+        document.getElementById("timetableText").textContent = msg
+
+        const courseList = document.getElementById("timetablecourselist")
+        courseList.innerHTML = ""
+
+        crns = new Set()
+
+        for (const t of timetables) {
+            let str = ""
+            for (const c of t) 
+                str += `${c.crn}`
+
+            if(crns.has(str))
+                continue
+            crns.add(str)
+
+            let ids = []
+
+            let html = "<div>"
+            for (const c of t) {
+                html += `<b>${c.subject} ${c.course_code} ${c.crn}</b>`
+
+                for (const sch of c.schedule) {
+                    html += `<p>${sch.type} ${sch.days} ${sch.time} ${sch.room} ${sch.instructor}</p>`
+                }
+                ids.push(c.id)
+            }
+            html += "</div>"
+
+            let temp = document.createElement('div');
+            temp.className = `csidebar`
+            temp.innerHTML = html
+            temp.id = ids.join("_")
+            
+            courseList.appendChild(temp)
+        }
+    
+        //console.log(results, timetables);
+    }
+    
+    combineCourses(coursesList, index = 0, currentTimetable = new Set(), allTimetables = new Set()) {
+        if (index === coursesList.length) {
+            allTimetables.add([...currentTimetable]);
+            return;
+        }
+    
+        for (const course of coursesList[index]) {
+            if (this.isCourseAvailable(currentTimetable, course)) {
+                currentTimetable.add(course);
+                this.combineCourses(coursesList, index + 1, currentTimetable, allTimetables);
+                currentTimetable.delete(course);
+            }
+        }
+    
+        return allTimetables;
+    }
+    
+    isCourseAvailable(currentTimetable, course) {
+        for (const existingCourse of currentTimetable) {
+            if (this.findTimeConflict(existingCourse, course)) {
+                return false; // There is a time conflict, so the course is not available
+            }
+        }
+    
+        return true; // No time conflicts found, so the course is available
+    }
+    
+    areArraysEqual(arr1, arr2) {
+        if (arr1.length !== arr2.length) {
+          return false;
+        }
+      
+        for (let i = 0; i < arr1.length; i++) {
+          if (JSON.stringify(arr1[i]) !== JSON.stringify(arr2[i])) {
+            return false;
+          }
+        }
+      
+        return true;
+      }
+      
+    removeDuplicateSubarrays(arrayOfArrays) {
+        const uniqueArrays = [];
+        for (const subarray of arrayOfArrays) {
+          let isDuplicate = false;
+          for (const uniqueArray of uniqueArrays) {
+            if (areArraysEqual(subarray, uniqueArray)) {
+              isDuplicate = true;
+              break;
+            }
+          }
+          if (!isDuplicate) {
+            uniqueArrays.push(subarray);
+          }
+        }
+        return uniqueArrays;
+      }
+
 }
+

@@ -98,7 +98,7 @@ body {
 .csidebar {
     padding: 2px;
     margin: 5px;
-    background-color: #f7f7f7;
+    background-color: #e4dcfd;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
@@ -182,4 +182,10 @@ h3:hover {
     margin: 0px;
     padding: 5px;
     border-radius: 4px;
+}
+
+fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
