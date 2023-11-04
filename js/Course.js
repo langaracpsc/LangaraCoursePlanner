@@ -440,8 +440,8 @@ class Course {
                 continue // if there's no time slot then we don't need to render it
             }
             if (sch.days.trim() === "") {
-                console.log("No time data for ", this)
-                continue // temporary workaround to badly parsed json
+                // console.log("No time data for ", this)
+                continue // cancelled courses have no time data
             }
 
             if (this.hasWeekend) {

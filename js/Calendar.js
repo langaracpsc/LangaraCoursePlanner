@@ -370,7 +370,7 @@ class Calendar {
                 continue
 
             // Don't need to check schedules that don't have a set time
-            if (sch.time == "-")
+            if (sch.time == "-" || sch.time == " ")
                 continue
 
             let starthour = +sch.time.slice(0, 2)
@@ -473,14 +473,14 @@ class Calendar {
     reloadCourseList() {
         const count = this.courses_shown.length;
         const results = document.getElementById("searchResults");
-        const maxShown = 1500;
+        const maxShown = CONSTANTS["db_api_url"];
 
         const fragment = document.createDocumentFragment(); // Create a document fragment to batch DOM updates
 
         if (count == 0) {
             results.innerText = "No courses found. Try a different search query!";
         } else if (count >= maxShown) {
-            results.innerText = `${count} courses found. Only showing ${maxShown} courses to reduce lag.`;
+            results.innerText = `${count} courses found. Only rendering ${maxShown} courses to reduce lag.`;
         } else {
             results.innerText = `${count} courses shown.`;
         }
