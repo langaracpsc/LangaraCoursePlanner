@@ -56,7 +56,7 @@ body {
 }
 
 #courseSearchBar {
-    width: 96%
+    width: calc(100% - 16px); /* idek */
 }
 
 
