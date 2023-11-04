@@ -50,7 +50,7 @@ body {
 
     resize: horizontal; /* Enable horizontal resizing */
     overflow: auto;
-    width: 25%;
+    width: 25vw;
     max-width: 1000px;
     min-width: 200px;
 }
