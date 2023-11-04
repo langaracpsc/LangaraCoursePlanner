@@ -117,7 +117,8 @@ h3:hover {
 }
 
 .footer {
-    margin: 10px;
+    margin: 5px;
+    margin-bottom: 0;
     text-align: center;
 }
 
@@ -167,21 +168,23 @@ h3:hover {
 #modeSelector {
     margin: 0;
     padding: 0;
-    display: flex;
     display:block;
     gap: 2px;
     border: 0;
     width:auto;
 }
 
-#modeSelector > label > input {
+#modeSelector > label > input{
+    background-color: lightgray;
     display: inline-block;
     border: none;
     margin: 0;
-    font-size: medium;
+    font-size:small;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
     margin: 0px;
     padding: 5px;
-    border-radius: 4px;
+    border-radius: 10px;
 }
 
 fieldset {
