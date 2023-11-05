@@ -490,7 +490,7 @@ class Course {
             let f = {
                 id: this.id,
                 title: `${this.subject} ${this.course_code} ${this.crn}`,
-                description: `${this.subject} ${this.course_code} ${this.section} <br> ${sch.type} ${sch.room}`,
+                description: `${this.subject} ${this.course_code} ${this.section} ${this.crn} <br> ${sch.type} ${sch.room}`,
                 startRecur: new Date(start),
                 endRecur: new Date(new Date(end).getTime() + 86400000), // add 24 hours to the date to show 1 day events
                 daysOfWeek: days,

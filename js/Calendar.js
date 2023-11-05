@@ -692,6 +692,8 @@ class Calendar {
         crns = new Set()
 
         for (const t of timetables) {
+
+            // don't display duplicate timetables
             let str = ""
             for (const c of t) 
                 str += `${c.crn}`
@@ -702,7 +704,13 @@ class Calendar {
 
             let ids = []
 
+            let crn_str = ""
+            for (const c of t) 
+                crn_str += `${c.crn} `
+
+
             let html = "<div>"
+            html += `<p><b>CRNS: ${crn_str}</b></p>`
             for (const c of t) {
                 html += `<b>${c.subject} ${c.course_code} ${c.crn}</b>`
 
