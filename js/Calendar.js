@@ -743,7 +743,7 @@ class Calendar {
 
 
             let html = "<div>"
-            html += `<b>CRNS: ${crn_str}</b>`
+            html += `<p><b>CRNS: ${crn_str}</b></p>`
             for (const c of t) {
                 html += `<b>${c.subject} ${c.course_code} ${c.crn}</b>`
 
