@@ -36,6 +36,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     const fieldsets = document.querySelectorAll('fieldset');
     fieldsets.forEach(fieldset => { fieldset.removeAttribute('disabled') })
 
+    console.log("Calendar successfully initialized!")
+
   }).catch( error => { console.error("Error while initializing: ", error) })
 
 
