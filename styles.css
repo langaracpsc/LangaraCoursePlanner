@@ -114,6 +114,7 @@ h3 {
 
 h3:hover {
     text-decoration: underline;
+    color: #0645AD;
 }
 
 .footer {
@@ -157,7 +158,7 @@ h3:hover {
 }
 
 .blue {
-    background-color: #4386ce;
+    background-color: #4386ce !important;
     border: 1px solid #ddd;
 }
 
@@ -204,6 +205,7 @@ fieldset {
 
 .sidebarlist > div:hover {
     background-color: #9a9a9a;
+    cursor: pointer;
 }
 
 .savediv > div {
