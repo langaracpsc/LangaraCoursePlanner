@@ -322,6 +322,14 @@ class Calendar {
                 })
             }
 
+            else if (["2ar", "2sc", "hum", "lsc", "sci", "soc", "ut"].includes(term)) {
+                results.push({
+                    type: "course.attributes",
+                    condition: storedCondition,
+                    search: term
+                })
+            }
+
             // if first 4 letter is string and last 4 letter are char, then match exactly
             else if (/^[a-z]{4} \d{4}$/.test(term)) {
                 results.push({
@@ -366,11 +374,13 @@ class Calendar {
             c_hidden = []
         }
 
+        const attributes = new Map([["2ar", 8], ["2sc", 9], ["hum", 10], ["lsc", 11], ["sci", 12], ["soc", 13], ["ut", 14]]);
+
         let c_filtered = new Set()
 
         for (const s of search) {
             console.assert(s.type != null && (s.condition == "AND" || s.condition == "OR") && s.search != null, `something wrong with search ${s}`)
-            console.assert(s.type == "fuzzy" || s.type == "crn" || s.type == "schedule.type" || s.type == "course", `something wrong with search ${s}`)
+            console.assert(s.type == "fuzzy" || s.type == "crn" || s.type == "schedule.type" || s.type == "course" || s.type == "course.attributes", `something wrong with search ${s}`)
 
             let searchResult = []
 
@@ -387,6 +397,10 @@ class Calendar {
                 let code = parseInt(s.search.slice(-4))
 
                 searchResult = c_shown.filter(c => c.subject == subject && c.course_code == code).map(c => c.id)
+            }
+
+            else if (s.type == "course.attributes") {
+                searchResult = c_shown.filter(c => this.db.getCourseInfos(c.subject, c.course_code)[0][attributes.get(s.search)] == 1).map(c => c.id)
             }
 
             else {
