@@ -131,7 +131,7 @@ class Course {
         scheduleHTML += "</div>"
 
         if (!(this.notes === null)) {
-            scheduleHTML += `<p>${this.notes}</p>`
+            scheduleHTML += `<p class="notes">${this.notes}</p>`
         }
 
         let html = `

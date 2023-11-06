@@ -138,13 +138,16 @@
                     </label>
 
                     <label>
-                        <input type="checkbox" id="weekendCheckbox"> Always show Saturday.
-                    </label>
-                    <label>
                         <input type="checkbox" id="conflictCheckbox"> Hide courses that conflict with selected courses.
                     </label>
                     <label>
                         <input type="checkbox" id="showColors" checked> Highlight courses by seats available.
+                    </label>
+                    <label>
+                        <input type="checkbox" id="notesCheckbox" checked> Show course notes (where available).
+                    </label>
+                    <label class="hidden">
+                        <input type="checkbox" id="weekendCheckbox"> Always show Saturday.
                     </label>
 
                     <div class="button-container">
@@ -155,6 +158,8 @@
                             <input type="button" id="hideAllButton" value="Hide all courses in list.">
                         </label>
                     </div>
+
+
 
                 </fieldset>
 

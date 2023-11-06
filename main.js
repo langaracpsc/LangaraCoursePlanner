@@ -127,6 +127,14 @@ document.addEventListener('DOMContentLoaded', async function () {
   setSaturday()
   document.getElementById("weekendCheckbox").addEventListener("input", setSaturday)
 
+  // show notes
+  function setNotesVisibility(bool) {
+    document.getElementById("courselist").classList.toggle("hidenotes", bool)
+  }
+  setNotesVisibility( !document.getElementById("notesCheckbox").checked )
+  document.getElementById("notesCheckbox").addEventListener("input", function(event) {
+    setNotesVisibility(!event.target.checked)
+  })
 
   // Color course element on sidebar based on availability
   // color is not generated here - this is just a switch

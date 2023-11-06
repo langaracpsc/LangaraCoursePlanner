@@ -275,3 +275,7 @@ fieldset {
 .buttonSelected {
     background-color: #9ac7f7 !important;
 }
+
+.hidenotes > div > .notes {
+    display: none;
+}
