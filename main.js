@@ -24,15 +24,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     c.reloadCourseList()
 
     // restore courses from localstorage
-    if (c.checkRestoreAvailable() && confirm("Found previous calendar data - would you like to restore it?"))
-      c.restoreShownCourses()
+    c.showSaves()
 
     // Generate resources 
     c.FCalendar.refetchResources()
 
-    document.getElementById("search-options").disabled = false
     document.getElementById("courseSearchBar").disabled = false
-    document.getElementById("timetableGeneratorSearch").disabled = false
+    const fieldsets = document.querySelectorAll('fieldset');
+    fieldsets.forEach(fieldset => {
+      fieldset.removeAttribute('disabled');
+    });
 
   }).catch(
     error => {
@@ -111,7 +112,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   //c.courselistUpdate()
 
   window.addEventListener("beforeunload", function (e) {
-    c.storeShownCourses()
+    c.saveManager.storeSaves()
   });
 
 
@@ -262,12 +263,24 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById("sidebar_mode1").classList.remove("hidden")
 
     document.getElementById("sidebar_mode2").classList.add("hidden")
+    document.getElementById("sidebar_mode3").classList.add("hidden")
   })
 
   document.getElementById("mode2Button").addEventListener("click", function (event) {
     document.getElementById("sidebar_mode2").classList.remove("hidden")
 
     document.getElementById("sidebar_mode1").classList.add("hidden")
+    document.getElementById("sidebar_mode3").classList.add("hidden")
+  })
+
+  document.getElementById("mode3Button").addEventListener("click", function (event) {
+    document.getElementById("sidebar_mode3").classList.remove("hidden")
+
+    document.getElementById("sidebar_mode1").classList.add("hidden")
+    document.getElementById("sidebar_mode2").classList.add("hidden")
+
+    c.showSaves()
+    document.getElementById("saveNameInput").focus()
   })
 
   document.getElementById("generateTimetableButton").addEventListener("click", function (event) {
@@ -324,14 +337,41 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (target.classList.contains("csidebar")) {
       c.toggleFCalendar(target.id)
 
-      if (document.getElementById("conflictCheckbox").checked)
-        c.courselistUpdate()
-
       if (target.classList.contains("blue"))
         target.classList.remove("blue")
       else 
         target.classList.add("blue")
     }
 
+  })
+
+  function createSched() {
+
+    const name = document.getElementById("saveNameInput").value
+    const result = document.getElementById("saveResultText")
+
+    if (name == "") {
+      result.textContent = "You must enter a name."
+      return
+    } 
+    
+    let yearterm = document.getElementById("termSelector").value
+      if (yearterm == "ALL") {
+        yearterm = "ALL-SEMESTERS"
+      }
+      const year = parseInt(yearterm.split("-")[0])
+      const term = parseInt(yearterm.split("-")[1])
+
+    c.saveManager.editCreateSave(name, year, term, c.courses_oncalendar.join("_"))
+
+    c.showSaves()
+    result.textContent = "Success."
+    document.getElementById("saveNameInput").value= ""
+  }
+
+  document.getElementById("saveScheduleButton").addEventListener("click", createSched)
+  document.getElementById("saveNameInput").addEventListener("keyup",  function (event) {
+    if (event.key === "Enter")
+      createSched()
   })
 })

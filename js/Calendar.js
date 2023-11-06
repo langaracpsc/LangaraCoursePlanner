@@ -27,6 +27,9 @@ class Calendar {
 
         this.courses_first_day = "2023-01-01"
         this.courses_last_day = null
+
+        this.saveManager = new SaveManager()
+        this.saveManager.loadSaves()
     }
 
     parseFromDB() {
@@ -145,8 +148,23 @@ class Calendar {
         return resources
     }
 
+    calendarUpdate() {
+        // don't autosave emptiness
+        if (this.courses_oncalendar.length == 0)
+            return
+
+        let yearterm = document.getElementById("termSelector").value
+        const year = parseInt(yearterm.split("-")[0])
+        const term = parseInt(yearterm.split("-")[1])
+        this.saveManager.editSave("autosave", year, term, this.courses_oncalendar.join("_"))
+    }
+
     // Toggles visibility of course in calendar
     toggleFCalendar(id) {
+
+        if (id == "")
+            return
+
         let id_arr = id.split("_")
 
         for (const id of id_arr) {
@@ -161,19 +179,21 @@ class Calendar {
                 c.shown = true
             } else {
                 const index = this.courses_oncalendar.findIndex(idd => idd == id);
-
                 if (index !== -1) {
                     this.courses_oncalendar.splice(index, 1);
                 }
                 c.shown = false
-                this.setGhostFCalendar(id)
+                console.log("hiding!")
+                this.setGhostFCalendar(id, true)
             }
 
         }
 
+        this.calendarUpdate()
+
     }
 
-    setGhostFCalendar(id) {
+    setGhostFCalendar(id, skipClear = false) {
         if (this.ghostCourses == null || this.ghostCourses == undefined)
             this.ghostCourses = []
 
@@ -181,7 +201,8 @@ class Calendar {
         if (id != null)
             id_arr = id.split("_");
 
-        this.clearAllGhosts();
+        if (!skipClear)
+            this.clearAllGhosts();
 
         // Show ghosts for matching courses
         for (const cID of id_arr) {
@@ -226,10 +247,19 @@ class Calendar {
 
             if (show) {
                 c.showFCalendar(this.FCalendar)
+                c.shown = true
+                this.courses_oncalendar.push(c.id)
             } else {
                 c.hideFCalendar(this.FCalendar)
+                c.shown = false
+                const index = this.courses_oncalendar.findIndex(idd => idd == c.id);
+                if (index !== -1) {
+                    this.courses_oncalendar.splice(index, 1);
+                }
             }
         }
+
+        this.calendarUpdate()
     }
 
     // called whenever we need to update the courselist
@@ -610,37 +640,6 @@ class Calendar {
         courselist.appendChild(fragment); // Add the fragment to the DOM in a single operation
     }
 
-    storeShownCourses() {
-        // Don't overwrite storage if no courses were put on the calendar
-        //if (this.courses_oncalendar.length == 0)
-        //    return
-
-        // Store the course IDs in localStorage
-        localStorage.setItem('courses_oncalendar', JSON.stringify(this.courses_oncalendar));
-    }
-
-    checkRestoreAvailable() {
-        return localStorage.getItem('courses_oncalendar') != null && localStorage.getItem('courses_oncalendar') != "[]"
-    }
-
-    restoreShownCourses() {
-        console.log("Restoring sections from LocalStorage")
-        // Retrieve the course IDs from localStorage
-        const storedCourseIDs = localStorage.getItem('courses_oncalendar');
-
-        if (storedCourseIDs) {
-            // Parse the stored course IDs back to an array
-            const courseIDs = JSON.parse(storedCourseIDs);
-
-            // Update the courses_oncalendar array with the restored courses
-            this.courses_oncalendar = courseIDs;
-        }
-
-        for (const cID of this.courses_oncalendar) {
-            let c = this.coursesMap.get(cID)
-            c.showFCalendar(this.FCalendar)
-        }
-    }
 
     getTimetableInput() {
         const yearterm = document.getElementById("termSelector2").value;
@@ -789,6 +788,42 @@ class Calendar {
         }
         return uniqueArrays;
       }
+
+    showSaves() {
+        const target = document.getElementById("savedSchedulesList")
+        target.innerHTML = ""
+
+        for (const s of this.saveManager.saves) {
+            const node = s.generateSidebarHTML(this.coursesMap)
+            
+            const t = this
+            function func() {
+                t.toggleFCalendar(node.id)
+            }
+
+            function func2(event) {
+                t.setGhostFCalendar(node.id)
+            }
+
+            function func3(event) {
+                t.clearAllGhosts()
+            }
+            node.childNodes[0].addEventListener("mouseover", func2 )
+            node.childNodes[0].addEventListener("mouseleave", func3 )
+            node.childNodes[0].addEventListener("click", func )
+            node.childNodes[1].addEventListener("click", function (event) {
+                const name = event.target.parentElement.getAttribute("savename")
+                if (!confirm(`Are you sure you want to delete ${name}?`))
+                    return
+                c.saveManager.deleteSave(name)
+                c.showSaves()
+            } )
+            
+            target.appendChild(node)
+        }
+    }
+
+
 
 }
 

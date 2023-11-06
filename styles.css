@@ -63,7 +63,7 @@ body {
     flex-direction: column;
 }
 
-#courseSearchBar {
+input[type=text] {
     width: calc(100% - 16px); /* idek */
     padding: 5px;
     border: 1px solid #ccc;
@@ -86,7 +86,7 @@ body {
 }
 
 /* Make the course list scrollable if it overflows */
-.courselist {
+.sidebarlist {
     overflow-y: auto;
     flex-grow: 1;
     background-color: rgba(245, 245, 245, 0.971);
@@ -192,4 +192,43 @@ fieldset {
     display: flex;
     flex-direction: column;
     gap: 2px;
+}
+
+.savediv {
+    display: flex;
+    flex-direction: row;
+    align-items: normal;
+    align-self: start;  
+    justify-content: space-between;
+}
+
+.sidebarlist > div:hover {
+    background-color: #9a9a9a;
+}
+
+.savediv > div {
+    cursor: pointer;
+    flex-grow: 1;
+}
+
+.savediv > img {
+    width: 25px;
+    align-self: start;  
+    padding: 5px;
+    cursor: pointer; /* Change cursor to a pointer on hover */
+    transition: transform 0.2s; /* Add a smooth transition for scaling effect */
+}
+
+.savediv > img:hover {
+    transform: scale(1.2); 
+}
+
+#saveScheduleFieldset {
+    display: flex;
+    flex-direction: row;
+}
+
+#saveScheduleFieldset > * {
+    font-size: medium;
+    font-family:inherit;
 }

@@ -21,6 +21,7 @@
     <script src='js/Database.js' defer></script>
     <script src='js/Calendar.js' defer></script>
     <script src='js/Course.js' defer></script>
+    <script src='js/SaveManager.js' defer></script>
 
     <script src='main.js' defer></script>
 </head>
@@ -30,12 +31,15 @@
         
         <div id="sidebar" class="sidebar">
 
-            <fieldset id="modeSelector">
+            <fieldset id="modeSelector" disabled>
                 <label>
                     <input type="button" id="mode1Button" value="Course Search">
                 </label>
                 <label>
-                    <input type="button" id="mode2Button" value="Timetable Generator">
+                    <input type="button" id="mode2Button" value="Generate Timetable">
+                </label>
+                <label>
+                    <input type="button" id="mode3Button" value="Save/Load">
                 </label>
             </fieldset>
             
@@ -76,7 +80,7 @@
 
                 </fieldset>
 
-                <div id="courselist" class="courselist">
+                <div id="courselist" class="sidebarlist">
                     <div class="csidebar">
                         <h3>Loading courses...</h3>
                         <p>This should only take a few seconds.</p>
@@ -107,10 +111,23 @@
                     <p id="timetableText"></p>
                 </fieldset>
 
-                <div id="timetablecourselist" class="courselist">
+                <div id="timetablecourselist" class="sidebarlist">
                     <!-- Add timetables here -->
                 </div>
 
+            </div>
+
+            <div id="sidebar_mode3" class="hidden">
+
+                <fieldset id="saveScheduleFieldset" disabled>
+                    <input type="text" id="saveNameInput" placeholder="Schedule Name...">
+                    <input type="button" id="saveScheduleButton" value="Save">
+                </fieldset>
+                <p id="saveResultText"></p>
+
+                <div id="savedSchedulesList" class="sidebarlist">
+                    <!-- Add timetables here -->
+                </div>
             </div>
 
             <footer class="footer">

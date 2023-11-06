@@ -512,7 +512,8 @@ class Course {
         let colorChange = sourceElementID == null ? this.id : sourceElementID
 
         try {
-            document.getElementById(colorChange).classList.add(color_class)
+            if (!document.getElementById(colorChange).hasAttribute("savename"))
+                document.getElementById(colorChange).classList.add(color_class)
         } catch (error){
             // I cannot fix this right now, too much abstraction, its horrible, i need to learn react
             //console.log("ERROR:", error)
