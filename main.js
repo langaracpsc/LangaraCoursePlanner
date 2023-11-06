@@ -2,8 +2,8 @@
 var c
 
 var CONSTANTS = {
-  "db_api_url" : "https://api2.langaracs.tech/courseDB.db",
-  "max_shown_courses" : 1500
+  "db_api_url": "https://api2.langaracs.tech/courseDB.db",
+  "max_shown_courses": 1500
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     resources: function (fetchInfo, successCallback, failureCallback) { successCallback(c.generateResources()) },
     resourceAreaWidth: "120px",
     // show class info when clicked
-    eventClick: function(eventClickInfo) {console.log(c.showCourseInfo(eventClickInfo.event.id))},
+    eventClick: function (eventClickInfo) { console.log(c.showCourseInfo(eventClickInfo.event.id)) },
 
     // calendar stuff
     timeZone: 'America/Vancouver',
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (target.classList.contains("csidebar")) {
       c.setGhostFCalendar(target.id)
 
-      if(target.id != c.timetableghost && c.timetableghost != null) {
+      if (target.id != c.timetableghost && c.timetableghost != null) {
         document.getElementById(c.timetableghost).classList.remove("dark-gray")
       }
       c.timetableghost = target.id
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     c.timetableghost = null
   })
 
-  
+
   // show/hide courses on calendar when they are clicked on
   document.getElementById("timetablecourselist").addEventListener("click", function (event) {
     let target = event.target
@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
       if (target.classList.contains("blue"))
         target.classList.remove("blue")
-      else 
+      else
         target.classList.add("blue")
     }
 
@@ -353,24 +353,24 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (name == "") {
       result.textContent = "You must enter a name."
       return
-    } 
-    
+    }
+
     let yearterm = document.getElementById("termSelector").value
-      if (yearterm == "ALL") {
-        yearterm = "ALL-SEMESTERS"
-      }
-      const year = parseInt(yearterm.split("-")[0])
-      const term = parseInt(yearterm.split("-")[1])
+    if (yearterm == "ALL") {
+      yearterm = "ALL-SEMESTERS"
+    }
+    const year = parseInt(yearterm.split("-")[0])
+    const term = parseInt(yearterm.split("-")[1])
 
     c.saveManager.editCreateSave(name, year, term, c.courses_oncalendar.join("_"))
 
     c.showSaves()
     result.textContent = "Success."
-    document.getElementById("saveNameInput").value= ""
+    document.getElementById("saveNameInput").value = ""
   }
 
   document.getElementById("saveScheduleButton").addEventListener("click", createSched)
-  document.getElementById("saveNameInput").addEventListener("keyup",  function (event) {
+  document.getElementById("saveNameInput").addEventListener("keyup", function (event) {
     if (event.key === "Enter")
       createSched()
   })

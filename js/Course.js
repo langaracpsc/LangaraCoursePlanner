@@ -117,7 +117,7 @@ class Course {
 
         return this.courseListHTML
     }
-    
+
 
     // INTERNAL USE ONLY
     // html in the courselist on the sidebar
@@ -170,7 +170,7 @@ class Course {
         let temp = document.createElement('div');
         temp.innerHTML = html
         temp.id = this.id
-        
+
         temp.className = `csidebar hidden ${color}`
         if (!document.getElementById("showColors").checked) {
             temp.classList.add("gray")
@@ -424,10 +424,10 @@ class Course {
                 document.getElementById(colorChange).classList.remove("dark-gray") // TODO: workaround to fix ghosting, should fix this properly in the future
                 //document.getElementById(this.id).style.backgroundColor = null // change the color of the courselist div back to normal
             }
-        } catch (error){
+        } catch (error) {
             console.log("ERROR:", error)
         }
-        
+
 
         let show_weekends = false
         for (const id of this.Calendar.courses_oncalendar) {
@@ -514,7 +514,7 @@ class Course {
         try {
             if (!document.getElementById(colorChange).hasAttribute("savename"))
                 document.getElementById(colorChange).classList.add(color_class)
-        } catch (error){
+        } catch (error) {
             // I cannot fix this right now, too much abstraction, its horrible, i need to learn react
             //console.log("ERROR:", error)
         }

@@ -170,7 +170,7 @@ class Calendar {
         for (const id of id_arr) {
             let c = this.coursesMap.get(id)
 
-            
+
             let status = c.toggleFShown(this.FCalendar)
             c.ghost = false
 
@@ -218,7 +218,7 @@ class Calendar {
     clearAllGhosts() {
 
         for (const c of this.ghostCourses) {
-            if(c.shown && !c.ghost)
+            if (c.shown && !c.ghost)
                 continue
             c.hideFCalendar(this.FCalendar);
             c.ghost = false;
@@ -296,7 +296,7 @@ class Calendar {
             if (term == "AND" || term == "&" || term == "&&") {
                 storedCondition = "AND"
                 continue
-            } else if (term == "OR" || term == "||" || term == "|" ) {
+            } else if (term == "OR" || term == "||" || term == "|") {
                 storedCondition = "OR"
                 continue
             }
@@ -304,7 +304,7 @@ class Calendar {
             if (term == "") {
                 /* Do nothing */
             }
-            
+
             // crn (5 digits and numeric)
             else if (term.length == 5 || /^\d+$/.test(term)) {
                 results.push({
@@ -314,7 +314,7 @@ class Calendar {
                 })
             }
 
-            else if(term == "www" || term == "lab" || term == "lecture" || term == "exam" || term == "seminar" || term == "practicum") {
+            else if (term == "www" || term == "lab" || term == "lecture" || term == "exam" || term == "seminar" || term == "practicum") {
                 results.push({
                     type: "schedule.type",
                     condition: storedCondition,
@@ -347,7 +347,7 @@ class Calendar {
 
     // INTERNAL FUNCTION - DO NOT CALL
     // filters courselists internally into courses_hidden and courses_shown
-    filterCoursesBySearch(search, yearterm, use_calendar=true) {
+    filterCoursesBySearch(search, yearterm, use_calendar = true) {
 
         console.assert(Array.isArray(search), `Search array is not an array: ${search}`)
         let c_shown = []
@@ -436,7 +436,7 @@ class Calendar {
             c_hidden.push(...c_shown.filter(item => !c_filtered.has(item.id)))
             c_shown = c_shown.filter(item => c_filtered.has(item.id))
         }
-        
+
 
         //console.log(c_hidden, c_shown)
 
@@ -482,7 +482,7 @@ class Calendar {
 
         return c_shown
 
-    
+
     }
 
     // takes 2 Course's and determines if they conflict.
@@ -645,11 +645,11 @@ class Calendar {
         const yearterm = document.getElementById("termSelector2").value;
         const queryElements = Array.from(document.querySelectorAll('[id^="timetableField"]'));
         const queries = queryElements.map((element) => element.value);
-    
+
         let results = queries
             .filter((query) => query !== "")
             .map((query) => this.filterCoursesBySearch(this.parseSearch(query), yearterm, false));
-        
+
         results.sort((a, b) => a.length - b.length)
 
         let timetables = this.combineCourses(results)
@@ -660,16 +660,16 @@ class Calendar {
         let crns = new Set()
         for (const t of timetables) {
             let str = ""
-            for (const c of t) 
+            for (const c of t)
                 str += `${c.crn}`
 
-            if(crns.has(str))
+            if (crns.has(str))
                 continue
             crns.add(str)
         }
 
         //console.log("TIMETABLES", timetables, crns)
-        
+
 
         let msg = ""
         const len = crns.size
@@ -694,22 +694,22 @@ class Calendar {
 
             // don't display duplicate timetables
             let str = ""
-            for (const c of t) 
+            for (const c of t)
                 str += `${c.crn}`
 
-            if(crns.has(str))
+            if (crns.has(str))
                 continue
             crns.add(str)
 
             let ids = []
 
             let crn_str = ""
-            for (const c of t) 
+            for (const c of t)
                 crn_str += `${c.crn} `
 
 
             let html = "<div>"
-            html += `<p><b>CRNS: ${crn_str}</b></p>`
+            html += `<b>CRNS: ${crn_str}</b>`
             for (const c of t) {
                 html += `<b>${c.subject} ${c.course_code} ${c.crn}</b>`
 
@@ -724,19 +724,19 @@ class Calendar {
             temp.className = `csidebar`
             temp.innerHTML = html
             temp.id = ids.join("_")
-            
+
             courseList.appendChild(temp)
         }
-    
+
         //console.log(results, timetables);
     }
-    
+
     combineCourses(coursesList, index = 0, currentTimetable = new Set(), allTimetables = new Set()) {
         if (index === coursesList.length) {
             allTimetables.add([...currentTimetable]);
             return;
         }
-    
+
         for (const course of coursesList[index]) {
             if (this.isCourseAvailable(currentTimetable, course)) {
                 currentTimetable.add(course);
@@ -744,50 +744,50 @@ class Calendar {
                 currentTimetable.delete(course);
             }
         }
-    
+
         return allTimetables;
     }
-    
+
     isCourseAvailable(currentTimetable, course) {
         for (const existingCourse of currentTimetable) {
             if (this.findTimeConflict(existingCourse, course)) {
                 return false; // There is a time conflict, so the course is not available
             }
         }
-    
+
         return true; // No time conflicts found, so the course is available
     }
-    
+
     areArraysEqual(arr1, arr2) {
         if (arr1.length !== arr2.length) {
-          return false;
-        }
-      
-        for (let i = 0; i < arr1.length; i++) {
-          if (JSON.stringify(arr1[i]) !== JSON.stringify(arr2[i])) {
             return false;
-          }
         }
-      
+
+        for (let i = 0; i < arr1.length; i++) {
+            if (JSON.stringify(arr1[i]) !== JSON.stringify(arr2[i])) {
+                return false;
+            }
+        }
+
         return true;
-      }
-      
+    }
+
     removeDuplicateSubarrays(arrayOfArrays) {
         const uniqueArrays = [];
         for (const subarray of arrayOfArrays) {
-          let isDuplicate = false;
-          for (const uniqueArray of uniqueArrays) {
-            if (areArraysEqual(subarray, uniqueArray)) {
-              isDuplicate = true;
-              break;
+            let isDuplicate = false;
+            for (const uniqueArray of uniqueArrays) {
+                if (areArraysEqual(subarray, uniqueArray)) {
+                    isDuplicate = true;
+                    break;
+                }
             }
-          }
-          if (!isDuplicate) {
-            uniqueArrays.push(subarray);
-          }
+            if (!isDuplicate) {
+                uniqueArrays.push(subarray);
+            }
         }
         return uniqueArrays;
-      }
+    }
 
     showSaves() {
         const target = document.getElementById("savedSchedulesList")
@@ -795,7 +795,7 @@ class Calendar {
 
         for (const s of this.saveManager.saves) {
             const node = s.generateSidebarHTML(this.coursesMap)
-            
+
             const t = this
             function func() {
                 t.toggleFCalendar(node.id)
@@ -808,17 +808,17 @@ class Calendar {
             function func3(event) {
                 t.clearAllGhosts()
             }
-            node.childNodes[0].addEventListener("mouseover", func2 )
-            node.childNodes[0].addEventListener("mouseleave", func3 )
-            node.childNodes[0].addEventListener("click", func )
+            node.childNodes[0].addEventListener("mouseover", func2)
+            node.childNodes[0].addEventListener("mouseleave", func3)
+            node.childNodes[0].addEventListener("click", func)
             node.childNodes[1].addEventListener("click", function (event) {
                 const name = event.target.parentElement.getAttribute("savename")
                 if (!confirm(`Are you sure you want to delete ${name}?`))
                     return
                 c.saveManager.deleteSave(name)
                 c.showSaves()
-            } )
-            
+            })
+
             target.appendChild(node)
         }
     }

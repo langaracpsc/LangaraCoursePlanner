@@ -1,6 +1,6 @@
 
 class Save {
-    constructor(name, year, term, courses_ids="") {
+    constructor(name, year, term, courses_ids = "") {
         this.name = name
         this.year = year
         this.term = term
@@ -31,7 +31,7 @@ class Save {
             html += "<p>No courses.</p>"
         } else {
             let split = this.courses_ids.split("_")
-            
+
             let courses = split.map(id => map.get(id))
 
             let print = courses.map(c => `${c.subject} ${c.course_code}`)
