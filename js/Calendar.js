@@ -280,6 +280,8 @@ class Calendar {
         const sep = "🖥️"
         console.assert(!string.includes(sep), "search string contains seperator character...why did you do that")
 
+        const subjects = this.db.getSubjects()
+
         const aS = sep + "AND" + sep
         const oS = sep + "OR" + sep
 
@@ -306,7 +308,7 @@ class Calendar {
             }
 
             // crn (5 digits and numeric)
-            else if (term.length == 5 || /^\d+$/.test(term)) {
+            else if (term.length == 5 && /^\d+$/.test(term)) {
                 results.push({
                     type: "crn",
                     condition: storedCondition,
@@ -325,6 +327,15 @@ class Calendar {
             else if (["2ar", "2sc", "hum", "lsc", "sci", "soc", "ut"].includes(term)) {
                 results.push({
                     type: "course.attributes",
+                    condition: storedCondition,
+                    search: term
+                })
+            }
+
+
+            else if (term.length == 4 && subjects.includes(term)) {
+                results.push({
+                    type: "subject",
                     condition: storedCondition,
                     search: term
                 })
@@ -380,7 +391,7 @@ class Calendar {
 
         for (const s of search) {
             console.assert(s.type != null && (s.condition == "AND" || s.condition == "OR") && s.search != null, `something wrong with search ${s}`)
-            console.assert(s.type == "fuzzy" || s.type == "crn" || s.type == "schedule.type" || s.type == "course" || s.type == "course.attributes", `something wrong with search ${s}`)
+            console.assert(s.type == "fuzzy" || s.type == "crn" || s.type == "schedule.type" || s.type == "subject" || s.type == "course" || s.type == "course.attributes", `something wrong with search ${s}`)
 
             let searchResult = []
 
@@ -406,6 +417,10 @@ class Calendar {
                     const courseInfo = this.db.getCourseInfos(c.subject, c.course_code);
                     return courseInfo[0] && courseInfo[0][i] === 1;
                 }).map(c => c.id);
+            }
+
+            else if (s.type == "subject") {
+                searchResult = c_shown.filter(c => c.subject == s.search).map(c => c.id)
             }
 
             else {

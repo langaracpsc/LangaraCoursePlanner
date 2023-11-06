@@ -155,4 +155,14 @@ class Database {
         return rows
     }
 
+    getSubjects() {
+        const query = `
+        SELECT DISTINCT subject FROM CourseInfo
+        `
+
+        const rows = this.executeQuery(query);
+        return [].concat(...rows);
+    }
+
+
 }
