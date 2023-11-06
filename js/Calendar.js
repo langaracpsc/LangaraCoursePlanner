@@ -622,7 +622,7 @@ class Calendar {
     reloadCourseList() {
         const count = this.courses_shown.length;
         const results = document.getElementById("searchResults");
-        const maxShown = CONSTANTS["db_api_url"];
+        const maxShown = CONSTANTS["max_shown_courses"];
 
         const fragment = document.createDocumentFragment(); // Create a document fragment to batch DOM updates
 
