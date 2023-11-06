@@ -57,7 +57,7 @@ class Calendar {
             c.Calendar = this
             c.generateFuzzySearch() // THIS IS BAD
 
-            courselist.appendChild(c.getCourseListHTML())
+            //courselist.appendChild(c.getCourseListHTML())
 
             this.coursesMap.set(c.id, c)
         }
@@ -400,7 +400,12 @@ class Calendar {
             }
 
             else if (s.type == "course.attributes") {
-                searchResult = c_shown.filter(c => this.db.getCourseInfos(c.subject, c.course_code)[0][attributes.get(s.search)] == 1).map(c => c.id)
+                const i = attributes.get(s.search)
+
+                searchResult = c_shown.filter(c => {
+                    const courseInfo = this.db.getCourseInfos(c.subject, c.course_code);
+                    return courseInfo[0] && courseInfo[0][i] === 1;
+                }).map(c => c.id);
             }
 
             else {
@@ -635,7 +640,7 @@ class Calendar {
         }
 
         // Hide all courses
-        for (const c of this.courses) {
+        for (const c of this.courses_shown) {
             c.getCourseListHTML().classList.add("hidden");
         }
 
