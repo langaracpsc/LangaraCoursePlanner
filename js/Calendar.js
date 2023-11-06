@@ -183,7 +183,6 @@ class Calendar {
                     this.courses_oncalendar.splice(index, 1);
                 }
                 c.shown = false
-                console.log("hiding!")
                 this.setGhostFCalendar(id, true)
             }
 

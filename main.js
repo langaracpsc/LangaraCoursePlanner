@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   // make sure ghosting stops when mouse leaves
   document.getElementById("courselist").addEventListener("mouseleave", function (event) {
-    c.setGhostFCalendar(null)
+    c.clearAllGhosts()
   })
 
 
@@ -308,6 +308,14 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
   // generate time tables
+  const inputFields = document.querySelectorAll('#timetableGeneratorSearch input[type="text"]');
+  function gti() {
+    c.getTimetableInput()
+  }
+  inputFields.forEach(function (inputField) {
+    inputField.addEventListener('input', gti);
+  });
+
   document.getElementById("generateTimetableButton").addEventListener("click", function (event) {
     c.getTimetableInput()
   })
@@ -337,10 +345,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   // make sure ghosting stops when mouse leaves
   document.getElementById("timetablecourselist").addEventListener("mouseleave", function (event) {
-    c.setGhostFCalendar(null)
-    document.getElementById(c.timetableghost).classList.remove("dark-gray") // MASSIVE VIOLATION OF OOP
-    //console.log("removed gray from", c.timetableghost) 
-    c.timetableghost = null
+    c.clearAllGhosts()
   })
 
 
