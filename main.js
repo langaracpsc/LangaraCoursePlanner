@@ -8,40 +8,35 @@ var CONSTANTS = {
 
 document.addEventListener('DOMContentLoaded', async function () {
 
-
   const db = new Database()
+  c = new Calendar(db)
+  //console.log("Calendar Manager:", c)
 
+  // Fetch database.
   db.fetchDB().then(() => {
 
-    // Load Database
+    // Load database
     c.parseFromDB()
 
-    // set Calendar Semester
+    // set the right date for the calendar
     c.changeSemester()
 
-    // Initialize courselist
+    // Initialize sidebar courselist
     c.courselistUpdate()
     c.reloadCourseList()
 
-    // restore courses from localstorage
+    // test that saves are functional
     c.showSaves()
 
-    // Generate resources 
+    // Tell fcalendar to refresh resources 
     c.FCalendar.refetchResources()
 
+    // enable options when database is ready
     document.getElementById("courseSearchBar").disabled = false
     const fieldsets = document.querySelectorAll('fieldset');
-    fieldsets.forEach(fieldset => {
-      fieldset.removeAttribute('disabled');
-    });
+    fieldsets.forEach(fieldset => { fieldset.removeAttribute('disabled') })
 
-  }).catch(
-    error => {
-      console.error("Error while initializing: ", error)
-    })
-
-  c = new Calendar(db)
-  console.log(c)
+  }).catch( error => { console.error("Error while initializing: ", error) })
 
 
   function timelineLabelApplier(name) {
@@ -59,19 +54,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     return names[name]
   }
 
-
-  var calendarElement = document.getElementById('calendar');
-
-  var FCalendar = new FullCalendar.Calendar(calendarElement, {
+  let FCalendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
     schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-    rerenderDelay: 10,
+
+    // wait 5 milliseconds before rendering events
+    rerenderDelay: 5,
 
     // resource stuff
     resourceGroupField: 'groupId',
     resourceGroupLabelContent: function (arg) { return timelineLabelApplier(arg.groupValue) },
     resources: function (fetchInfo, successCallback, failureCallback) { successCallback(c.generateResources()) },
     resourceAreaWidth: "120px",
-    // show class info when clicked
+
+    // show course section information when clicked
     eventClick: function (eventClickInfo) { console.log(c.showCourseInfo(eventClickInfo.event.id)) },
 
     // calendar stuff
@@ -80,19 +75,21 @@ document.addEventListener('DOMContentLoaded', async function () {
     slotMinTime: "07:00", // classes start 7:30 and end 9:30
     slotMaxTime: "22:00",
     displayEventTime: false, // honestly not sure what this does
+
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
       //right: 'dayGridMonth,timeGridWeek,timeGridDay'
       right: 'resourceTimelineDay,resourceTimelineWeek dayGridMonth,timeGridWeek,timeGridDay'
     },
+    
     //weekends: document.getElementById("weekendCheckbox").checked,
     //hiddenDays: [ 0 ],
     //initialDate: new Date(new Date(calendarClass.courses_first_day).getTime() + 604800000), // start on the second week of courses
-    slotEventOverlap: false,
+    slotEventOverlap: false, // I also don't know what this does
     allDaySlot: false, // don't show the allday row on the calendar
 
-    // fires when event is created, adds a second line of text to event because you can't by default ._.
+    // fires when event is created, adds a second line of text to each event because you can't by default ._.
     eventContent: function (info) {
       let p = document.createElement('p')
       p.innerHTML = info.event.extendedProps["description"]
@@ -101,42 +98,38 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   })
   FCalendar.eventTextColor = 'black' // doesn't work??
-
+  FCalendar.render();
 
   c.FCalendar = FCalendar
 
-  // Render calendar
-  FCalendar.render();
+  /* 
+    ======= OTHER SET UP =======
+  
+    ============================
+  */
 
-  // Render courses
-  //c.courselistUpdate()
 
+  // save schedules before window closes
   window.addEventListener("beforeunload", function (e) {
     c.saveManager.storeSaves()
   });
 
-
-
   // Set up event listeners for modifying the calendar.
 
-  document.getElementById("weekendCheckbox").addEventListener("input", function (event) {
-    setSaturday(event.target.checked)
-  })
 
-  function setSaturday(show) {
-    if (show) {
+  function setSaturday() {
+    if (document.getElementById("weekendCheckbox").checked)
       FCalendar.setOption('hiddenDays', [0])
-    } else {
+    else 
       FCalendar.setOption('hiddenDays', [0, 6])
-    }
   }
 
-  setSaturday(document.getElementById("weekendCheckbox").checked)
+  setSaturday()
+  document.getElementById("weekendCheckbox").addEventListener("input", setSaturday)
 
 
-
-  // Color course element based on availability
-  // bit of a misnomer of a comment
+  // Color course element on sidebar based on availability
+  // color is not generated here - this is just a switch
   document.getElementById("showColors").addEventListener("input", function (event) {
     if (document.getElementById("showColors").checked) {
       for (const e of document.getElementById("courselist").children)
@@ -193,7 +186,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     c.setGhostFCalendar(null)
   })
 
-  // automatically update results when searching
+
+
+  // automatically update course search results when searching
   let debounceTimeout;
   document.getElementById("courseSearchBar").addEventListener("input", function (event) {
 
@@ -242,23 +237,32 @@ document.addEventListener('DOMContentLoaded', async function () {
     c.courselistUpdate()
   })
 
-
+  // Implement resizeability for the sidebar
+  // I would love to do this in css but it refuses to cooperate
   function onResize(event) {
     const sidebarWidth = document.getElementById("sidebar").offsetWidth
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
 
-    const newwidth = `${vw - sidebarWidth - 20}px`
+    // Don't make the calendar too small on mobile, even if it overflows
+    const finalWidth = Math.max(400, vw - sidebarWidth - 20)
+
+    const newwidth = `${finalWidth}px`
+
+    if (document.getElementById("calendarwrapper").style.width == newwidth)
+      return 
 
     document.getElementById("calendarwrapper").style.width = newwidth
 
     FCalendar.updateSize()
-
   }
   onResize()
-  addEventListener("mouseup", onResize);
+  addEventListener('mousemove', (event) => { 
+    if (event.buttons === 1) { onResize() } // Not ideal but I can't think of a better way to check for resize
+  })
+  addEventListener("mouseup", onResize)
   addEventListener("resize", onResize);
 
-
+  // TODO: fix this nonsense
   document.getElementById("mode1Button").addEventListener("click", function (event) {
     document.getElementById("sidebar_mode1").classList.remove("hidden")
 
@@ -283,11 +287,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById("saveNameInput").focus()
   })
 
+
+  // generate time tables
   document.getElementById("generateTimetableButton").addEventListener("click", function (event) {
     c.getTimetableInput()
   })
 
-
+  // show courses for time tables
+  // definitely can be improved
   document.getElementById("timetablecourselist").addEventListener("mouseover", function (event) {
 
     let target = event.target
@@ -345,6 +352,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   })
 
+  // Create and save a new schedule
   function createSched() {
 
     const name = document.getElementById("saveNameInput").value
