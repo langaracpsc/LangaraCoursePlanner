@@ -1,7 +1,3 @@
-p {
-    margin: 2px;
-}
-
 /* montserrat-regular - latin */
 @font-face {
     font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
@@ -11,16 +7,43 @@ p {
     src: url('libraries/montserrat/montserrat-v26-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 } 
 
+:root {
+    --background-color: white;
+    --sidebar-color: rgba(245, 245, 245, 0.971);
+    --color: black;
+
+    --fc-event-text-color: black;
+    --sidebar-item-color: #e4dcfd;
+}
+
+.dark-mode {
+    --background-color: #1F1F1F;
+    --sidebar-color: #454545;
+    --color: #f2f2f2;
+}
+
+
+p {
+    margin: 2px;
+}
+
+
 body {
     font-family: 'Montserrat', sans-serif;
     font-size: small;
     margin: 0;
     padding: 0;
-    background-color: #f2f2f2;
+    background-color: var(--background-color);
     display: flex;
     height: 100vh;
     width: 100vw;
     overflow-x: hidden;
+
+    color: var(--color);
+}
+
+.fc-event {
+    font-size: 1em;
 }
 
 .container {
@@ -36,8 +59,7 @@ body {
 .sidebar {
     padding: 0;
     margin: 0;
-    background-color: #fff;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     border-radius: 5px;
 
     height: 100vh;
@@ -45,7 +67,7 @@ body {
 
     resize: horizontal; /* Enable horizontal resizing */
     overflow: auto;
-    width: 25vw;
+    width: 26vw;
     max-width: 1000px;
     min-width: 200px;
 
@@ -89,7 +111,7 @@ input[type=text] {
 .sidebarlist {
     overflow-y: auto;
     flex-grow: 1;
-    background-color: rgba(245, 245, 245, 0.971);
+    background-color: var(--sidebar-color);
     border-radius: 5px;
     flex-basis: 0;
 }
@@ -98,9 +120,14 @@ input[type=text] {
 .csidebar {
     padding: 2px;
     margin: 5px;
-    background-color: #e4dcfd;
-    border: 1px solid #ddd;
+    background-color: var(--sidebar-item-color);
+    border: 1px solid var(--background-color);
     border-radius: 5px;
+    color: black;
+}
+
+a.fc-event {
+    color: black
 }
 
 .csidebar * {
@@ -122,6 +149,14 @@ h3:hover {
     margin-bottom: 0;
     text-align: center;
     flex-shrink: 1000;
+}
+
+footer.dark-mode > a {
+    color: #9ac7f7;
+}
+
+footer.dark-mode > a:visited {
+    color: #c9a8f3;
 }
 
 .calendar {
@@ -154,11 +189,11 @@ h3:hover {
 }
 
 .dark-gray {
-    background-color: #9a9a9a;
+    background-color: #b7b2b2;
 }
 
 .blue {
-    background-color: #4386ce !important;
+    background-color: #9ac7f7 !important;
     border: 1px solid #ddd;
 }
 
@@ -170,7 +205,9 @@ h3:hover {
 #modeSelector {
     margin: 0;
     padding: 0;
-    display:block;
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 2px;
     border: 0;
     width:auto;
@@ -233,4 +270,8 @@ fieldset {
 #saveScheduleFieldset > * {
     font-size: medium;
     font-family:inherit;
+}
+
+.buttonSelected {
+    background-color: #9ac7f7 !important;
 }

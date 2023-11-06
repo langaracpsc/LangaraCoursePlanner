@@ -265,23 +265,32 @@ document.addEventListener('DOMContentLoaded', async function () {
   // TODO: fix this nonsense
   document.getElementById("mode1Button").addEventListener("click", function (event) {
     document.getElementById("sidebar_mode1").classList.remove("hidden")
-
     document.getElementById("sidebar_mode2").classList.add("hidden")
     document.getElementById("sidebar_mode3").classList.add("hidden")
+
+    document.getElementById("mode1Button").classList.add("buttonSelected")
+    document.getElementById("mode2Button").classList.remove("buttonSelected")
+    document.getElementById("mode3Button").classList.remove("buttonSelected")
   })
 
   document.getElementById("mode2Button").addEventListener("click", function (event) {
     document.getElementById("sidebar_mode2").classList.remove("hidden")
-
     document.getElementById("sidebar_mode1").classList.add("hidden")
     document.getElementById("sidebar_mode3").classList.add("hidden")
+
+    document.getElementById("mode2Button").classList.add("buttonSelected")
+    document.getElementById("mode1Button").classList.remove("buttonSelected")
+    document.getElementById("mode3Button").classList.remove("buttonSelected")
   })
 
   document.getElementById("mode3Button").addEventListener("click", function (event) {
     document.getElementById("sidebar_mode3").classList.remove("hidden")
-
     document.getElementById("sidebar_mode1").classList.add("hidden")
     document.getElementById("sidebar_mode2").classList.add("hidden")
+
+    document.getElementById("mode3Button").classList.add("buttonSelected")
+    document.getElementById("mode1Button").classList.remove("buttonSelected")
+    document.getElementById("mode2Button").classList.remove("buttonSelected")
 
     c.showSaves()
     document.getElementById("saveNameInput").focus()
@@ -382,4 +391,40 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (event.key === "Enter")
       createSched()
   })
+
+  // Dark & Light mode
+  const useDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+  function toggleDarkMode(state) {
+    document.documentElement.classList.toggle("dark-mode", state)
+    document.getElementById("footer").classList.toggle("dark-mode", state)
+
+    const button = document.getElementById("colorModeButton");
+    if (state) {
+      button.value = "☀️";
+    } else {
+      button.value = "🌒";
+    }
+  }
+
+  toggleDarkMode(useDark.matches);
+
+  useDark.addEventListener("change", (evt) => toggleDarkMode(evt.matches));
+
+  document.getElementById("colorModeButton").addEventListener("click", () => {
+    document.documentElement.classList.toggle("dark-mode");
+    document.getElementById("footer").classList.toggle("dark-mode")
+
+    const root = document.documentElement;
+    const button = document.getElementById("colorModeButton");
+    
+    if (root.classList.contains("dark-mode")) {
+      button.value = "☀️";
+    } else {
+      button.value = "🌒";
+    }
+  });
+
+  
+
 })
