@@ -12,7 +12,7 @@ class Calendar {
         this.courses_shown = []
 
         // A list of courses currently not shown on the sidebar
-        this.courses_hidden = []
+        //this.courses_hidden = []
 
         // A list of courses currently selected and shown on the calendar
         this.courses_oncalendar = []
@@ -43,6 +43,8 @@ class Calendar {
         // retrieve courses from loaded database
         this.courses = this.db.getSections()
 
+        //throw new Error("AH")
+
         document.getElementById("searchResults").textContent = "Generating HTML..."
         console.log("Retrieved sections from database.")
 
@@ -55,7 +57,6 @@ class Calendar {
 
         for (const c of this.courses) {
             c.Calendar = this
-            c.generateFuzzySearch() // THIS IS BAD
 
             //courselist.appendChild(c.getCourseListHTML())
 
@@ -239,6 +240,11 @@ class Calendar {
     toggleAllFCalendar(show) {
         let i = 0
 
+        if (this.courses_shown.length > 5000) {
+            const c = confirm(`You are trying to render ${this.courses_shown.length} courses. Are you sure you want to continue? This operation will take a long time.`)
+            if (!c) {return}
+        }
+
         for (const c of this.courses_shown) {
             if (this.courses_shown.length > 3000 && i % 500 == 0)
                 console.log(`${i}/${this.courses_shown.length}`)
@@ -247,7 +253,6 @@ class Calendar {
             if (show) {
                 c.showFCalendar(this.FCalendar)
                 c.shown = true
-                this.courses_oncalendar.push(c.id)
             } else {
                 c.hideFCalendar(this.FCalendar)
                 c.shown = false
@@ -256,6 +261,10 @@ class Calendar {
                     this.courses_oncalendar.splice(index, 1);
                 }
             }
+        }
+
+        if (show) {
+            this.courses_oncalendar.concat(...this.courses_shown)
         }
 
         this.calendarUpdate()
@@ -434,7 +443,14 @@ class Calendar {
                     //useExtendedSearch: true,
                     ignoreLocation: true,
                     keys: [
-                        "fuzzySearch"
+                        "subject",
+                        "course_code",
+                        "crn",
+                        "title",
+                        "schedule.type",
+                        "schedule.time",
+                        "schedule.room",
+                        "schedule.instructor"
                     ]
                 }
 
@@ -510,7 +526,7 @@ class Calendar {
             }
 
             this.courses_shown = c_shown
-            this.courses_hidden = c_hidden
+            //this.courses_hidden = c_hidden
         }
 
         return c_shown
@@ -569,13 +585,6 @@ class Calendar {
             }
         }
         return false
-    }
-
-
-
-    hideCourse(c) {
-        this.courses_hidden.push(c)
-        this.courses_shown.splice(this.courses_shown.indexOf(c), 1)
     }
 
 
@@ -648,7 +657,7 @@ class Calendar {
         if (count == 0) {
             results.innerText = "No courses found. Try a different search query!";
         } else if (count >= maxShown) {
-            results.innerText = `${count} courses found. Only rendering ${maxShown} courses to reduce lag.`;
+            results.innerText = `${count} courses found. Only rendering ${maxShown} courses - narrow your search!`;
         } else {
             results.innerText = `${count} courses shown.`;
         }

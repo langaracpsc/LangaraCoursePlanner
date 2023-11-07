@@ -70,30 +70,6 @@ class Course {
 
     }
 
-    generateFuzzySearch() {
-        // Create search for fuzzy search
-        let scheduleSearch = []
-        for (const sch of this.schedule) {
-            scheduleSearch.push(sch["type"])
-            scheduleSearch.push(sch["time"])
-            scheduleSearch.push(sch["room"])
-            scheduleSearch.push(sch["instructor"])
-        }
-
-        // This slows down page loading significantly
-        //let CourseInfo = this.Calendar.db.getCourseInfos(this.subject, this.course_code)
-
-        // remove duplicate values i know its not efficient to add then remove duplicates shush
-        // ie if there's a lecture and lab with the same teacher, we only put the teacher in search once, instead of twice
-        scheduleSearch = [...new Set(scheduleSearch)]
-        scheduleSearch = scheduleSearch.join(" ")
-
-        // used with fuse
-        this.fuzzySearch = `${this.subject} ${this.course_code} ${this.crn} ${this.title} ${scheduleSearch}`
-        if (this.notes != null)
-            this.fuzzySearch += " " + this.notes
-    }
-
 
     toString() {
         let out = `${this.RP} ${this.seats} ${this.waitlist} ${this.crn} ${this.subject} ${this.course_code} ${this.section} ${this.credits} ${this.title} ${this.add_fees}`
