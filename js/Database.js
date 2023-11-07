@@ -64,55 +64,49 @@ class Database {
     }
 
     getSections(year, term, crn, subject, course_code) {
-        //year = 2024
-        //term = 10
 
         let query = `
         SELECT Sections.*, Schedules.*
         FROM Sections
         LEFT JOIN Schedules ON Sections.year = Schedules.year
-                           AND Sections.term = Schedules.term
-                           AND Sections.crn = Schedules.crn
-        `
+                        AND Sections.term = Schedules.term
+                        AND Sections.crn = Schedules.crn
+        WHERE 1 = 1
+        `;
 
-        // TODO: make this cover ALL cases
-        if (subject != null && course_code != null) {
-            query += ` WHERE Sections.subject = '${subject}' AND Sections.course_code = ${course_code}`
-        } else if (year != null && term != null && crn != null) {
-            query += ` WHERE Sections.year = ${year} AND Sections.term = ${term} AND Sections.crn = ${crn}`
-        } else if (year != null && term != null) {
-            query += ` WHERE Sections.year = ${year} AND Sections.term = ${term}`
-        } else if (year != null) {
-            query += ` WHERE Sections.year = ${year}`
-        }
+        if (subject != null && course_code != null) 
+            query += ` AND Sections.subject = '${subject}' AND Sections.course_code = ${course_code}`;
 
-        query += ` ORDER BY Sections.year DESC, Sections.term DESC, Sections.subject ASC, Sections.course_code ASC`
+        if (year != null)
+            query += ` AND Sections.year = ${year}`;
+
+        if (term != null)
+            query += ` AND Sections.term = ${term}`;
+
+        if (crn != null)
+            query += ` AND Sections.crn = ${crn}`;
+
+        query += ` ORDER BY Sections.year DESC, Sections.term DESC, Sections.subject ASC, Sections.course_code ASC`;
 
         const rows = this.executeQuery(query);
 
-        // hhhhh
         // must efficiently extract schedule and course information and insubstantiate them into classes for fuzzy search
-        let out = []
+        let out = [];
+        let i = 0;
 
-        for (let i = 0; i < rows.length; i++) {
+        while (i < rows.length) {
+            const init = rows[i];
+            const schedule = [];
 
-            let init = rows[i]
-            let schedule = [init.slice(17, 23 + 1)]
-
-            let j = i + 1
-            let next = rows[j]
-
-            while (next != undefined && init[0] == next[0] && init[1] == next[1] && init[5] == next[5]) {
-                schedule.push(next.slice(17, 23 + 1))
-                j += 1
-                next = rows[j]
+            while (i < rows.length && init[0] === rows[i][0] && init[1] === rows[i][1] && init[5] === rows[i][5]) {
+                schedule.push(rows[i].slice(17, 24));
+                i++;
             }
 
-            const c = new Course(init.slice(0, 14), schedule)
-            out.push(c)
-
-            i = j - 1
+            const c = new Course(init.slice(0, 14), schedule);
+            out.push(c);
         }
+
 
         return out
     }
