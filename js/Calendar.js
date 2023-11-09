@@ -272,6 +272,16 @@ class Calendar {
         this.calendarUpdate()
     }
 
+    clearFCalendar() {
+        for (const cID of this.courses_oncalendar) {
+            const c = this.coursesMap.get(cID)
+            c.hideFCalendar(this.FCalendar)
+            c.shown = false
+        }
+
+        this.courses_oncalendar = []
+    }
+
     // called whenever we need to update the courselist
     // ie new search entered, different option set
     courselistUpdate() {

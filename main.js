@@ -239,6 +239,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     c.toggleAllFCalendar(false)
   })
 
+  document.getElementById("clearButton").addEventListener("click", function (event) {
+    c.clearFCalendar(false)
+  })
+
   // TODO: redo this
   // populate termSelector and event handler for changing terms
   let ts = document.getElementById("termSelector")
