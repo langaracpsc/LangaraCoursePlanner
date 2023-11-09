@@ -75,7 +75,7 @@ class Course {
         let out = `${this.RP} ${this.seats} ${this.waitlist} ${this.crn} ${this.subject} ${this.course_code} ${this.section} ${this.credits} ${this.title} ${this.add_fees}`
 
         for (const s of this.schedule) {
-            out += "\n" + `\t${s.type} ${s.days} ${s.time} ${s.start} ${s.end} ${s.room} ${s.instructor}`
+            out += "\n" + `\t${s.type} ${s.days} ${s.time} ${s.start_date} ${s.end_date} ${s.room} ${s.instructor}`
         }
 
         return out
@@ -224,7 +224,7 @@ class Course {
         html += `<div class="sched">`
         html += `<p>Type</p><p>Day(s)</p><p>Time</p><p>Non Standard Start</p><p>Non Standard End</p><p>Room</p><p>Instructor(s)</p>`
         for (const sch of this.schedule) {
-            html += `<p>${sch.type}</p><p>${sch.days}</p><p>${sch.time}</p><p>${un(sch.start_date)}</p><p>${un(sch.end)}</p><p>${sch.room}</p><p>${sch.instructor}</p>`
+            html += `<p>${sch.type}</p><p>${sch.days}</p><p>${sch.time}</p><p>${un(sch.start_date)}</p><p>${un(sch.end_date)}</p><p>${sch.room}</p><p>${sch.instructor}</p>`
         }
         html += "</div><br>"
 
