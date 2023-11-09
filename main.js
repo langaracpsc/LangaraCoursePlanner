@@ -3,7 +3,8 @@ var c
 
 var CONSTANTS = {
   "db_api_url": "https://api2.langaracs.tech/courseDB.db",
-  "max_shown_courses": 1500
+  "max_shown_courses": 1500,
+  "dark_mode_enabled" : false
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
@@ -411,6 +412,9 @@ document.addEventListener('DOMContentLoaded', async function () {
   const useDark = window.matchMedia("(prefers-color-scheme: dark)");
 
   function toggleDarkMode(state) {
+    if (!CONSTANTS.dark_mode_enabled) 
+      return
+
     document.documentElement.classList.toggle("dark-mode", state)
     document.getElementById("footer").classList.toggle("dark-mode", state)
 
