@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   let ts = document.getElementById("termSelector")
 
   ts.addEventListener("input", async function (event) {
-    c.changeSemester()
+    c.changeSemester(event.target.value)
     c.courselistUpdate()
   })
 

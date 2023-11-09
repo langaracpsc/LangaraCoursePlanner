@@ -91,9 +91,10 @@ class Calendar {
     // Call when the term is changed
     // Sets the FCalendar date to the start of that term
     // TODO: also set the start / end date of each course on the calendar
-    changeSemester() {
-        let yearterm = document.getElementById("termSelector").value
-
+    changeSemester(yearterm) {
+        if (yearterm === undefined)
+            yearterm = document.getElementById("termSelector").value
+       
         // If looking at all than date doesn't matter
         if (yearterm == "ALL")
             return
@@ -110,6 +111,9 @@ class Calendar {
 
         this.courses_first_day = new Date(new Date(start).getTime())
         this.courses_last_day = null
+
+        document.getElementById("termSelector").value = yearterm
+        document.getElementById("termSelector2").value = yearterm
     }
 
     // Generates a list of resources for the resourceview
