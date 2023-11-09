@@ -254,6 +254,7 @@ class Calendar {
             if (show) {
                 c.showFCalendar(this.FCalendar)
                 c.shown = true
+                this.courses_oncalendar.push(c.id)
             } else {
                 c.hideFCalendar(this.FCalendar)
                 c.shown = false
