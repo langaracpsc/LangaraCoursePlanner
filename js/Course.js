@@ -224,7 +224,7 @@ class Course {
         html += `<div class="sched">`
         html += `<p>Type</p><p>Day(s)</p><p>Time</p><p>Non Standard Start</p><p>Non Standard End</p><p>Room</p><p>Instructor(s)</p>`
         for (const sch of this.schedule) {
-            html += `<p>${sch.type}</p><p>${sch.days}</p><p>${sch.time}</p><p>${un(sch.start)}</p><p>${un(sch.end)}</p><p>${sch.room}</p><p>${sch.instructor}</p>`
+            html += `<p>${sch.type}</p><p>${sch.days}</p><p>${sch.time}</p><p>${un(sch.start_date)}</p><p>${un(sch.end)}</p><p>${sch.room}</p><p>${sch.instructor}</p>`
         }
         html += "</div><br>"
 
@@ -454,21 +454,31 @@ class Course {
             let s_time = times[0].slice(0, 2) + ":" + times[0].slice(2, 4)
             let e_time = times[1].slice(0, 2) + ":" + times[1].slice(2, 4)
 
-            let start = sch["start"]
-            if (start === null)
+            let start = null
+            if (sch.start_date !== null)
+                start = new Date(sch.start_date)
+            else if (this.Calendar.courses_first_day !== null)
                 start = this.Calendar.courses_first_day
 
-            let end = sch["end"]
-            if (end === null)
-                end = this.Calendar.courses_last_day
+            let end = null
+            if (sch.end_date !== null)
+                end = new Date(sch.end_date)
+            else if (this.Calendar.courses_last_day !== null)
+                end = new Date(this.Calendar.courses_last_day)
+            else if (start !== null) 
+                end = new Date(start.getTime() + 3600000 * 24 * 7 * 12) // 14 weeks in ms
+            
+            if (end != null)
+                end = new Date(end.getTime() + 86400000)
 
-            //console.log(new Date(sch["start"]), sch["end"])
+            //console.log(new Date(sch.start_date), sch.start_date, sch.end_date)
+            
             let f = {
                 id: this.id,
                 title: `${this.subject} ${this.course_code} ${this.crn}`,
                 description: `${this.subject} ${this.course_code} ${this.section} ${this.crn} <br> ${sch.type} ${sch.room}`,
-                startRecur: new Date(start),
-                endRecur: new Date(new Date(end).getTime() + 86400000), // add 24 hours to the date to show 1 day events
+                startRecur: start,
+                endRecur: end, // add 24 hours to the date to show 1 day events
                 daysOfWeek: days,
                 startTime: s_time,
                 endTime: e_time,
@@ -482,6 +492,8 @@ class Course {
             }
 
             FCalendar.addEvent(f)
+
+            //console.log(f)
 
         }
 

@@ -108,7 +108,8 @@ class Calendar {
         //console.log(start_date)
         this.FCalendar.gotoDate(new Date(new Date(start).getTime() + 604800000))
 
-
+        this.courses_first_day = new Date(new Date(start).getTime())
+        this.courses_last_day = null
     }
 
     // Generates a list of resources for the resourceview
