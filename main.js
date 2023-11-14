@@ -298,6 +298,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById("mode2Button").classList.add("buttonSelected")
     document.getElementById("mode1Button").classList.remove("buttonSelected")
     document.getElementById("mode3Button").classList.remove("buttonSelected")
+
+    // only used when ALL SEMESTERS selected in main page
+    c.changeSemester(document.getElementById("termSelector2").value)
   })
 
   document.getElementById("mode3Button").addEventListener("click", function (event) {
@@ -319,11 +322,14 @@ document.addEventListener('DOMContentLoaded', async function () {
   function gti() {
     c.getTimetableInput()
   }
+
   inputFields.forEach(function (inputField) {
-    inputField.addEventListener('input', gti);
+    // BAD causes lag when high amt of courses found
+    //inputField.addEventListener('input', gti);
   });
 
   document.getElementById("generateTimetableButton").addEventListener("click", function (event) {
+    c.changeSemester(document.getElementById("termSelector2").value)
     c.getTimetableInput()
   })
 
