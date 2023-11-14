@@ -204,15 +204,17 @@ document.addEventListener('DOMContentLoaded', async function () {
   document.getElementById("courseSearchBar").addEventListener("input", function (event) {
 
     // When we have to search lots of courses, use debounce so the page doesn't lag as much
-    if (c.courses_shown.length > 2000) {
-      clearTimeout(debounceTimeout);
-      debounceTimeout = setTimeout(function () {
-        c.courselistUpdate();
-      }, 250); // 250 milliseconds (0.25 seconds) debounce delay
-    } else {
-      // Perform immediate update if the condition is not met
+    // set high debounce when the search would return a large number of results
+
+    let debounceTime = ((4 - event.target.value.length) * 50) + Math.sqrt(c.courses_shown.length)
+    debounceTime = Math.max(debounceTime, 250)
+
+    clearTimeout(debounceTimeout)
+
+    debounceTimeout = setTimeout(function () {
       c.courselistUpdate();
-    }
+    }, debounceTime)
+
   });
 
 
