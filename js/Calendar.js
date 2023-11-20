@@ -464,7 +464,7 @@ class Calendar {
         let c_filtered = new Set()
 
         // if NOT is the first condition, than we need something to substract from
-        if (search[0].condition == "NOT") {
+        if (search.length > 0 && search[0].condition == "NOT") {
             c_shown.map(c => c.id).forEach(item => c_filtered.add(item))
         }
 

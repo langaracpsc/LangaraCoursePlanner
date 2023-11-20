@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       c.setGhostFCalendar(target.id)
 
       if (target.id != c.timetableghost && c.timetableghost != null) {
-        document.getElementById(c.timetableghost).classList.remove("dark-gray")
+        //document.getElementById(c.timetableghost).classList.remove("dark-gray")
       }
       c.timetableghost = target.id
     }
@@ -454,12 +454,16 @@ document.addEventListener('DOMContentLoaded', async function () {
       return
     }
 
+    let year, term
+
     let yearterm = document.getElementById("termSelector").value
     if (yearterm == "ALL") {
-      yearterm = "ALL-SEMESTERS"
+      year = "All"
+      term = "Semesters"
+    } else {
+      year = parseInt(yearterm.split("-")[0])
+      term = parseInt(yearterm.split("-")[1])
     }
-    const year = parseInt(yearterm.split("-")[0])
-    const term = parseInt(yearterm.split("-")[1])
 
     const save = c.saveManager.editCreateSave(name, year, term, c.courses_oncalendar.join("_"))
 
