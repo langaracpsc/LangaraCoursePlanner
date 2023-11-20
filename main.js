@@ -421,8 +421,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     const name = prompt("Schedule name:", default_text)
 
     if (name === null) {
-      saveButton.value = "Cncld"
-      setTimeout(function() {saveButton.value = "Save"}, 2500)
+      saveButton.value = "❌💾."
+      setTimeout(function() {saveButton.value = "Save"}, 2000)
       return
     }
 
