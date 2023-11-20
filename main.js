@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById("mode2Button").classList.remove("buttonSelected")
 
     c.showSaves()
-    document.getElementById("saveNameInput").focus()
+    //document.getElementById("saveNameInput").focus()
   })
 
 
@@ -390,11 +390,64 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   })
 
-  // Create and save a new schedule
-  function createSched() {
+  function convertCourseString(inputString) {
+    const courses = inputString.split(/\s+/).filter(course => course.trim() !== "");
+    const courseCount = courses.reduce((count, course) => {
+        count[course] = (count[course] || 0) + 1;
+        return count;
+    }, {});
 
-    const name = document.getElementById("saveNameInput").value
-    const result = document.getElementById("saveResultText")
+    return Object.entries(courseCount)
+        .map(([course, count]) => `${course}${count > 1 ? `(${count})` : ""}`)
+        .join(", ");
+  }
+
+
+  const saveButton = document.getElementById('saveButton');
+  saveButton.addEventListener('click', function(event) {
+
+    let default_text = ""
+    if (c.courses_oncalendar.length > 500) {
+      default_text = `${c.courses_oncalendar.length} courses.`
+
+    } else if (c.courses_oncalendar.length > 0) {
+      for (const cID of c.courses_oncalendar) {
+        const course = c.coursesMap.get(cID)
+        default_text += course.subject + course.course_code + " "
+      }
+      default_text = convertCourseString(default_text)
+    } 
+
+    const name = prompt("Schedule name:", default_text)
+
+    if (name === null) {
+      saveButton.value = "Cncld"
+      setTimeout(function() {saveButton.value = "Save"}, 2500)
+      return
+    }
+
+    if (name == "") {
+      alert("You must enter a name.")
+      return
+    }
+
+    createSched(name)
+
+    saveButton.value = "Saved!"
+    setTimeout(function() {saveButton.value = "Save"}, 5000)
+
+    //const courses = save.courses_ids.length > 0 ? save.courses_ids.split("_").length : 0
+    //const s = courses == 1 ? "" : "s"
+    //alert(`Schedule ${name} created with ${courses} course${s}.`)
+  });
+
+  // Create and save a new schedule
+  function createSched(name) {
+
+    if (name === undefined)
+      name = document.getElementById("saveNameInput").value
+
+    //const result = document.getElementById("saveResultText")
 
     if (name == "") {
       result.textContent = "You must enter a name."
@@ -408,18 +461,21 @@ document.addEventListener('DOMContentLoaded', async function () {
     const year = parseInt(yearterm.split("-")[0])
     const term = parseInt(yearterm.split("-")[1])
 
-    c.saveManager.editCreateSave(name, year, term, c.courses_oncalendar.join("_"))
+    const save = c.saveManager.editCreateSave(name, year, term, c.courses_oncalendar.join("_"))
 
     c.showSaves()
-    result.textContent = "Success."
-    document.getElementById("saveNameInput").value = ""
+    //result.textContent = "Success."
+    //document.getElementById("saveNameInput").value = ""
+    return save
   }
 
+  /*
   document.getElementById("saveScheduleButton").addEventListener("click", createSched)
   document.getElementById("saveNameInput").addEventListener("keyup", function (event) {
     if (event.key === "Enter")
       createSched()
   })
+  */
 
   // Dark & Light mode
   const useDark = window.matchMedia("(prefers-color-scheme: dark)");

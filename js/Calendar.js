@@ -162,7 +162,7 @@ class Calendar {
         let yearterm = document.getElementById("termSelector").value
         const year = parseInt(yearterm.split("-")[0])
         const term = parseInt(yearterm.split("-")[1])
-        this.saveManager.editSave("autosave", year, term, this.courses_oncalendar.join("_"))
+        this.saveManager.editCreateSave("autosave", year, term, this.courses_oncalendar.join("_"))
     }
 
     // Toggles visibility of course in calendar
@@ -199,6 +199,9 @@ class Calendar {
     }
 
     setGhostFCalendar(id, skipClear = false) {
+        if (id == "")
+            return
+
         if (this.ghostCourses == null || this.ghostCourses == undefined)
             this.ghostCourses = []
 

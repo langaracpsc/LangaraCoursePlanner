@@ -69,9 +69,13 @@ class SaveManager {
     createSave(name, year, term, courses_ids) {
         const existingSave = this.saves.find(save => save.name === name);
 
-        if (!existingSave)
-            this.saves.push(new Save(name, year, term, courses_ids))
-        else
+        if (!existingSave) {
+            const save = new Save(name, year, term, courses_ids)
+            if (save.name == "autosave")
+                this.saves.unshift(save)
+            else
+                this.saves.push(save)
+        } else
             console.error("save already exists")
     }
 
@@ -91,6 +95,8 @@ class SaveManager {
             this.editSave(name, year, term, courses_ids)
         else
             this.createSave(name, year, term, courses_ids)
+
+        return this.getSave(name)
     }
 
     deleteSave(name) {
