@@ -311,8 +311,10 @@ class Calendar {
 
         const aS = sep + "AND" + sep
         const oS = sep + "OR" + sep
+        const oN = sep + "NOT" + sep
 
         string = string.toLowerCase().replace("and", aS).replace("&&", aS).replace("&", aS).replace("or", oS).replace("||", oS).replace("|", oS)
+        string = string.replace("not", oN)
         const split = string.split(sep)
 
         let results = new Array()
@@ -322,16 +324,20 @@ class Calendar {
         for (let term of split) {
             term = term.trim()
 
-            if (term == "AND" || term == "&" || term == "&&") {
-                storedCondition = "AND"
-                continue
-            } else if (term == "OR" || term == "||" || term == "|") {
-                storedCondition = "OR"
+            if (term == "") {
+                // Not sure why this happens
                 continue
             }
 
-            if (term == "") {
-                /* Do nothing */
+            if (term == "AND") {
+                storedCondition = "AND"
+                continue
+            } else if (term == "OR") {
+                storedCondition = "OR"
+                continue
+            } else if (term == "NOT") {
+                storedCondition = "NOT"
+                continue
             }
 
             // crn (5 digits and numeric)
@@ -427,7 +433,7 @@ class Calendar {
         let c_filtered = new Set()
 
         for (const s of search) {
-            console.assert(s.type != null && (s.condition == "AND" || s.condition == "OR") && s.search != null, `something wrong with search ${s}`)
+            console.assert(s.type != null && (s.condition == "NOT" || s.condition == "AND" || s.condition == "OR") && s.search != null, `something wrong with search ${s}`)
             console.assert(s.type == "fuzzy" || s.type == "crn" || s.type == "schedule.type" || s.type == "subject" || s.type == "coursepartial" || s.type == "course" || s.type == "course.attributes", `something wrong with search ${s}`)
 
             let searchResult = []
@@ -514,6 +520,16 @@ class Calendar {
                 }
 
                 c_filtered = new_filtered
+            } else if (s.condition == "NOT") {
+                
+                for (const c of searchResult) {
+                    if (c_filtered.has(c)) {
+                        c_filtered.delete(c)
+                    }
+                }
+
+            } else {
+                console.error("Invalid search condition found.", s)
             }
         }
 
