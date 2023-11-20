@@ -439,7 +439,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     //const courses = save.courses_ids.length > 0 ? save.courses_ids.split("_").length : 0
     //const s = courses == 1 ? "" : "s"
     //alert(`Schedule ${name} created with ${courses} course${s}.`)
-  });
+  })
 
   // Create and save a new schedule
   function createSched(name) {

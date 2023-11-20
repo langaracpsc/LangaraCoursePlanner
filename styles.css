@@ -144,6 +144,18 @@ h3:hover {
     color: #0645AD;
 }
 
+.savediv > div > h3:hover {
+    color: black;
+    text-decoration: none;
+}
+
+.savediv > div > h3 > span:first-child:hover {
+    color: black;
+    text-decoration: none;
+    box-shadow:inset 0px 0px 0px 1.5px rgb(87, 87, 87);
+    border-radius: 2px;
+}
+
 .footer {
     margin: 5px;
     margin-bottom: 0;

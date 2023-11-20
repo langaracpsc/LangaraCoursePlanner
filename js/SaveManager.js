@@ -20,9 +20,10 @@ class Save {
 
         console.assert(typeof this.courses_ids == 'string')
     }
+        
 
     generateSidebarHTML(map) {
-        let html = `<h3>${this.name} (${this.year}${this.term})</h3>`
+        let html = `<h3><span>${this.name}</span><span>(${this.year}${this.term})</span></h3>`
 
         const formattedDate = `${this.lastedited.toDateString()} ${this.lastedited.toLocaleTimeString()}`;
         html += `<p>Last edited: ${formattedDate}</p>`
@@ -46,6 +47,7 @@ class Save {
 
         let htmlwrapper = document.createElement('div');
         htmlwrapper.innerHTML = html
+
         let del = document.createElement('img');
         del.src = "assets/bin.png"
 
@@ -56,6 +58,44 @@ class Save {
 
         div.id = this.courses_ids
         div.className = `csidebar savediv gray`
+
+        let t = this
+        htmlwrapper.firstChild.addEventListener("click", function(event) {
+                    
+            function updateHeader(inputField) {
+                const newText = inputField.value;
+                const newSpan = document.createElement('span');
+                newSpan.textContent = newText;
+
+                inputField.replaceWith(newSpan);
+
+                t.name = newText
+            }
+
+            const text = this.querySelector('span:first-child').innerText;
+            const inputField = document.createElement('input');
+            inputField.type = 'text';
+            inputField.value = text;
+            inputField.select()
+
+            // Replace the header with the input field
+            const editablePart = this.querySelector('span:first-child');
+            editablePart.replaceWith(inputField);
+
+            inputField.focus();
+
+            inputField.addEventListener('blur', () => {
+                updateHeader(inputField)
+            });
+
+            inputField.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    updateHeader(inputField)
+                }
+            });
+        })
+
+
         return div
     }
 }
