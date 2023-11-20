@@ -4,7 +4,8 @@ var c
 var CONSTANTS = {
   "db_api_url": "https://api2.langaracs.tech/courseDB.db",
   "max_shown_courses": 1500,
-  "dark_mode_enabled" : false
+  "dark_mode_enabled" : false,
+  "max_timetables" : 100
 }
 
 document.addEventListener('DOMContentLoaded', async function () {

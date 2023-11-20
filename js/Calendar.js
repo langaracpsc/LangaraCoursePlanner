@@ -735,8 +735,21 @@ class Calendar {
 
         timetables = Array.from(new Set(timetables)).sort();
 
+        class Schedule {
+            constructor(courses) {
+                this.courses = courses
+                this.crns = ""
+                this.open_seats = 0
+                for (const c of courses) {
+                    this.crns += c.crn
+                    this.open_seats += c.seats
+                }
+            }
+        }
 
+        let schedules = new Array()
         let crns = new Set()
+
         for (const t of timetables) {
             let str = ""
             for (const c of t)
@@ -744,15 +757,18 @@ class Calendar {
 
             if (crns.has(str))
                 continue
+            
             crns.add(str)
+            schedules.push(new Schedule(t))
         }
 
-        //console.log("TIMETABLES", timetables, crns)
+        schedules.sort((a, b) => b.open_seats - a.open_seats);
+        //console.log("TIMETABLES", schedules, timetables, crns)
 
 
         let msg = ""
         const len = crns.size
-        const MAX_TIMETABLES = 20
+        const MAX_TIMETABLES = CONSTANTS.max_timetables
 
         if (len == 0) {
             msg = "Could not create a time table for that query."
@@ -769,11 +785,11 @@ class Calendar {
 
         crns = new Set()
 
-        for (const t of timetables) {
+        for (const s of schedules) {
 
             // don't display duplicate timetables
             let str = ""
-            for (const c of t)
+            for (const c of s.courses)
                 str += `${c.crn}`
 
             if (crns.has(str))
@@ -783,14 +799,19 @@ class Calendar {
             let ids = []
 
             let crn_str = ""
-            for (const c of t)
+            for (const c of s.courses)
                 crn_str += `${c.crn} `
 
 
             let html = "<div>"
             html += `<p><b>CRNS: ${crn_str}</b></p>`
-            for (const c of t) {
+            for (const c of s.courses) {
                 html += `<b>${c.subject} ${c.course_code} ${c.crn}</b>`
+
+                let waitlist = ""
+                if (c.waitlist !== null) 
+                    waitlist = ` ${c.waitlist} on waitlist.`
+                html += `<p>${c.seats} seats available.${waitlist}</p>`
 
                 for (const sch of c.schedule) {
                     html += `<p>${sch.type} ${sch.days} ${sch.time} ${sch.room} ${sch.instructor}</p>`
