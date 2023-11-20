@@ -401,6 +401,30 @@ class Calendar {
 
             }
 
+            // if 4 length number, than it is time
+            else if (term.length == 4 && /^\d{4}$/.test(term)) {
+                results.push({
+                    type: "course.time",
+                    condition: storedCondition,
+                    search: term
+                })
+            }
+
+            // if 3 length number, than it is time from 800 -> 959 and 100 -> 9:59
+            // currently disabled because it is just confusing to the user
+            else if (term.length == 3 && /^\d{3}$/.test(term) && false) {
+                
+                const i = parseInt(term)
+                if (i >= 100 && i <= 759)
+                    term = "" + (i + 1200) // turn 1:00 -> 13:00
+
+                results.push({
+                    type: "course.time",
+                    condition: storedCondition,
+                    search: term
+                })
+            }
+
             else {
                 results.push({
                     type: "fuzzy",
@@ -448,7 +472,7 @@ class Calendar {
 
         for (const s of search) {
             console.assert(s.type != null && (s.condition == "NOT" || s.condition == "AND" || s.condition == "OR") && s.search != null, `something wrong with search ${s}`)
-            console.assert(s.type == "fuzzy" || s.type == "crn" || s.type == "schedule.type" || s.type == "subject" || s.type == "coursepartial" || s.type == "course" || s.type == "course.attributes", `something wrong with search ${s}`)
+            console.assert(s.type == "fuzzy" || s.type == "crn" || s.type == "schedule.type" || s.type == "subject" || s.type == "coursepartial" || s.type == "course" || s.type == "course.time" || s.type == "course.attributes", `something wrong with search ${s}`)
 
             let searchResult = []
 
@@ -457,7 +481,9 @@ class Calendar {
             }
 
             else if (s.type == "schedule.type") {
-                searchResult = c_shown.filter(c => c.schedule.some(sch => sch.type === s.search)).map(c => c.id);
+                searchResult = c_shown
+                .filter(c => c.schedule.some(sch => sch.room === s.search || sch.type === s.search)) 
+                .map(c => c.id);
             }
 
             else if (s.type == "course") {
@@ -481,6 +507,13 @@ class Calendar {
                     const courseInfo = this.db.getCourseInfos(c.subject, c.course_code);
                     return courseInfo[0] && courseInfo[0][i] === 1;
                 }).map(c => c.id);
+            }
+
+            else if (s.type == "course.time") {
+
+                searchResult = c_shown
+                .filter(c => c.schedule.some(sch => sch.time.includes(s.search))) 
+                .map(c => c.id);
             }
 
             else if (s.type == "subject") {
