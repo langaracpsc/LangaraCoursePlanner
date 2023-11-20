@@ -350,6 +350,13 @@ class Calendar {
             }
 
             else if (term == "www" || term == "lab" || term == "lecture" || term == "exam" || term == "seminar" || term == "practicum") {
+                
+                // capitalization
+                if (term == "www") 
+                    term = "WWW"
+                else 
+                    term = term[0].toUpperCase() + term.slice(1);
+                
                 results.push({
                     type: "schedule.type",
                     condition: storedCondition,
@@ -432,6 +439,13 @@ class Calendar {
 
         let c_filtered = new Set()
 
+        // if NOT is the first condition, than we need something to substract from
+        if (search[0].condition == "NOT") {
+            c_shown.map(c => c.id).forEach(item => c_filtered.add(item))
+        }
+
+        //console.log(search)
+
         for (const s of search) {
             console.assert(s.type != null && (s.condition == "NOT" || s.condition == "AND" || s.condition == "OR") && s.search != null, `something wrong with search ${s}`)
             console.assert(s.type == "fuzzy" || s.type == "crn" || s.type == "schedule.type" || s.type == "subject" || s.type == "coursepartial" || s.type == "course" || s.type == "course.attributes", `something wrong with search ${s}`)
@@ -443,7 +457,7 @@ class Calendar {
             }
 
             else if (s.type == "schedule.type") {
-                searchResult = c_shown.filter(c => c.schedule.filter(sch => sch == s.type)).map(c => c.id)
+                searchResult = c_shown.filter(c => c.schedule.some(sch => sch.type === s.search)).map(c => c.id);
             }
 
             else if (s.type == "course") {
@@ -518,7 +532,6 @@ class Calendar {
                         new_filtered.add(c)
                     }
                 }
-
                 c_filtered = new_filtered
             } else if (s.condition == "NOT") {
                 
