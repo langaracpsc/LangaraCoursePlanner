@@ -25,7 +25,7 @@ class Calendar {
 
         this.datetime_retrieved = null
 
-        this.courses_first_day = "2023-01-01"
+        this.courses_first_day = new Date("2023-01-01")
         this.courses_last_day = null
 
         this.saveManager = new SaveManager()
@@ -96,8 +96,10 @@ class Calendar {
             yearterm = document.getElementById("termSelector").value
        
         // If looking at all than date doesn't matter
-        if (yearterm == "ALL")
+        if (yearterm == "ALL") {
+            this.FCalendar.gotoDate(new Date(new Date(this.courses_first_day).getTime() + 604800000))
             return
+        }
 
         const year = parseInt(yearterm.split("-")[0])
         const term = parseInt(yearterm.split("-")[1])
@@ -372,6 +374,14 @@ class Calendar {
                 })
             }
 
+            else if (term == "a" || term == "b") {
+                results.push({
+                    type: "course.half",
+                    condition: storedCondition,
+                    search: term
+                })
+            }
+
 
             else if (term.length == 4 && subjects.includes(term)) {
                 results.push({
@@ -401,18 +411,19 @@ class Calendar {
 
             }
 
-            // if 4 length number, than it is time
-            else if (term.length == 4 && /^\d{4}$/.test(term)) {
+            // search by time
+            else if (term.length == 5 && /^\d{2}:d{2}$/.test(term)) {
                 results.push({
                     type: "course.time",
                     condition: storedCondition,
-                    search: term
+                    search: term.replace(":", "")
                 })
             }
 
             // if 3 length number, than it is time from 800 -> 959 and 100 -> 9:59
             // currently disabled because it is just confusing to the user
-            else if (term.length == 3 && /^\d{3}$/.test(term) && false) {
+            /*
+            else if (term.length == 3 && /^\d{3}$/.test(term)) {
                 
                 const i = parseInt(term)
                 if (i >= 100 && i <= 759)
@@ -424,6 +435,7 @@ class Calendar {
                     search: term
                 })
             }
+            */
 
             else {
                 results.push({
@@ -468,11 +480,13 @@ class Calendar {
             c_shown.map(c => c.id).forEach(item => c_filtered.add(item))
         }
 
-        //console.log(search)
+        console.log(search)
 
         for (const s of search) {
             console.assert(s.type != null && (s.condition == "NOT" || s.condition == "AND" || s.condition == "OR") && s.search != null, `something wrong with search ${s}`)
-            console.assert(s.type == "fuzzy" || s.type == "crn" || s.type == "schedule.type" || s.type == "subject" || s.type == "coursepartial" || s.type == "course" || s.type == "course.time" || s.type == "course.attributes", `something wrong with search ${s}`)
+            
+            const valid_searches = ["fuzzy", "crn", "course.half", "schedule.type", "subject", "coursepartial", "course", "course.time", "course.attributes"]
+            console.assert( !(s.type in valid_searches), `something wrong with search ${s}`)
 
             let searchResult = []
 
@@ -514,6 +528,11 @@ class Calendar {
                 searchResult = c_shown
                 .filter(c => c.schedule.some(sch => sch.time.includes(s.search))) 
                 .map(c => c.id);
+            }
+
+            else if (s.type == "course.half") {
+
+                searchResult = c_shown.filter(c => c.section[0].toLowerCase() == s.search).map(c => c.id)
             }
 
             else if (s.type == "subject") {
