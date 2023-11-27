@@ -16,7 +16,7 @@ class Database {
         const DB_API = CONSTANTS["db_api_url"]
 
         try {
-            const dataPromise = fetch(DB_API).then(res => {
+            const dataPromise = fetch(DB_API, {cache: "reload"}).then(res => {
                 if (!res.ok) {
                     throw new Error(`Failed to fetch data from ${DB_API}`);
                 }
