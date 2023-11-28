@@ -86,7 +86,7 @@ class Database {
         if (crn != null)
             query += ` AND Sections.crn = ${crn}`;
 
-        query += ` ORDER BY Sections.year DESC, Sections.term DESC, Sections.subject ASC, Sections.course_code ASC`;
+        query += ` ORDER BY Sections.year DESC, Sections.term DESC, Sections.subject ASC, Sections.course_code ASC, Sections.section ASC`;
 
         const rows = this.executeQuery(query);
 
