@@ -475,7 +475,7 @@ class Course {
             
             let f = {
                 id: this.id,
-                title: `${this.subject} ${this.course_code} ${this.crn}`,
+                title: `${this.subject} ${this.course_code} ${this.section} ${this.crn} ${sch.type} ${sch.room}`,
                 description: `${this.subject} ${this.course_code} ${this.section} ${this.crn} <br> ${sch.type} ${sch.room}`,
                 startRecur: start,
                 endRecur: end, // add 24 hours to the date to show 1 day events

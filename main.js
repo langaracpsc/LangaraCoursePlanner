@@ -95,8 +95,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // fires when event is created, adds a second line of text to each event because you can't by default ._.
     eventContent: function (info) {
-      let p = document.createElement('p')
+      let p = document.createElement('div')
       p.innerHTML = info.event.extendedProps["description"]
+      p.classList.add("event")
       return { domNodes: [p] }
     },
 

@@ -291,3 +291,14 @@ fieldset {
 .hidenotes > div > .notes {
     display: none;
 }
+
+
+
+.fc-event-title-container {
+    container-type: size;
+    overflow: hidden;
+}
+
+.fc-event {
+    overflow: hidden;
+}
