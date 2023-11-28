@@ -480,7 +480,7 @@ class Calendar {
             c_shown.map(c => c.id).forEach(item => c_filtered.add(item))
         }
 
-        console.log(search)
+        console.log("Search", search)
 
         for (const s of search) {
             console.assert(s.type != null && (s.condition == "NOT" || s.condition == "AND" || s.condition == "OR") && s.search != null, `something wrong with search ${s}`)
