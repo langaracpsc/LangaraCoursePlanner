@@ -288,7 +288,7 @@ class Course {
         }
 
         if (transferInfo.length == 0) {
-            html += "<p><b>No transfer agreements found.</b></p>"
+            html += "<p><b>No transfer agreements found. It's possible that this is a glitch in the system: please double check this yourself.</b></p>"
         } else {
             html += `<table class="transferTable"> 
             <th>Course</th><th>Destination</th><th>Credit</th><th>Start/End</th>
