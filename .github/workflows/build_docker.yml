@@ -9,7 +9,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout files
         uses: actions/checkout@v3
         
       - name: Set up QEMU
@@ -25,7 +25,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Build and push
+      - name: Build and push docker container to Github Package Registry
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -33,3 +33,10 @@ jobs:
           push: true
           tags: |
             ghcr.io/langaracpsc/langaracourseplanner:latest
+            
+      - name: Deploy docker package on LCSC server
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://watchtower.langaracs.tech/v1/update'
+          method: 'GET'
+          bearerToken: ${{ secrets.WATCHTOWER_HTTP_API_TOKEN }}
