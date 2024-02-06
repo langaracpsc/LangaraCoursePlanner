@@ -162,6 +162,9 @@ class Course {
 
         let html = "<!DOCTYPE html>"
         html += `<style>
+        body {
+            background: white;
+        }
         h2 {margin-bottom: 2px;}
         .grid {max-width:90vw; display: grid; grid: auto auto/ fit-content(100%) fit-content(100%);}
         .sched {max-width:90vw; display: grid; grid: auto / repeat(7, fit-content(100%));}
