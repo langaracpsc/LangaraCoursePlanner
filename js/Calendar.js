@@ -83,7 +83,7 @@ class Calendar {
 
         for (const t of sems) {
             if (!inopt.includes(`${t[0]}-${t[1]}`))
-                termSelector.add(new Option(`${t[0]} ${intToStr(t[1])}`, `${t[0]}-${t[1]}`))
+                termSelector.prepend(new Option(`${t[0]} ${intToStr(t[1])}`, `${t[0]}-${t[1]}`))
         }
 
     }
