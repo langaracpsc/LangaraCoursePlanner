@@ -109,6 +109,10 @@ class Calendar {
 
         let start = start_date[0]
         //console.log(start_date)
+
+        if (start == undefined)
+            return
+
         this.FCalendar.gotoDate(new Date(new Date(start).getTime() + 604800000))
 
         this.courses_first_day = new Date(new Date(start).getTime())
