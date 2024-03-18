@@ -10,14 +10,14 @@ var CONSTANTS = {
 
 document.addEventListener('DOMContentLoaded', async function () {
 
-  let url = new URL(window.location.href);
-  // Check if the URL contains a 'ref' parameter
-  if (url.searchParams.has('ref')) {
-      // Remove the 'ref' parameter
-      url.searchParams.delete('ref');
-      // Replace the current URL with the modified one (without the 'ref' parameter)
-      window.history.replaceState({}, document.title, url.toString());
-  }
+  // let url = new URL(window.location.href);
+  // // Check if the URL contains a 'ref' parameter
+  // if (url.searchParams.has('ref')) {
+  //     // Remove the 'ref' parameter
+  //     url.searchParams.delete('ref');
+  //     // Replace the current URL with the modified one (without the 'ref' parameter)
+  //     window.history.replaceState({}, document.title, url.toString());
+  // }
 
   const db = new Database()
   c = new Calendar(db)
