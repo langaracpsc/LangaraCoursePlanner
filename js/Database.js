@@ -165,20 +165,17 @@ class Database {
         }
     
         const randomIndex = Math.floor(Math.random() * 3); // 0, 1, or 2
-        let query, columnName;
+        let query;
     
         switch(randomIndex) {
             case 0:
                 query = `SELECT room FROM Schedules ORDER BY RANDOM() LIMIT 1`;
-                columnName = 'room';
                 break;
             case 1:
                 query = `SELECT time FROM Schedules ORDER BY RANDOM() LIMIT 1`;
-                columnName = 'time';
                 break;
             case 2:
                 query = `SELECT instructor FROM Schedules ORDER BY RANDOM() LIMIT 1`;
-                columnName = 'instructor';
                 break;
             default:
                 return null;
