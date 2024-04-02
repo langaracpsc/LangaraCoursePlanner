@@ -44,10 +44,13 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // enable options when database is ready
     document.getElementById("courseSearchBar").disabled = false
+
     const fieldsets = document.querySelectorAll('fieldset');
     fieldsets.forEach(fieldset => { fieldset.removeAttribute('disabled') })
 
     console.log("Calendar successfully initialized!")
+
+    setCourseSearch(db.getRandomItem());
 
   }).catch( error => { console.error("Error while initializing: ", error) })
 
@@ -207,8 +210,6 @@ document.addEventListener('DOMContentLoaded', async function () {
   document.getElementById("courselist").addEventListener("mouseleave", function (event) {
     c.clearAllGhosts()
   })
-
-
 
   // automatically update course search results when searching
   let debounceTimeout;
@@ -527,6 +528,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   });
 
-  
+  function setCourseSearch(promptText) {
+    const placeholderText = `Try: ${promptText}`; // Combine provided text with random prompt
 
+    const courseSearchBar = document.getElementById("courseSearchBar");
+    if (courseSearchBar) {
+        courseSearchBar.setAttribute("placeholder", placeholderText);
+    } else {
+        console.error("Element with id 'courseSearchBar' not found.");
+    }
+}
 })
