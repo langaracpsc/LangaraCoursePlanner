@@ -158,5 +158,33 @@ class Database {
         return [].concat(...rows);
     }
 
+    getRandomItem() {
+        if (!this.db) {
+            console.error('Database is not initialized.');
+            return null;
+        }
+    
+        const randomIndex = Math.floor(Math.random() * 3); // 0, 1, or 2
+        let query;
+    
+        switch(randomIndex) {
+            case 0:
+                query = `SELECT room FROM Schedules ORDER BY RANDOM() LIMIT 1`;
+                break;
+            case 1:
+                query = `SELECT time FROM Schedules ORDER BY RANDOM() LIMIT 1`;
+                break;
+            case 2:
+                query = `SELECT instructor FROM Schedules ORDER BY RANDOM() LIMIT 1`;
+                break;
+            default:
+                return null;
+        }
+            const rows = this.executeQuery(query);
+            console.log("Rows:", rows); // Debugging log
+            return rows[0][0];
+    }
+    
+
 
 }
