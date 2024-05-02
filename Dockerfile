@@ -12,7 +12,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.t
 # final stage
 FROM python:3.12.2-slim
 
-WORKDIR /app
+WORKDIR /
 
 COPY --from=builder /app/wheels /wheels
 COPY --from=builder /app/requirements.txt .
@@ -24,4 +24,3 @@ COPY . .
 
 # run code
 ENTRYPOINT [ "python3", "main.py"]
-# CMD ["prod"]
