@@ -67,41 +67,103 @@
     <br>
 
     <table>
-        <tbody><tr> 
-            <th class="">2AR</th> 
-            <th class="">2SC</th> 
-            <th class="">HUM</th> 
-            <th class="">LSC</th> 
-            <th class="">SCI</th> 
-            <th class="">SOC</th> 
-            <th class="">UT</th> 
+        <tr>
+            <th class="{{ course_info.AR|attr_color }}">2AR</th>
+            <th class="{{ course_info.SC|attr_color }}">2SC</th>
+            <th class="{{ course_info.HUM|attr_color }}">HUM</th>
+            <th class="{{ course_info.LSC|attr_color }}">LSC</th>
+            <th class="{{ course_info.SCI|attr_color }}">SCI</th>
+            <th class="{{ course_info.SOC|attr_color }}">SOC</th>
+            <th class="{{ course_info.UT|attr_color }}">UT</th>
         </tr>
         <tr>
-            <td>{{ course_info.AR }}</td>
-            <td>{{ course_info.SC }}</td>
-            <td>{{ course_info.HUM }}</td>
-            <td>{{ course_info.LSC }}</td>
-            <td>{{ course_info.SCI }}</td>
-            <td>{{ course_info.SOC }}</td>
-            <td>{{ course_info.UT }}</td>
-        </tr></tbody>
+            <td class="{{ course_info.AR|attr_color }}">{{ course_info.AR|format_attribute }}</td>
+            <td class="{{ course_info.SC|attr_color }}">{{ course_info.SC|format_attribute }}</td>
+            <td class="{{ course_info.HUM|attr_color }}">{{ course_info.HUM|format_attribute }}</td>
+            <td class="{{ course_info.LSC|attr_color }}">{{ course_info.LSC|format_attribute }}</td>
+            <td class="{{ course_info.SCI|attr_color }}">{{ course_info.SCI|format_attribute }}</td>
+            <td class="{{ course_info.SOC|attr_color }}">{{ course_info.SOC|format_attribute }}</td>
+            <td class="{{ course_info.UT|attr_color }}">{{ course_info.UT|format_attribute }}</td>
+        </tr>
     </table>
 
     <h2>Transfers:</h2>
     <table class="transferTable"> 
-        <th>Course</th><th>Destination</th><th>Credit</th><th>Start/End</th>
-        
-    {% for transfer in transfers %}
-        <tr class="${classes} {{ transfer[3] }}">
-            <td class="tablePriority">{{ transfer[0] }} {{ transfer[1] }}</td>
-            <td class="tablePriority">{{ transfer[3] }}</td>
-            <td>{{ transfer[4] }}</td>
-            <td class="tablePriority">{{ transfer[5] }} to {{ transfer[6] }}</td>
-        </tr>
-    {% endfor %}
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Destination</th>
+                <th>Credit</th>
+                <th>Start/End</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transfer in transfers %}
+                {% set classes = [] %}
+                {% if transfer[6] != "present" %}
+                    {% set _ = classes.append("hidden") %}
+                {% endif %}
+                {% if transfer[4] == "No credit" or transfer[4] == "No Credit" %}
+                    {% set _ = classes.append("red") %}
+                {% endif %}
+                {% if transfer[4] == "Individual assessment." %}
+                    {% set _ = classes.append("yellow") %}
+                {% else %}
+                    {% set credit_val = transfer[4].split("(")[-1].split(")")[0] %}
+                    {% if credit_val|float < course_info.credits|float %}
+                        {% set _ = classes.append("yellow") %}
+                    {% endif %}
+                {% endif %}
+                <tr class="{{ classes|join(' ') }} {{ transfer[3] }}">
+                    <td class="tablePriority">{{ transfer[0] }} {{ transfer[1] }}</td>
+                    <td class="tablePriority">{{ transfer[3] }}</td>
+                    <td>{{ transfer[4] }}</td>
+                    <td class="tablePriority">{{ transfer[5] }} to {{ transfer[6] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 
-    <h2>Offerings:</h2>
+    <h2>Current Offerings:</h2>
+    {% if current_offerings %}
+        <table class="offeredTable mono"> 
+            <thead>
+                <th>Semester</th> 
+                <th>Seats</th> 
+                <th>Waitlist</th> 
+                <th>Days</th> 
+                <th>Time</th> 
+                <th>Room</th> 
+                <th>Type</th> 
+                <th>Instructor</th>
+            </thead>
+            <tbody>
+                {% for offering in current_offerings %}
+                    {% set schedule_length = offering.schedule|length %}
+                    {% for schedule in offering.schedule %}
+                        <tr>
+                            {% if loop.first %}
+                                <td rowspan="{{ schedule_length }}">{{ offering.year }} {{ offering.term }}</td>
+                                <td rowspan="{{ schedule_length }}">{{ offering.seats|default('N/A', true) }}</td>
+                                <td rowspan="{{ schedule_length }}">{{ offering.waitlist|default('N/A', true) }}</td>
+                            {% endif %}
+                            <td>{{ schedule.days }}</td>
+                            <td>{{ schedule.time }}</td>
+                            <td>{{ schedule.room }}</td>
+                            <td>{{ schedule.type }}</td>
+                            <td>{{ schedule.instructor }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Course not offered this semester ({{ current_term.year }} {{ current_term.term }}).</p>
+    {% endif %}
+
+
+
+    <h2>All Offerings:</h2>
     <table class="offeredTable mono"> 
         <thead><th>Semester</th> <th>Seats</th> <th>Waitlist</th> <th>Days</th> <th>Time</th> <th>Room</th> <th>Type</th> <th>Instructor</th></thead>
         {% for offering in offerings %}
@@ -109,7 +171,7 @@
             {% for schedule in offering.schedule %}
                 <tr>
                     {% if loop.first %}
-                        <td rowspan="{{ schedule_length }}">{{ offering.year }}{{ offering.semester }}</td>
+                        <td rowspan="{{ schedule_length }}">{{ offering.year }} {{ offering.term }}</td>
                         <td rowspan="{{ schedule_length }}">{{ offering.seats|default('N/A', true) }}</td>
                         <td rowspan="{{ schedule_length }}">{{ offering.waitlist|default('N/A', true) }}</td>
                     {% endif %}
@@ -122,7 +184,7 @@
             {% endfor %}
         {% endfor %}
         </tbody>
-            
+    </table>
 
 </body>
 </html>
