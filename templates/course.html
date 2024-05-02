@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course_info.title }}</title>
+    <style>
+        body {
+            background: white;
+            margin-left:20px;
+            margin-right:20px;
+        }
+        h2 {margin-bottom: 2px;}
+        .grid {max-width:90vw; display: grid; grid: auto auto/ fit-content(100%) fit-content(100%);}
+        .sched {max-width:90vw; display: grid; grid: auto / repeat(7, fit-content(100%));}
+        div > * {border: 1px solid #000; padding-right: 5px; padding-left: 5px; padding-top:2px; padding-bottom:2px; margin: 0;}
+        iframe {width:90vw; height: 300px; padding: 10px;}
+        
+        .red {background-color: rgb(253, 167, 167);}
+        .yellow {background-color: rgb(241, 241, 162);}
+        .green {background-color: rgb(126, 198, 126);} 
+        table {
+            border-collapse: collapse;
+        }
+        table > td, tbody > * {
+            vertical-align: top;
+            text-align: left;
+        }    
+        th, td {
+            border: 1px solid #000;
+            text-align: left;
+            padding: 5px;
+        }
+                
+        #transferTable {
+            width: fit-content;
+            table-layout: fixed;
+        }
+        .tablePriority {
+            min-width: max-content;
+        }
+
+        .offeredTable {
+            width: fit-content;
+        }
+        </style>
+</head>
+<body>
+    <h2><a href="https://langara.ca/programs-and-courses/courses/{{course_info.subject}}/{{course_info.course_code}}.html">{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</a></h2>
+
+    <p>{{ course_info.description }}</p>
+
+    <h2>Course Information:</h2>
+
+    <div class="grid">
+        <p>Credits:</p><p>{{ course_info.credits }}</p>
+        <p>Title:</p><p>{{ course_info.title }}</p>
+        {# TODO: NEEDS TO BE ADDED TO API#}
+        {# <p>Additional Fees:</p><p>{{ course_info.add_fees }}</p> #} 
+        {# <p>Repeat Limit:</p><p>{{ course_info.rpt_limit }}</p> #}
+        <p>Lecture Hours:</p><p>{{ course_info.lecture_hours }}</p>
+        <p>Seminar Hours:</p><p>{{ course_info.seminar_hours }}</p>
+        <p>Lab Hours:</p><p>{{ course_info.lab_hours }}</p>
+        {# <p>Notes:</p><p>{{ course_info.notes }}</p> #}
+    </div>
+
+    <br>
+
+    <table>
+        <tbody><tr> 
+            <th class="">2AR</th> 
+            <th class="">2SC</th> 
+            <th class="">HUM</th> 
+            <th class="">LSC</th> 
+            <th class="">SCI</th> 
+            <th class="">SOC</th> 
+            <th class="">UT</th> 
+        </tr>
+        <tr>
+            <td>{{ course_info.AR }}</td>
+            <td>{{ course_info.SC }}</td>
+            <td>{{ course_info.HUM }}</td>
+            <td>{{ course_info.LSC }}</td>
+            <td>{{ course_info.SCI }}</td>
+            <td>{{ course_info.SOC }}</td>
+            <td>{{ course_info.UT }}</td>
+        </tr></tbody>
+    </table>
+
+    <h2>Transfers:</h2>
+    <table class="transferTable"> 
+        <th>Course</th><th>Destination</th><th>Credit</th><th>Start/End</th>
+        
+    {% for transfer in transfers %}
+        <tr class="${classes} {{ transfer[3] }}">
+            <td class="tablePriority">{{ transfer[0] }} {{ transfer[1] }}</td>
+            <td class="tablePriority">{{ transfer[3] }}</td>
+            <td>{{ transfer[4] }}</td>
+            <td class="tablePriority">{{ transfer[5] }} to {{ transfer[6] }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    <h2>Offerings:</h2>
+    <table class="offeredTable mono"> 
+        <thead><th>Semester</th> <th>Seats</th> <th>Waitlist</th> <th>Days</th> <th>Time</th> <th>Room</th> <th>Type</th> <th>Instructor</th></thead>
+        {% for offering in offerings %}
+            {% set schedule_length = offering.schedule|length %}
+            {% for schedule in offering.schedule %}
+                <tr>
+                    {% if loop.first %}
+                        <td rowspan="{{ schedule_length }}">{{ offering.year }}{{ offering.semester }}</td>
+                        <td rowspan="{{ schedule_length }}">{{ offering.seats|default('N/A', true) }}</td>
+                        <td rowspan="{{ schedule_length }}">{{ offering.waitlist|default('N/A', true) }}</td>
+                    {% endif %}
+                    <td>{{ schedule.days }}</td>
+                    <td>{{ schedule.time }}</td>
+                    <td>{{ schedule.room }}</td>
+                    <td>{{ schedule.type }}</td>
+                    <td>{{ schedule.instructor }}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+        </tbody>
+            
+
+</body>
+</html>
