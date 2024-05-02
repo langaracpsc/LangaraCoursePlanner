@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request, send_from_directory
 import requests
+import sys
 
 app = Flask(
     __name__, 
@@ -58,7 +59,10 @@ def course(department, course_number):
         return jsonify({'error': 'Failed to fetch data'}), response.status_code
 
 if __name__ == '__main__':
-    from waitress import serve
-    # serve(app, host="0.0.0.0", port=5000, threads=20)
-    
-    app.run(debug=True)
+    if "-dev" in sys.argv:
+        app.run(debug=True)
+        
+    else:
+        from waitress import serve
+        serve(app, host="0.0.0.0", port=5000, threads=20)
+        
