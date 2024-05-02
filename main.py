@@ -21,9 +21,13 @@ def index_files(filename:str):
 def send_js(path):
     return send_from_directory('static/js', path)
 
+@app.route('/assets/<path:path>')
+def send_assets(path):
+    return send_from_directory('static/assets', path)
+
 
 # route for getting specific course
-@app.route('/<department>/<course_number>')
+@app.route('/course/<department>/<course_number>')
 def course(department, course_number):
     api_url = f"http://api2.langaracs.tech/data/{department}/{course_number}"
     response = requests.get(api_url)
@@ -34,4 +38,7 @@ def course(department, course_number):
         return jsonify({'error': 'Failed to fetch data'}), response.status_code
 
 if __name__ == '__main__':
-    app.run()
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=5000, threads=20)
+    
+    # app.run(debug=True)
