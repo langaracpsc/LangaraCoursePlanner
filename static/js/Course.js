@@ -158,6 +158,7 @@ class Course {
 
 
     // html for the course info that opens in a new window
+    // NOW OBSOLETE
     generateCourseInfoHTML() {
 
         let html = "<!DOCTYPE html>"

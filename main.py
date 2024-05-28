@@ -38,7 +38,7 @@ def format_attribute(value):
 
 
 # route for getting specific course
-@app.route('/courses/<department>/<course_number>')
+@app.route('/course/<department>/<course_number>')
 def course(department, course_number):
     api_url = f"http://api2.langaracs.ca/data/{department}/{course_number}"
     response = requests.get(api_url)
