@@ -246,7 +246,7 @@ class Calendar {
 
         let c = this.coursesMap.get(id)
 
-        let new_window = window.open(`https://planner.langaracs.tech/course/${c.subject}/${c.course_code}`, "https://planner.langaracs.tech/courses/cpsc/1050", "toolbar=no,width=800,height=700")
+        let new_window = window.open(`https://planner.langaracs.tech/course/${c.subject}/${c.course_code}`, "_blank").focus()
         // new_window.document.body.innerHTML = c.generateCourseInfoHTML()
     }
 
