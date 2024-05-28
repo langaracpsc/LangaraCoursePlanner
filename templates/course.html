@@ -131,6 +131,7 @@
         <table class="offeredTable mono"> 
             <thead>
                 <th>Semester</th> 
+                <th>Section</th>
                 <th>Seats</th> 
                 <th>Waitlist</th> 
                 <th>Days</th> 
@@ -146,6 +147,7 @@
                         <tr>
                             {% if loop.first %}
                                 <td rowspan="{{ schedule_length }}">{{ offering.year }} {{ offering.term }}</td>
+                                <td rowspan="{{ schedule_length }}">{{ offering.section }}</td>
                                 <td rowspan="{{ schedule_length }}">{{ offering.seats|default('N/A', true) }}</td>
                                 <td rowspan="{{ schedule_length }}">{{ offering.waitlist|default('N/A', true) }}</td>
                             {% endif %}
