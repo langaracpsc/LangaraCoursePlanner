@@ -2,7 +2,7 @@
 var c
 
 var CONSTANTS = {
-  "db_api_url": "https://api2.langaracs.tech/courseDB.db",
+  "db_api_url": "https://api2.langaracs.ca/courseDB.db",
   "max_shown_courses": 1500,
   "dark_mode_enabled" : false,
   "max_timetables" : 100
