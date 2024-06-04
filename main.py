@@ -40,23 +40,34 @@ def format_attribute(value):
 # route for getting specific course
 @app.route('/course/<department>/<course_number>')
 def course(department, course_number):
-    api_url = f"http://api2.langaracs.ca/data/{department}/{course_number}"
+    api_url = f"https://coursesapi.langaracs.ca/course/{department}/{course_number}"
     response = requests.get(api_url)
-    if response.status_code == 200:
-        data = response.json()
-        
-        # must be parsed here, its not possible to extract in the jinja template
-
-        current_term = requests.get("https://api2.langaracs.ca/meta/current_semester")
-        current_term = current_term.json()
-        
-        offered_in_current_semester = [c for c in data["offerings"] if c['year'] == current_term['year'] and c['term'] == current_term['term']]
-        old_offerings = [c for c in data["offerings"] if c['year'] != current_term['year'] or c['term'] != current_term['term']]
-        old_offerings.reverse()
-        
-        return render_template('course.html', course_info=data['courseInfo'], transfers=data['transfers'], offerings=old_offerings, current_offerings=offered_in_current_semester, current_term=current_term)
-    else:
+    if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch data'}), response.status_code
+    
+    data = response.json()
+    
+    # must be parsed here, its not possible to extract in the jinja template
+
+    current_term = requests.get("https://coursesapi.langaracs.ca/index/latest_semester")
+    current_term = current_term.json()
+    
+    for c in data["offerings"]:
+        c["year"] = c['id'].split("-")[1]
+        c["term"] = c['id'].split("-")[2]
+    
+    offered_in_current_semester = [c for c in data["offerings"] if c['year'] == current_term['year'] and c['term'] == current_term['term']]
+    old_offerings = [c for c in data["offerings"] if c['year'] != current_term['year'] or c['term'] != current_term['term']]
+    old_offerings.reverse()
+    
+    current_transfers = [t for t in data["transfers"] if t["effective_end"] == None]
+    inactive_transfers = [t for t in data["transfers"] if t["effective_end"] != None]
+    
+    if data["title"] == "" or data["title"] == None:
+        data["title"] = data["abbreviated_title"]
+        
+    return render_template('course.html', course_info=data, transfers=current_transfers, inactive_transfers=inactive_transfers, offerings=old_offerings, current_offerings=offered_in_current_semester, current_term=current_term)
+        
 
 if __name__ == '__main__':
     if "-dev" in sys.argv:
