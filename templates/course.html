@@ -45,12 +45,20 @@
         .offeredTable {
             width: fit-content;
         }
+
+        .hidden {
+            display: None
+        }
         </style>
 </head>
 <body>
     <h2><a href="https://langara.ca/programs-and-courses/courses/{{course_info.subject}}/{{course_info.course_code}}.html">{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</a></h2>
 
-    <p>{{ course_info.description }}</p>
+    {% if transfers %}
+        <p>{{ course_info.description }}</p>
+    {% else %}
+        <p>Course description not available.</p>       
+    {% endif %}
 
     <h2>Course Information:</h2>
 
@@ -58,11 +66,12 @@
         <p>Credits:</p><p>{{ course_info.credits }}</p>
         <p>Title:</p><p>{{ course_info.title }}</p>
         {# TODO: NEEDS TO BE ADDED TO API#}
-        {# <p>Additional Fees:</p><p>{{ course_info.add_fees }}</p> #} 
-        {# <p>Repeat Limit:</p><p>{{ course_info.rpt_limit }}</p> #}
-        <p>Lecture Hours:</p><p>{{ course_info.lecture_hours }}</p>
-        <p>Seminar Hours:</p><p>{{ course_info.seminar_hours }}</p>
-        <p>Lab Hours:</p><p>{{ course_info.lab_hours }}</p>
+        <p>Additional Fees:</p><p>{{ course_info.add_fees }}</p>
+        <p>Repeat Limit:</p><p>{{ course_info.rpt_limit }}</p>
+        <p>Lecture Hours:</p><p>{{ course_info.hours_lecture }}</p>
+        <p>Seminar Hours:</p><p>{{ course_info.hours_seminar }}</p>
+        <p>Lab Hours:</p><p>{{ course_info.hours_lab }}</p>
+        
         {# <p>Notes:</p><p>{{ course_info.notes }}</p> #}
     </div>
 
@@ -70,61 +79,109 @@
 
     <table>
         <tr>
-            <th class="{{ course_info.AR|attr_color }}">2AR</th>
-            <th class="{{ course_info.SC|attr_color }}">2SC</th>
-            <th class="{{ course_info.HUM|attr_color }}">HUM</th>
-            <th class="{{ course_info.LSC|attr_color }}">LSC</th>
-            <th class="{{ course_info.SCI|attr_color }}">SCI</th>
-            <th class="{{ course_info.SOC|attr_color }}">SOC</th>
-            <th class="{{ course_info.UT|attr_color }}">UT</th>
+            <th class="{{ course_info.attr_ar|attr_color }}">2AR</th>
+            <th class="{{ course_info.attr_sc|attr_color }}">2SC</th>
+            <th class="{{ course_info.attr_hum|attr_color }}">HUM</th>
+            <th class="{{ course_info.attr_lsc|attr_color }}">LSC</th>
+            <th class="{{ course_info.attr_sci|attr_color }}">SCI</th>
+            <th class="{{ course_info.attr_soc|attr_color }}">SOC</th>
+            <th class="{{ course_info.attr_ut|attr_color }}">UT</th>
         </tr>
         <tr>
-            <td class="{{ course_info.AR|attr_color }}">{{ course_info.AR|format_attribute }}</td>
-            <td class="{{ course_info.SC|attr_color }}">{{ course_info.SC|format_attribute }}</td>
-            <td class="{{ course_info.HUM|attr_color }}">{{ course_info.HUM|format_attribute }}</td>
-            <td class="{{ course_info.LSC|attr_color }}">{{ course_info.LSC|format_attribute }}</td>
-            <td class="{{ course_info.SCI|attr_color }}">{{ course_info.SCI|format_attribute }}</td>
-            <td class="{{ course_info.SOC|attr_color }}">{{ course_info.SOC|format_attribute }}</td>
-            <td class="{{ course_info.UT|attr_color }}">{{ course_info.UT|format_attribute }}</td>
+            <td class="{{ course_info.attr_ar|attr_color }}">{{ course_info.attr_ar|format_attribute }}</td>
+            <td class="{{ course_info.attr_sc|attr_color }}">{{ course_info.attr_sc|format_attribute }}</td>
+            <td class="{{ course_info.attr_hum|attr_color }}">{{ course_info.attr_hum|format_attribute }}</td>
+            <td class="{{ course_info.attr_lsc|attr_color }}">{{ course_info.attr_lsc|format_attribute }}</td>
+            <td class="{{ course_info.attr_sci|attr_color }}">{{ course_info.attr_sci|format_attribute }}</td>
+            <td class="{{ course_info.attr_soc|attr_color }}">{{ course_info.attr_soc|format_attribute }}</td>
+            <td class="{{ course_info.attr_ut|attr_color }}">{{ course_info.attr_ut|format_attribute }}</td>
         </tr>
     </table>
 
     <h2>Transfers:</h2>
-    <table class="transferTable"> 
-        <thead>
-            <tr>
-                <th>Course</th>
-                <th>Destination</th>
-                <th>Credit</th>
-                <th>Start/End</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for transfer in transfers %}
-                {% set classes = [] %}
-                {% if transfer[6] != "present" %}
-                    {% set _ = classes.append("hidden") %}
-                {% endif %}
-                {% if transfer[4] == "No credit" or transfer[4] == "No Credit" %}
-                    {% set _ = classes.append("red") %}
-                {% endif %}
-                {% if transfer[4] == "Individual assessment." %}
-                    {% set _ = classes.append("yellow") %}
-                {% else %}
-                    {% set credit_val = transfer[4].split("(")[-1].split(")")[0] %}
-                    {% if credit_val|float < course_info.credits|float %}
-                        {% set _ = classes.append("yellow") %}
-                    {% endif %}
-                {% endif %}
-                <tr class="{{ classes|join(' ') }} {{ transfer[3] }}">
-                    <td class="tablePriority">{{ transfer[0] }} {{ transfer[1] }}</td>
-                    <td class="tablePriority">{{ transfer[3] }}</td>
-                    <td>{{ transfer[4] }}</td>
-                    <td class="tablePriority">{{ transfer[5] }} to {{ transfer[6] }}</td>
+    {% if transfers %}
+        <table class="transferTable"> 
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Destination</th>
+                    <th>Credit</th>
+                    <th>Start/End</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for transfer in transfers %}
+                    {% set classes = [] %}
+                    
+                    {% if transfer.credit == "No credit" or transfer.credit == "No Credit" %}
+                        {% set _ = classes.append("red") %}
+                    {% endif %}
+                    {% if transfer.credit == "Individual assessment." %}
+                        {% set _ = classes.append("yellow") %}
+                    {% else %}
+                        {% set credit_val = transfer.credit.split("(")[-1].split(")")[0] %}
+                        {% if credit_val|float < course_info.credits|float %}
+                            {% set _ = classes.append("yellow") %}
+                        {% endif %}
+                    {% endif %}
+                    <tr class="{{ classes|join(' ') }} {{ transfer.source }}">
+                        <td class="tablePriority">{{ transfer.subject }} {{ transfer.course_code }}</td>
+                        <td class="tablePriority">{{ transfer.destination }}</td>
+                        {% if transfer.condition %}
+                            <td>{{ transfer.credit }} {{transfer.condition}}</td>
+                        {% else %}
+                            <td>{{ transfer.credit }}</td>
+                        {% endif %}
+                        <td class="tablePriority">{{ transfer.effective_start }} to Present</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No active transfer agreements found.</p>
+    {% endif %}
+
+    <h2>Inactive Transfers:</h2>
+    {% if inactive_transfers %}
+        <table class="transferTable"> 
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Destination</th>
+                    <th>Credit</th>
+                    <th>Start/End</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transfer in inactive_transfers %}
+                    {% set classes = [] %}
+                    {% if transfer.credit == "No credit" or transfer.credit == "No Credit" %}
+                        {% set _ = classes.append("red") %}
+                    {% endif %}
+                    {% if transfer.credit == "Individual assessment." %}
+                        {% set _ = classes.append("yellow") %}
+                    {% else %}
+                        {% set credit_val = transfer.credit.split("(")[-1].split(")")[0] %}
+                        {% if credit_val|float < course_info.credits|float %}
+                            {% set _ = classes.append("yellow") %}
+                        {% endif %}
+                    {% endif %}
+                    <tr class="{{ classes|join(' ') }} {{ transfer.source }}">
+                        <td class="tablePriority">{{ transfer.subject }} {{ transfer.course_code }}</td>
+                        <td class="tablePriority">{{ transfer.destination }}</td>
+                        {% if transfer.condition %}
+                            <td>{{ transfer.credit }} {{transfer.condition}}</td>
+                        {% else %}
+                            <td>{{ transfer.credit }}</td>
+                        {% endif %}
+                        <td class="tablePriority">{{ transfer.effective_start }} to {{ transfer.effective_end }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No inactive transfer agreements found.</p>
+    {% endif %}
 
     <h2>Current Offerings:</h2>
     {% if current_offerings %}
@@ -162,12 +219,12 @@
             </tbody>
         </table>
     {% else %}
-        <p>Course not offered this semester ({{ current_term.year }} {{ current_term.term }}).</p>
+        <p>No offerings found for this semester ({{ current_term.year }} {{ current_term.term }}).</p>
     {% endif %}
 
 
 
-    <h2>All Offerings:</h2>
+    <h2>Previous Offerings:</h2>
     <table class="offeredTable mono"> 
         <thead><th>Semester</th> <th>Seats</th> <th>Waitlist</th> <th>Days</th> <th>Time</th> <th>Room</th> <th>Type</th> <th>Instructor</th></thead>
         {% for offering in offerings %}
