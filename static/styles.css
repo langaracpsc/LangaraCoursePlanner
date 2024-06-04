@@ -302,3 +302,7 @@ fieldset {
 .fc-event {
     overflow: hidden;
 }
+
+a.cl{
+    all: unset;
+}

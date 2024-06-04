@@ -109,9 +109,9 @@ class Course {
         if (!(this.notes === null)) {
             scheduleHTML += `<p class="notes">${this.notes}</p>`
         }
-
+        
         let html = `
-            <h3>${this.subject} ${this.fmtCC(this.course_code)} ${this.section} : ${this.title}</h3>
+            <h3><a class="cl" target=_blank href=${window.location.href}course/${this.subject}/${this.course_code}>${this.subject} ${this.fmtCC(this.course_code)} ${this.section} : ${this.title}</a></h3>
         `
         let color = ""
 
