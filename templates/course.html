@@ -54,7 +54,7 @@
 <body>
     <h2><a href="https://langara.ca/programs-and-courses/courses/{{course_info.subject}}/{{course_info.course_code}}.html">{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</a></h2>
 
-    {% if transfers %}
+    {% if course_info.description %}
         <p>{{ course_info.description }}</p>
     {% else %}
         <p>Course description not available.</p>       
