@@ -53,8 +53,8 @@ def course(department, course_number):
     current_term = current_term.json()
     
     for c in data["offerings"]:
-        c["year"] = c['id'].split("-")[1]
-        c["term"] = c['id'].split("-")[2]
+        c["year"] = int(c['id'].split("-")[1])
+        c["term"] = int(c['id'].split("-")[2])
     
     offered_in_current_semester = [c for c in data["offerings"] if c['year'] == current_term['year'] and c['term'] == current_term['term']]
     old_offerings = [c for c in data["offerings"] if c['year'] != current_term['year'] or c['term'] != current_term['term']]
