@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{subject}}</title>
+    <meta content="All courses for {{subject}}." property="og:title" />
+    <meta content="Information about courses in {{subject}}." property="og:description" />
+    <style>
+        body {
+            background: white;
+            margin-left:20px;
+            margin-right:20px;
+            font-size: 1.2em;
+        }
+        h2 {margin-bottom: 2px;}
+        .grid {max-width:90vw; display: grid; grid: auto auto/ fit-content(100%) fit-content(100%);}
+        .sched {max-width:90vw; display: grid; grid: auto / repeat(7, fit-content(100%));}
+        div > * {border: 1px solid #000; padding-right: 5px; padding-left: 5px; padding-top:2px; padding-bottom:2px; margin: 0;}
+        iframe {width:90vw; height: 300px; padding: 10px;}
+        
+        .red {background-color: rgb(253, 167, 167);}
+        .yellow {background-color: rgb(241, 241, 162);}
+        .green {background-color: rgb(126, 198, 126);} 
+        table {
+            border-collapse: collapse;
+        }
+        table > td, tbody > * {
+            vertical-align: top;
+            text-align: left;
+        }    
+        th, td {
+            border: 1px solid #000;
+            text-align: left;
+            padding: 5px;
+        }
+                
+        #transferTable {
+            width: fit-content;
+            table-layout: fixed;
+        }
+        .tablePriority {
+            min-width: max-content;
+        }
+
+        .offeredTable {
+            width: fit-content;
+        }
+
+        .hidden {
+            display: None
+        }
+
+        </style>
+</head>
+<body>
+
+    <h1>{{subject}}</h1>
+
+    <h2>Courses:</h2>
+    {% for course in active_courses %}
+        <p><a href="/course/{{course.subject}}/{{course.course_code}}">{{course.subject}} {{course.course_code}}: {{course.title}}</a></p>
+    {% endfor %}
+
+    <h2>Discontinued courses:</h2>
+    {% for course in inactive_courses %}
+        <p><a href="/course/{{course.subject}}/{{course.course_code}}">{{course.subject}} {{course.course_code}}
+        {% if course.title %}
+            : {{course.title}}
+        {% endif %}
+        </a></p>
+    {% endfor %}
+
+</body>
+</html>
