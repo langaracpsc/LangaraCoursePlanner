@@ -52,7 +52,14 @@
         </style>
 </head>
 <body>
+    
+    {% if not course_info.active%}
+    <h2>{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</h2>
+    <p>WARNING: This course is no longer offered by Langara. Information provided here is solely for historical purposes.</p>   
+    {% else %}
     <h2><a href="https://langara.ca/programs-and-courses/courses/{{course_info.subject}}/{{course_info.course_code}}.html">{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</a></h2>
+    {% endif%}
+
 
     {% if course_info.description %}
         <p>{{ course_info.description }}</p>
@@ -60,17 +67,41 @@
         <p>Course description not available.</p>       
     {% endif %}
 
+    {% if course_info.desc_registration_restriction %}
+        <p>{{ course_info.desc_registration_restriction }}</p> 
+    {% endif %}
+    {% if course_info.desc_duplicate_credit %}
+        <p>{{ course_info.desc_duplicate_credit }}</p> 
+    {% endif %}
+    {% if course_info.desc_prerequisite %}
+        <p>{{ course_info.desc_prerequisite }}</p> 
+    {% endif %}
+
+
     <h2>Course Information:</h2>
 
     <div class="grid">
         <p>Credits:</p><p>{{ course_info.credits }}</p>
         <p>Title:</p><p>{{ course_info.title }}</p>
         {# TODO: NEEDS TO BE ADDED TO API#}
-        <p>Additional Fees:</p><p>{{ course_info.add_fees }}</p>
+        <p>Additional Fees:</p><p>${{ course_info.add_fees }}</p>
         <p>Repeat Limit:</p><p>{{ course_info.rpt_limit }}</p>
         <p>Lecture Hours:</p><p>{{ course_info.hours_lecture }}</p>
         <p>Seminar Hours:</p><p>{{ course_info.hours_seminar }}</p>
         <p>Lab Hours:</p><p>{{ course_info.hours_lab }}</p>
+
+        <p>Offered online:</p><p>{{course_info.offered_online|format_attribute}}</p>
+
+        <p>Course outline(s):</p>   
+        {% if course_info.outlines%}
+            <p>
+            {% for outline in course_info.outlines %}
+                <a href={{outline.url}} target="_blank">{{outline.file_name}}</a><br>
+            {% endfor %}
+            </p>
+        {% else %}
+            <p>None</p>
+        {% endif%}
         
         {# <p>Notes:</p><p>{{ course_info.notes }}</p> #}
     </div>
@@ -188,6 +219,7 @@
         <table class="offeredTable mono"> 
             <thead>
                 <th>Semester</th> 
+                <th>CRN</th>
                 <th>Section</th>
                 <th>Seats</th> 
                 <th>Waitlist</th> 
@@ -204,6 +236,7 @@
                         <tr>
                             {% if loop.first %}
                                 <td rowspan="{{ schedule_length }}">{{ offering.year }} {{ offering.term }}</td>
+                                <td rowspan="{{ schedule_length }}">{{ offering.crn }}</td>
                                 <td rowspan="{{ schedule_length }}">{{ offering.section }}</td>
                                 <td rowspan="{{ schedule_length }}">{{ offering.seats|default('N/A', true) }}</td>
                                 <td rowspan="{{ schedule_length }}">{{ offering.waitlist|default('N/A', true) }}</td>

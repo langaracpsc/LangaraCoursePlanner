@@ -34,7 +34,11 @@ def attr_color(value):
 
 @app.template_filter()
 def format_attribute(value):
-    return "yes" if value else "no"
+    if value == "yes":
+        return "yes"
+    if value == "no":
+        return "no"
+    return value
 
 
 # route for getting specific course
@@ -51,15 +55,16 @@ def course(department, course_number):
 
     current_term = requests.get("https://coursesapi.langaracs.ca/index/latest_semester")
     current_term = current_term.json()
+        
+    # for c in data["offerings"]:
+    #     c["year"] = int(c['id'].split("-")[3])
+    #     c["term"] = int(c['id'].split("-")[4])
     
-    for c in data["offerings"]:
-        c["year"] = int(c['id'].split("-")[1])
-        c["term"] = int(c['id'].split("-")[2])
     
-    offered_in_current_semester = [c for c in data["offerings"] if c['year'] == current_term['year'] and c['term'] == current_term['term']]
-    old_offerings = [c for c in data["offerings"] if c['year'] != current_term['year'] or c['term'] != current_term['term']]
+    offered_in_current_semester = [s for s in data["offerings"] if s['year'] == current_term['year'] and s['term'] == current_term['term']]
+    old_offerings = [s for s in data["offerings"] if s['year'] != current_term['year'] or s['term'] != current_term['term']]
     old_offerings.reverse()
-    
+        
     current_transfers = [t for t in data["transfers"] if t["effective_end"] == None]
     inactive_transfers = [t for t in data["transfers"] if t["effective_end"] != None]
     
