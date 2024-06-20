@@ -86,7 +86,11 @@
         <p>Credits:</p><p>{{ course_info.credits }}</p>
         {# <p>Title:</p><p>{{ course_info.title }}</p> #}
         {# TODO: NEEDS TO BE ADDED TO API#}
-        <p>Additional Fees:</p><p>${{ course_info.add_fees }}</p>
+        <p>Additional Fees:</p><p>
+            {% if course_info.add_fees != None %}
+            $
+            {% endif%}
+            {{ course_info.add_fees }}</p>
         <p>Repeat Limit:</p><p>{{ course_info.rpt_limit }}</p>
         <p>Lecture Hours:</p><p>{{ course_info.hours_lecture }}</p>
         <p>Seminar Hours:</p><p>{{ course_info.hours_seminar }}</p>
