@@ -50,14 +50,27 @@
         .hidden {
             display: None
         }
+        .nomargin {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        h1 {
+            margin-bottom: 5px;
+        }
 
         </style>
 </head>
 <body>
+
+    <p class="nomargin"><a href="/course">subjects</a> > <a href="/course/{{course_info.subject}}">{{course_info.subject}}</a> > {{course_info.subject}} {{course_info.course_code}}</p>
     
     {% if not course_info.active%}
-    <h1>{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</h2>
-    <p class="bigtext">WARNING: This course is no longer offered by Langara. Information provided here is solely for historical purposes.</p>   
+    <h1>{{course_info.subject}} {{course_info.course_code}}
+        {% if course_info.title%}
+        : {{course_info.title}}
+        {% endif%}
+    </h2>
+    <p class="bigtext nomargin red">WARNING: This course is no longer offered by Langara. Information provided here is solely for historical purposes.</p>   
     {% else %}
     <h1><a href="https://langara.ca/programs-and-courses/courses/{{course_info.subject}}/{{course_info.course_code}}.html">{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</a></h2>
     {% endif%}
@@ -87,10 +100,7 @@
         {# <p>Title:</p><p>{{ course_info.title }}</p> #}
         {# TODO: NEEDS TO BE ADDED TO API#}
         <p>Additional Fees:</p><p>
-            {% if course_info.add_fees != None %}
-            $
-            {% endif%}
-            {{ course_info.add_fees }}</p>
+            {% if course_info.add_fees != None %}${% endif%}{{ course_info.add_fees }}</p>
         <p>Repeat Limit:</p><p>{{ course_info.rpt_limit }}</p>
         <p>Lecture Hours:</p><p>{{ course_info.hours_lecture }}</p>
         <p>Seminar Hours:</p><p>{{ course_info.hours_seminar }}</p>

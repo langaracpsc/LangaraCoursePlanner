@@ -11,7 +11,7 @@
             background: white;
             margin-left:20px;
             margin-right:20px;
-            font-size: 1.2em;
+            font-size: 1.1em;
         }
         h2 {margin-bottom: 2px;}
         .grid {max-width:90vw; display: grid; grid: auto auto/ fit-content(100%) fit-content(100%);}
@@ -51,9 +51,20 @@
             display: None
         }
 
+        .nomargin {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        h1 {
+            margin-bottom: 5px;
+        }
+
         </style>
 </head>
 <body>
+    
+    <p class="nomargin"><a href="/course">subjects</a> > {{subject}} ></p>
+
 
     <h1>{{subject}}</h1>
 

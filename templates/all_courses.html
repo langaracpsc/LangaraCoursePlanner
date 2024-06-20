@@ -11,7 +11,7 @@
             background: white;
             margin-left:20px;
             margin-right:20px;
-            font-size: 1.2em;
+            font-size: 1.1em;
         }
         h2 {margin-bottom: 2px;}
         .grid {max-width:90vw; display: grid; grid: auto auto/ fit-content(100%) fit-content(100%);}
@@ -51,9 +51,18 @@
             display: None
         }
 
+        .nomargin {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        h1 {
+            margin-bottom: 5px;
+        }
+
         </style>
 </head>
 <body>
+    <p class="nomargin"><a href="/course">subjects</a> > </p>
 
     <h1>All Courses</h1>
     <p>Found {{count_s}} subjects ({{count_s_active}} active and {{count_s_inactive}} discontinued) 
@@ -61,7 +70,7 @@
         {{count_c}} courses ({{count_c_active}} active and {{count_c_inactive}} discontinued).</p>
 
     {% for subject in subjects %}
-        <h2>{{subject}}</h2>
+        <h2><a href="/course/{{subject}}">{{subject}}</a></h2>
         
         {% if subjects[subject][0] %}
         <h3>Active courses:</h3>
