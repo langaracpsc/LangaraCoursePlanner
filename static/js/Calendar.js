@@ -386,6 +386,25 @@ class Calendar {
                 })
             }
 
+            
+
+            else if (term == "half-semester") {
+                results.push({
+                    type: "course.half-semester",
+                    condition: storedCondition,
+                    search: term
+                })
+            }
+
+
+            else if (term == "online") {
+                results.push({
+                    type: "course.online",
+                    condition: storedCondition,
+                    search: term
+                })
+            }
+
 
             else if (term.length == 4 && subjects.includes(term)) {
                 results.push({
@@ -489,7 +508,7 @@ class Calendar {
         for (const s of search) {
             console.assert(s.type != null && (s.condition == "NOT" || s.condition == "AND" || s.condition == "OR") && s.search != null, `something wrong with search ${s}`)
             
-            const valid_searches = ["fuzzy", "crn", "course.half", "schedule.type", "subject", "coursepartial", "course", "course.time", "course.attributes"]
+            const valid_searches = ["fuzzy", "crn", "course.half", "schedule.type", "subject", "coursepartial", "course", "course.time", "course.attributes", "course.half-semester", "course.online"]
             console.assert( !(s.type in valid_searches), `something wrong with search ${s}`)
 
             let searchResult = []
@@ -537,6 +556,16 @@ class Calendar {
             else if (s.type == "course.half") {
 
                 searchResult = c_shown.filter(c => c.section[0].toLowerCase() == s.search).map(c => c.id)
+            }
+
+            else if (s.type == "course.half-semester") {
+
+                searchResult = c_shown.filter(c => c.section[0].toLowerCase() == 'a' || c.section[0].toLowerCase() == 'b').map(c => c.id)
+            }
+
+            else if (s.type == "course.online") {
+
+                searchResult = c_shown.filter(c => c.section[0].toLowerCase() == 'w').map(c => c.id)
             }
 
             else if (s.type == "subject") {
