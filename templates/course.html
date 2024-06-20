@@ -11,6 +11,7 @@
             background: white;
             margin-left:20px;
             margin-right:20px;
+            font-size: 1.1em;
         }
         h2 {margin-bottom: 2px;}
         .grid {max-width:90vw; display: grid; grid: auto auto/ fit-content(100%) fit-content(100%);}
@@ -49,32 +50,33 @@
         .hidden {
             display: None
         }
+
         </style>
 </head>
 <body>
     
     {% if not course_info.active%}
-    <h2>{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</h2>
-    <p>WARNING: This course is no longer offered by Langara. Information provided here is solely for historical purposes.</p>   
+    <h1>{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</h2>
+    <p class="bigtext">WARNING: This course is no longer offered by Langara. Information provided here is solely for historical purposes.</p>   
     {% else %}
-    <h2><a href="https://langara.ca/programs-and-courses/courses/{{course_info.subject}}/{{course_info.course_code}}.html">{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</a></h2>
+    <h1><a href="https://langara.ca/programs-and-courses/courses/{{course_info.subject}}/{{course_info.course_code}}.html">{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</a></h2>
     {% endif%}
 
 
     {% if course_info.description %}
-        <p>{{ course_info.description }}</p>
+        <p class="bigtext">{{ course_info.description }}</p>
     {% else %}
-        <p>Course description not available.</p>       
+        <p class="bigtext">Course description not available.</p>       
     {% endif %}
 
     {% if course_info.desc_registration_restriction %}
-        <p>{{ course_info.desc_registration_restriction }}</p> 
+        <p class="bigtext">{{ course_info.desc_registration_restriction }}</p> 
     {% endif %}
     {% if course_info.desc_duplicate_credit %}
-        <p>{{ course_info.desc_duplicate_credit }}</p> 
+        <p class="bigtext">{{ course_info.desc_duplicate_credit }}</p> 
     {% endif %}
     {% if course_info.desc_prerequisite %}
-        <p>{{ course_info.desc_prerequisite }}</p> 
+        <p class="bigtext">{{ course_info.desc_prerequisite }}</p> 
     {% endif %}
 
 
@@ -82,7 +84,7 @@
 
     <div class="grid">
         <p>Credits:</p><p>{{ course_info.credits }}</p>
-        <p>Title:</p><p>{{ course_info.title }}</p>
+        {# <p>Title:</p><p>{{ course_info.title }}</p> #}
         {# TODO: NEEDS TO BE ADDED TO API#}
         <p>Additional Fees:</p><p>${{ course_info.add_fees }}</p>
         <p>Repeat Limit:</p><p>{{ course_info.rpt_limit }}</p>
