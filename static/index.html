@@ -39,7 +39,7 @@
 
         <div id="sidebar" class="sidebar">
 
-            <fieldset id="modeSelector" disabled>
+            <fieldset id="modeSelector" class="header-button-bar" disabled>
                 <label>
                     <input type="button" id="mode1Button" class="buttonSelected" value="Course Search">
                 </label>
@@ -47,13 +47,28 @@
                     <input type="button" id="mode2Button" value="Generate Timetables">
                 </label>
                 <label>
-                    <input type="button" id="saveButton" value="Save">
+                    <input type="button" id="colorModeButton" value="🌒">
                 </label>
+            </fieldset>
+
+            <fieldset id="schSelector" class="header-button-bar" disabled>
+                <label>
+                    <input type="button" id="sch1Button" class="buttonSelected" value="Schedule 1">
+                </label>
+                <label>
+                    <input type="button" id="sch2Button" value="Sch. 2">
+                </label>
+                <label>
+                    <input type="button" id="sch3Button" value="Sch. 3">
+                </label>
+                <label>
+                    <input type="button" id="sch4Button" value="Sch. 4">
+                </label>
+                <!-- <label>
+                    <input type="button" id="saveButton" value="Save">
+                </label> -->
                 <label>
                     <input type="button" id="mode3Button" value="Load">
-                </label>
-                <label>
-                    <input type="button" id="colorModeButton" value="🌒">
                 </label>
             </fieldset>
 
@@ -171,7 +186,7 @@
                             <input type="button" id="hideAllButton" value="Hide all in sidebar.">
                         </label>
                         <label>
-                            <input type="button" id="clearButton" value="Hide all.">
+                            <input type="button" id="clearButton" value="Hide all courses.">
                         </label>
                     </div>
 
@@ -300,6 +315,7 @@
                 </fieldset>
                 <p id="saveResultText"></p>
                 -->
+                <div class="csidebar savediv green" id="betterSaveButton"><h3><span>Click here to create a new save.</span></h3></div>
 
                 <div id="savedSchedulesList" class="sidebarlist">
                     <!-- Add timetables here -->

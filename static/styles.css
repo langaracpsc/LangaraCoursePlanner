@@ -214,7 +214,7 @@ footer.dark-mode > a:visited {
 }
 
 
-#modeSelector {
+.header-button-bar {
     margin: 0;
     padding: 0;
     display:flex;
@@ -225,7 +225,7 @@ footer.dark-mode > a:visited {
     width:auto;
 }
 
-#modeSelector > label > input{
+.header-button-bar > label > input{
     background-color: lightgray;
     display: inline-block;
     border: none;
@@ -305,4 +305,8 @@ fieldset {
 
 a.cl{
     all: unset;
+}
+
+#betterSaveButton {
+    padding: 10px;
 }

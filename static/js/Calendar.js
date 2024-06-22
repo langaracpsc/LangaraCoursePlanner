@@ -30,6 +30,8 @@ class Calendar {
 
         this.saveManager = new SaveManager()
         this.saveManager.loadSaves()
+
+        this.current_save = "Schedule 1"
     }
 
     parseFromDB() {
@@ -168,7 +170,7 @@ class Calendar {
         let yearterm = document.getElementById("termSelector").value
         const year = parseInt(yearterm.split("-")[0])
         const term = parseInt(yearterm.split("-")[1])
-        this.saveManager.editCreateSave("autosave", year, term, this.courses_oncalendar.join("_"))
+        this.saveManager.editCreateSave(this.current_save, year, term, this.courses_oncalendar.join("_"))
     }
 
     // Toggles visibility of course in calendar
@@ -257,6 +259,17 @@ class Calendar {
         if (this.courses_shown.length > 5000) {
             const c = confirm(`You are trying to render ${this.courses_shown.length} courses. Are you sure you want to continue? This operation will take a long time.`)
             if (!c) {return}
+        }
+
+        if (show == false) {
+            for (const c_id of this.courses_oncalendar) {
+                let c_obj = this.coursesMap.get(c_id)
+                c_obj.hideFCalendar(this.FCalendar)
+                c_obj.shown = false
+            }
+            this.courses_oncalendar = []
+            this.calendarUpdate()
+            return
         }
 
         for (const c of this.courses_shown) {

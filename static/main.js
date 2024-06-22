@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // enable options when database is ready
     document.getElementById("courseSearchBar").disabled = false
+    document.getElementById("schSelector").disabled = false
 
     const fieldsets = document.querySelectorAll('fieldset');
     fieldsets.forEach(fieldset => { fieldset.removeAttribute('disabled') })
@@ -51,6 +52,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     console.log("Calendar successfully initialized!")
 
     setCourseSearch(db.getRandomItem());
+
+    for (const s of c.saveManager.saves) {
+      if (s.name == "Schedule 1") {
+        c.toggleAllFCalendar(false)
+        c.toggleFCalendar(s.courses_ids)
+        break
+      }
+    }
+    c.calendarUpdate()
 
   }).catch( error => { console.error("Error while initializing: ", error) })
 
@@ -314,7 +324,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     // only used when ALL SEMESTERS selected in main page
     c.changeSemester(document.getElementById("termSelector2").value)
   })
-
+  
   document.getElementById("mode3Button").addEventListener("click", function (event) {
     document.getElementById("sidebar_mode3").classList.remove("hidden")
     document.getElementById("sidebar_mode1").classList.add("hidden")
@@ -326,7 +336,61 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     c.showSaves()
     //document.getElementById("saveNameInput").focus()
+
+    // schedulemanager(null)
   })
+
+  // 4 SAVE SLOTS AND THE SAVE STUFF
+
+  document.getElementById("sch1Button").addEventListener("click", function (event) {
+    schedulemanager("sch1Button", "Schedule 1")
+  })
+
+  document.getElementById("sch2Button").addEventListener("click", function (event) {
+    schedulemanager("sch2Button", "Schedule 2")
+  })
+
+  document.getElementById("sch3Button").addEventListener("click", function (event) {
+    schedulemanager("sch3Button", "Schedule 3")
+  })
+
+  document.getElementById("sch4Button").addEventListener("click", function (event) {
+    schedulemanager("sch4Button", "Schedule 4")
+  })
+
+  function schedulemanager(schButtonElement, schedule_name) {
+    if (document.getElementById("sch1Button").classList.contains("buttonSelected"))
+      createSched("Schedule 1")
+    if (document.getElementById("sch2Button").classList.contains("buttonSelected"))
+      createSched("Schedule 2")
+    if (document.getElementById("sch3Button").classList.contains("buttonSelected"))
+      createSched("Schedule 3")
+    if (document.getElementById("sch4Button").classList.contains("buttonSelected"))
+      createSched("Schedule 4")
+
+    document.getElementById("sch1Button").classList.remove("buttonSelected")
+    document.getElementById("sch2Button").classList.remove("buttonSelected")
+    document.getElementById("sch3Button").classList.remove("buttonSelected")
+    document.getElementById("sch4Button").classList.remove("buttonSelected")
+    
+    c.current_save = schedule_name
+
+    if (schButtonElement != null) {
+      document.getElementById(schButtonElement).classList.add("buttonSelected")
+
+      c.toggleAllFCalendar(false)
+
+      for (const s of c.saveManager.saves) {
+        if (s.name == schedule_name) {
+          c.toggleFCalendar(s.courses_ids)
+          break
+        }
+      }
+
+      c.calendarUpdate()
+    }
+  }
+
 
 
   // generate time tables
@@ -414,7 +478,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
 
-  const saveButton = document.getElementById('saveButton');
+  const saveButton = document.getElementById('betterSaveButton');
   saveButton.addEventListener('click', function(event) {
 
     let default_text = ""
@@ -432,8 +496,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     const name = prompt("Schedule name:", default_text)
 
     if (name === null) {
-      saveButton.value = "❌💾."
-      setTimeout(function() {saveButton.value = "Save"}, 2000)
+      // saveButton.value = "❌💾."
+      // setTimeout(function() {saveButton.value = "Save"}, 2000)
       return
     }
 
@@ -444,8 +508,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     createSched(name)
 
-    saveButton.value = "Saved!"
-    setTimeout(function() {saveButton.value = "Save"}, 5000)
+    // saveButton.value = "Saved!"
+    // setTimeout(function() {saveButton.value = "Save"}, 5000)
 
     //const courses = save.courses_ids.length > 0 ? save.courses_ids.split("_").length : 0
     //const s = courses == 1 ? "" : "s"
