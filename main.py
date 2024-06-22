@@ -145,7 +145,32 @@ def course(department, course_number):
         data["title"] = data["abbreviated_title"]
         
     return render_template('course.html', course_info=data, transfers=current_transfers, inactive_transfers=inactive_transfers, offerings=old_offerings, current_offerings=offered_in_current_semester, current_term=current_term)
+
+
+# route for getting specific course
+@app.route('/transfer/<institution>')
+def transfer(institution):
+    institution = institution.upper()
+    api_url = f"https://coursesapi.langaracs.ca/transfers/{institution}"
+    response = requests.get(api_url)
+    if response.status_code != 200:
+        return jsonify({'error': 'Failed to fetch data'}), response.status_code
+    
+    data = response.json()
+    
+    # must be parsed here, its not possible to extract in the jinja template
+
+    active_transfers = []
+    inactive_transfers = []
         
+    for t in data:
+        if t["effective_end"] == None:
+            active_transfers.append(t)
+        else:
+            inactive_transfers.append(t)
+        
+    return render_template('transfer.html', institution=institution, active_transfers=active_transfers, inactive_transfers=inactive_transfers)
+            
 
 if __name__ == '__main__':
     if "-dev" in sys.argv:

@@ -177,7 +177,7 @@
                     {% endif %}
                     <tr class="{{ classes|join(' ') }} {{ transfer.source }}">
                         <td class="tablePriority">{{ transfer.subject }} {{ transfer.course_code }}</td>
-                        <td class="tablePriority">{{ transfer.destination }}</td>
+                        <td class="tablePriority"><a href="/transfer/{{transfer.destination}}">{{ transfer.destination }}</a></td>
                         {% if transfer.condition %}
                             <td>{{ transfer.credit }} {{transfer.condition}}</td>
                         {% else %}
@@ -219,7 +219,7 @@
                     {% endif %}
                     <tr class="{{ classes|join(' ') }} {{ transfer.source }}">
                         <td class="tablePriority">{{ transfer.subject }} {{ transfer.course_code }}</td>
-                        <td class="tablePriority">{{ transfer.destination }}</td>
+                        <td class="tablePriority"><a href="/transfer/{{transfer.destination}}">{{ transfer.destination }}</a></td>
                         {% if transfer.condition %}
                             <td>{{ transfer.credit }} {{transfer.condition}}</td>
                         {% else %}

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfers from Langara to {{institution}}</title>
+    <meta content="Transfers from Langara to {{institution}}" property="og:title" />
+    
+    <style>
+        body {
+            background: white;
+            margin-left:20px;
+            margin-right:20px;
+            font-size: 1.1em;
+        }
+        h2 {margin-bottom: 2px;}
+        .grid {max-width:90vw; display: grid; grid: auto auto/ fit-content(100%) fit-content(100%);}
+        .sched {max-width:90vw; display: grid; grid: auto / repeat(7, fit-content(100%));}
+        div > * {border: 1px solid #000; padding-right: 5px; padding-left: 5px; padding-top:2px; padding-bottom:2px; margin: 0;}
+        iframe {width:90vw; height: 300px; padding: 10px;}
+        
+        .red {background-color: rgb(253, 167, 167);}
+        .yellow {background-color: rgb(241, 241, 162);}
+        .green {background-color: rgb(126, 198, 126);} 
+        table {
+            border-collapse: collapse;
+        }
+        table > td, tbody > * {
+            vertical-align: top;
+            text-align: left;
+        }    
+        th, td {
+            border: 1px solid #000;
+            text-align: left;
+            padding: 5px;
+        }
+                
+        #transferTable {
+            width: fit-content;
+            table-layout: fixed;
+        }
+        .tablePriority {
+            min-width: max-content;
+        }
+
+        .offeredTable {
+            width: fit-content;
+        }
+
+        .hidden {
+            display: None
+        }
+        .nomargin {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .collapsible {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+          }
+        
+          .active, .collapsible:hover {
+            background-color: #ccc;
+          }
+          
+          /* Style the collapsible content. Note: hidden by default */
+          .content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: #f1f1f1;
+          }
+
+    </style>
+
+    <!-- Analytics -->
+    <script defer data-domain="planner.langaracs.ca" src="https://a.langaracs.ca/js/script.js"></script>
+    
+</head>
+<body>
+
+    <p class="nomargin"><a>transfers</a> > <a href="/transfer/{{institution}}">{{institution}}</a></p>
+    
+    <h1>Transfers from LANG to {{institution}}</h1>
+
+    <h2>Active transfers:</h2>
+    <table class="transferTable"> 
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Destination</th>
+                <th>Credit</th>
+                <th>Condition</th>
+                <th>Start/End</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transfer in active_transfers %}
+                {% set classes = [] %}
+                
+                {% if transfer.credit == "No credit" or transfer.credit == "No Credit" %}
+                    {% set _ = classes.append("red") %}
+                {% endif %}
+                {% if transfer.credit == "Individual assessment." or transfer.credit == "Credit to be determined when student applies."%}
+                    {% set _ = classes.append("yellow") %}
+                {% else %}
+                    {% set credit_val = transfer.credit.split("(")[-1].split(")")[0] %}
+                    {% if credit_val|float < transfer.credit|float %}
+                        {% set _ = classes.append("yellow") %}
+                    {% endif %}
+                {% endif %}
+                <tr class="{{ classes|join(' ') }} {{ transfer.source }}">
+                    <td class="tablePriority"><a href="/course/{{ transfer.subject }}/{{ transfer.course_code }}">{{ transfer.subject }} {{ transfer.course_code }}</a></td>
+                    <td class="tablePriority">{{ transfer.destination }}</td>
+                    <td>{{ transfer.credit }} </td>
+                    {% if transfer.condition %}
+                        <td>{{transfer.condition}}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    <td class="tablePriority">{{ transfer.effective_start }} to Present</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <h2>Inactive transfers:</h2>
+    <details>
+        <summary>
+            Click here to show inactive transfers to {{institution}}.
+        </summary>
+
+    <table class="transferTable"> 
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Destination</th>
+                <th>Credit</th>
+                <th>Condition</th>
+                <th>Start/End</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transfer in inactive_transfers %}
+                {% set classes = [] %}
+                
+                {% if transfer.credit == "No credit" or transfer.credit == "No Credit" %}
+                    {% set _ = classes.append("red") %}
+                {% endif %}
+                {% if transfer.credit == "Individual assessment." %}
+                    {% set _ = classes.append("yellow") %}
+                {% else %}
+                    {% set credit_val = transfer.credit.split("(")[-1].split(")")[0] %}
+                    {% if credit_val|float < transfer.credit|float %}
+                        {% set _ = classes.append("yellow") %}
+                    {% endif %}
+                {% endif %}
+                <tr class="{{ classes|join(' ') }} {{ transfer.source }}">
+                    <td class="tablePriority"><a href="/course/{{ transfer.subject }}/{{ transfer.course_code }}">{{ transfer.subject }} {{ transfer.course_code }}</a></td>
+                    <td class="tablePriority">{{ transfer.destination }}</td>
+                    <td>{{ transfer.credit }} </td>
+                    {% if transfer.condition %}
+                        <td>{{transfer.condition}}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    <td class="tablePriority">{{ transfer.effective_start }} to {{transfer.effective_end}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </details>
+
+    <br>
+    <br>
+    
+</body>
+</html>
