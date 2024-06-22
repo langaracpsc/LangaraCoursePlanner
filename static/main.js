@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
       let c_obj = c.coursesMap.get(id)
       details += `${c_obj.crn} ${c_obj.subject} ${c_obj.course_code} ${c_obj.section} ${c_obj.title} ${c_obj.schedule[0].instructor}\n`
-      console.log(c_obj)
+      // console.log(c_obj)
     }
     alert(out + "\n\n" + details)
   })
