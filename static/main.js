@@ -267,6 +267,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     c.clearFCalendar(false)
   })
 
+  document.getElementById("showCRNsButton").addEventListener("click", function (event) {
+    let out = ""
+    let details = ""
+    for (const id of c.courses_oncalendar) {
+      out += id.split("-")[2] + " "
+
+      let c_obj = c.coursesMap.get(id)
+      details += `${c_obj.crn} ${c_obj.subject} ${c_obj.course_code} ${c_obj.section} ${c_obj.title} ${c_obj.schedule[0].instructor}\n`
+      console.log(c_obj)
+    }
+    alert(out + "\n\n" + details)
+  })
+
   // TODO: redo this
   // populate termSelector and event handler for changing terms
   let ts = document.getElementById("termSelector")
