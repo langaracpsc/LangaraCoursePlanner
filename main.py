@@ -12,6 +12,10 @@ app = Flask(
 def index():
     return send_from_directory("static", "index.html")
 
+@app.route('/about')
+def about():
+    return send_from_directory("static", "about.html")
+
 # serve css / jss / assets for index.html
 @app.route('/<path:filename>')
 def index_files(filename:str):
