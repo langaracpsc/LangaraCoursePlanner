@@ -156,9 +156,7 @@
             {% for transfer in inactive_transfers %}
                 {% set classes = [] %}
                 
-                {% if transfer.credit == "No credit" or transfer.credit == "No Credit" %}
-                    {% set _ = classes.append("red") %}
-                {% endif %}
+                {% set _ = classes.append("red") %}
                 {% if transfer.credit == "Individual assessment." %}
                     {% set _ = classes.append("yellow") %}
                 {% else %}
