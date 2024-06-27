@@ -2,6 +2,18 @@ from flask import Flask, render_template, jsonify, request, send_from_directory
 import requests
 import sys
 
+ALL_COURSES:list[str] = []
+SUBJECT_CODES:list[str] = []
+api_url = f"https://coursesapi.langaracs.ca/index/courses"
+response = requests.get(api_url)
+if response.status_code == 200:
+    data = response.json()
+    for course in data['courses']:
+        ALL_COURSES.append(f'{course["subject"]} {course["course_code"]}')
+        
+        if course["subject"] not in SUBJECT_CODES:
+            SUBJECT_CODES.append(course["subject"])
+
 app = Flask(
     __name__, 
     static_folder='static', 
@@ -44,6 +56,43 @@ def format_attribute(value):
         return "no"
     return value
 
+# Add links to prerequisites text
+@app.template_filter()
+def fmt_text_with_links(text:str) -> str:
+    text_split = text.replace(".", " ").replace(";", " ").replace("/", " ").replace(",", " ").split(" ")
+    current_subject = ""
+    
+    replace:list[str, str] = {}
+    
+    # print(text_split)
+    
+    for word in text_split:
+        if word in SUBJECT_CODES:
+            current_subject = word
+        
+        # print(current_subject, word)
+        
+        if len(word) == 4 and word.isdigit():
+            if f"{current_subject} {word}" in ALL_COURSES:
+                replace[word] = current_subject
+                #f"<a href='/course/{current_subject}/{word}'>{word}</a>"
+                
+    for r in replace:
+        if f'{replace[r]} {r}' in text:
+            text = text.replace(f'{replace[r]} {r}', f"<a href='/course/{replace[r]}/{r}'>{replace[r]} {r}</a>")
+        else:
+            text = text.replace(r, f"<a href='/course/{replace[r]}/{r}'>{r}</a>")
+        
+    # print(replace)
+    
+    # # first pass
+    # for c in ALL_COURSES:
+    #     if c in text:
+    #         text = text.replace(c, f"<a href='/course/{c.split(' ')[0]}/{c.split(' ')[1]}'>{c}</a>")
+    
+    
+    return text
+    
 @app.route('/course')
 def all_courses():
     api_url = f"https://coursesapi.langaracs.ca/index/courses"
@@ -173,6 +222,8 @@ def transfer(institution):
             
 
 if __name__ == '__main__':
+    print(f"Starting frontend with {len(ALL_COURSES)} cached courses.")
+
     if "-dev" in sys.argv:
         app.run(debug=True)
         

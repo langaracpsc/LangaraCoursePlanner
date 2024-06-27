@@ -97,7 +97,7 @@
         <p class="bigtext">{{ course_info.desc_duplicate_credit }}</p> 
     {% endif %}
     {% if course_info.desc_prerequisite %}
-        <p class="bigtext">{{ course_info.desc_prerequisite }}</p> 
+        <p class="bigtext">{{ course_info.desc_prerequisite|fmt_text_with_links|safe }}</p> 
     {% endif %}
 
 
