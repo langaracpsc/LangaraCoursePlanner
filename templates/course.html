@@ -79,6 +79,10 @@
     <h1><a href="https://langara.ca/programs-and-courses/courses/{{course_info.subject}}/{{course_info.course_code}}.html">{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</a></h2>
     {% endif%}
 
+    {% if course_info.desc_replacement_course %}
+        <p class="bigtext">{{ course_info.desc_replacement_course }}</p> 
+    {% endif %}
+
 
     {% if course_info.description %}
         <p class="bigtext">{{ course_info.description }}</p>
