@@ -59,39 +59,47 @@ def format_attribute(value):
 # Add links to prerequisites text
 @app.template_filter()
 def fmt_text_with_links(text:str) -> str:
-    text_split = text.replace(".", " ").replace(";", " ").replace("/", " ").replace(",", " ").split(" ")
+    SUS_SEPARATOR = "🏺"
+    
+    assert SUS_SEPARATOR not in text
+    
+    text_split = text
+    replacement_values = " .,;/()[]"
+    
+    for char in replacement_values:
+        text_split = text_split.replace(char, f'🏺{char}🏺')
+        
+    text_split = text_split.split(SUS_SEPARATOR)
+    
+    ARBITRARY_BIG_NUMBER = 1000000
+    
     current_subject = ""
-    
-    replace:list[str, str] = {}
-    
-    # print(text_split)
-    
-    for word in text_split:
+    distance_since_subject_update = ARBITRARY_BIG_NUMBER
+   
+        
+    for i, word in enumerate(text_split):
         if word in SUBJECT_CODES:
             current_subject = word
+            distance_since_subject_update = -1
         
-        # print(current_subject, word)
-        
+        distance_since_subject_update += 1
+                
         if len(word) == 4 and word.isdigit():
             if f"{current_subject} {word}" in ALL_COURSES:
-                replace[word] = current_subject
-                #f"<a href='/course/{current_subject}/{word}'>{word}</a>"
                 
-    for r in replace:
-        if f'{replace[r]} {r}' in text:
-            text = text.replace(f'{replace[r]} {r}', f"<a href='/course/{replace[r]}/{r}'>{replace[r]} {r}</a>")
-        else:
-            text = text.replace(r, f"<a href='/course/{replace[r]}/{r}'>{r}</a>")
+                if (distance_since_subject_update < ARBITRARY_BIG_NUMBER):
+                    text_split[i-distance_since_subject_update] = None
+                    text_split[i] = f"<a href='/course/{current_subject}/{word}'>{current_subject} {word}</a>"
+                    distance_since_subject_update = ARBITRARY_BIG_NUMBER
+                else:
+                    text_split[i] = f"<a href='/course/{current_subject}/{word}'>{word}</a>"
+    
+    while None in text_split:
+        text_split.remove(None)
         
-    # print(replace)
-    
-    # # first pass
-    # for c in ALL_COURSES:
-    #     if c in text:
-    #         text = text.replace(c, f"<a href='/course/{c.split(' ')[0]}/{c.split(' ')[1]}'>{c}</a>")
-    
-    
-    return text
+    return "".join(text_split)
+
+
     
 @app.route('/course')
 def all_courses():
