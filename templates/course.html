@@ -85,7 +85,7 @@
 
 
     {% if course_info.description %}
-        <p class="bigtext">{{ course_info.description  }}</p>
+        <p class="bigtext">{{ course_info.description|fmt_text_with_links|safe }}</p>
     {% else %}
         <p class="bigtext">Course description not available.</p>       
     {% endif %}
