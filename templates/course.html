@@ -80,12 +80,12 @@
     {% endif%}
 
     {% if course_info.desc_replacement_course %}
-        <p class="bigtext">{{ course_info.desc_replacement_course }}</p> 
+        <p class="bigtext">{{ course_info.desc_replacement_course|fmt_text_with_links|safe }}</p> 
     {% endif %}
 
 
     {% if course_info.description %}
-        <p class="bigtext">{{ course_info.description }}</p>
+        <p class="bigtext">{{ course_info.description  }}</p>
     {% else %}
         <p class="bigtext">Course description not available.</p>       
     {% endif %}
@@ -282,6 +282,7 @@
 
 
     <h2>Previous Offerings:</h2>
+    {% if offerings %}
     <table class="offeredTable mono"> 
         <thead><th>Semester</th> <th>Seats</th> <th>Waitlist</th> <th>Days</th> <th>Time</th> <th>Room</th> <th>Type</th> <th>Instructor</th></thead>
         {% for offering in offerings %}
@@ -303,6 +304,9 @@
         {% endfor %}
         </tbody>
     </table>
+    {% else %}
+        <p>No previous offerings found.</p>
+    {% endif %}
 
 </body>
 </html>
