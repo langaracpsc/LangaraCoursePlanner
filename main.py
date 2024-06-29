@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, send_from_directory
+from flask import Flask, abort, render_template, jsonify, request, send_from_directory
 import requests
 import sys
 
@@ -31,6 +31,10 @@ def about():
 # serve css / jss / assets for index.html
 @app.route('/<path:filename>')
 def index_files(filename:str):
+    
+    if filename == "about.html":
+        abort(404)
+        
     return send_from_directory("static", filename)
 
 # WHY IS THIS NECCESSARY??? /libraries works??? flask returns a 422 without this
