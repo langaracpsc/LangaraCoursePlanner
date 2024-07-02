@@ -1,4 +1,4 @@
-from flask import Flask, abort, render_template, jsonify, request, send_from_directory
+from flask import Flask, abort, redirect, render_template, jsonify, request, send_from_directory
 import requests
 import sys
 
@@ -33,7 +33,7 @@ def about():
 def index_files(filename:str):
     
     if filename == "about.html":
-        abort(404)
+        return redirect("/about", 301)
         
     return send_from_directory("static", filename)
 
