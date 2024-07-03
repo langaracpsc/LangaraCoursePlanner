@@ -253,6 +253,9 @@ def transfer(institution):
         
     return render_template('transfer.html', institution=institution, active_transfers=active_transfers, inactive_transfers=inactive_transfers)
             
+@app.route('/utilities/campus')
+def campus_population():
+    return render_template('utilities/index.html')
 
 if __name__ == '__main__':
     print(f"Starting frontend with {len(ALL_COURSES)} cached courses.")
