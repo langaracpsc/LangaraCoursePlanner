@@ -20,6 +20,35 @@ app = Flask(
     template_folder='templates'
 )
 
+class APIProblem(Exception):
+
+    def __init__(self, message, status_code, payload=None):
+        Exception.__init__(self)
+        self.message = message
+        self.status_code = status_code
+        self.payload = payload
+
+
+@app.errorhandler(APIProblem)
+def handle_bad_request(error: APIProblem):
+    response = jsonify(error.payload)
+    response.status_code = error.status_code
+    return render_template('error.html', status_code=error.status_code, error_message=error.message), error.status_code
+
+def api_request(api_url) -> requests.Response:
+    try:
+        response = requests.get(api_url)
+        if response.status_code != 200:
+            raise APIProblem("Failed to fetch data", 500, response)
+        
+        return response
+    
+    except Exception as e:
+        raise APIProblem("Failed to fetch data", 500, str(e))
+        
+
+    
+
 @app.route('/')
 def index():
     return send_from_directory("static", "index.html")
@@ -108,9 +137,7 @@ def fmt_text_with_links(text:str) -> str:
 @app.route('/course')
 def all_courses():
     api_url = f"https://coursesapi.langaracs.ca/index/courses"
-    response = requests.get(api_url)
-    if response.status_code != 200:
-        return jsonify({'error': 'Failed to fetch data'}), response.status_code
+    response = api_request(api_url)
     
     data = response.json()
     
@@ -147,9 +174,7 @@ def all_courses():
 @app.route('/course/<department>', strict_slashes=False)
 def subject(department:str):
     api_url = f"https://coursesapi.langaracs.ca/index/courses"
-    response = requests.get(api_url)
-    if response.status_code != 200:
-        return jsonify({'error': 'Failed to fetch data'}), response.status_code
+    response = api_request(api_url)
     
     data = response.json()
         
@@ -161,7 +186,7 @@ def subject(department:str):
             subject_courses.append(c)
     
     if len(subject_courses) == 0:
-        return jsonify({'error': 'Nothing found for that subject.'}), 404
+        raise APIProblem("Subject not found", 404)
     
     active_courses = []
     inactive_courses = []
@@ -179,9 +204,7 @@ def subject(department:str):
 @app.route('/course/<department>/<course_number>')
 def course(department, course_number):
     api_url = f"https://coursesapi.langaracs.ca/course/{department}/{course_number}"
-    response = requests.get(api_url)
-    if response.status_code != 200:
-        return jsonify({'error': 'Failed to fetch data'}), response.status_code
+    response = api_request(api_url)
     
     data = response.json()
     
@@ -213,9 +236,7 @@ def course(department, course_number):
 def transfer(institution):
     institution = institution.upper()
     api_url = f"https://coursesapi.langaracs.ca/transfers/{institution}"
-    response = requests.get(api_url)
-    if response.status_code != 200:
-        return jsonify({'error': 'Failed to fetch data'}), response.status_code
+    response = api_request(api_url)
     
     data = response.json()
     
