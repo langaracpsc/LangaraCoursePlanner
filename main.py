@@ -255,7 +255,18 @@ def transfer(institution):
             
 @app.route('/utilities/campus')
 def campus_population():
-    return render_template('utilities/index.html')
+    api_url = f"https://coursesapi.langaracs.ca/index/semesters"
+    response = api_request(api_url)
+    
+    data = response.json()
+    data = data['semesters']
+        
+    years = []
+    for term in data:
+        if term["year"] not in years:
+            years.append(term["year"])
+    
+    return render_template('utilities/index.html', years=years)
 
 if __name__ == '__main__':
     print(f"Starting frontend with {len(ALL_COURSES)} cached courses.")
