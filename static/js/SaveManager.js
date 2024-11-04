@@ -34,15 +34,15 @@ class Save {
             let split = this.courses_ids.split("_")
 
             let courses = split.map(id => map.get(id))
-
-            let print = courses.map(c => `${c.subject} ${c.course_code}`)
+            console.log(c)
+            let print2 = courses.map(c => `${c.subject} ${c.course_code}`)
 
             const max = 20
 
-            html += `<p>${print.slice(0, max).join(", ")}</p>`
+            html += `<p>${print2.slice(0, max).join(", ")}</p>`
 
-            if (print.length > max)
-                html += `And ${print.length - 10} more...`
+            if (print2.length > max)
+                html += `And ${print2.length - 10} more...`
         }
 
         let htmlwrapper = document.createElement('div');

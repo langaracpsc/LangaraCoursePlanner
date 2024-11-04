@@ -1,6 +1,5 @@
 'use strict'
 
-
 class Database {
     constructor() {
         this.db = null
@@ -34,6 +33,7 @@ class Database {
     }
 
     executeQuery(sql) {
+        console.log(sql)
         const result = this.db.exec(sql);
         if (result.length > 0 && result[0].values.length > 0) {
             return result[0].values;
@@ -46,17 +46,16 @@ class Database {
     }
 
     getCourseInfos(subject, course_code) {
-
         let query
         if (subject != null && course_code != null) {
-            query = `SELECT * FROM CourseInfo WHERE subject='${subject}' AND course_code=${course_code} `
+            query = `SELECT * FROM CourseMaxDB WHERE subject='${subject}' AND course_code=${course_code} `
         } else if (subject != null) {
-            query = `SELECT * FROM CourseInfo WHERE subject='${subject}'`
+            query = `SELECT * FROM CourseMaxDB WHERE subject='${subject}'`
         } else if (course_code != null) {
             // I cannot imagine what you would use this for
-            query = `SELECT * FROM CourseInfo WHERE course_code=${course_code}`
+            query = `SELECT * FROM CourseMaxDB WHERE course_code=${course_code}`
         } else {
-            query = "SELECT * FROM CourseInfo"
+            query = "SELECT * FROM CourseMaxDB"
         }
 
         const rows = this.executeQuery(query);
@@ -64,29 +63,32 @@ class Database {
     }
 
     getSections(year, term, crn, subject, course_code) {
-
+        
+        if (year != null && tern != null && crn == null && subject == null && course_code==null) {
+            fetch(CONSTANTS["API_URL"] + `/v1/semester/${year}/${term}/sections`)
+        }
         let query = `
-        SELECT Sections.*, Schedules.*
-        FROM Sections
-        LEFT JOIN Schedules ON Sections.year = Schedules.year
-                        AND Sections.term = Schedules.term
-                        AND Sections.crn = Schedules.crn
+        SELECT SectionDB.*, ScheduleEntryDB.*
+        FROM SectionDB
+        LEFT JOIN ScheduleEntryDB ON SectionDB.year = ScheduleEntryDB.year
+                        AND SectionDB.term = ScheduleEntryDB.term
+                        AND SectionDB.crn = ScheduleEntryDB.crn
         WHERE 1 = 1
         `;
 
         if (subject != null && course_code != null) 
-            query += ` AND Sections.subject = '${subject}' AND Sections.course_code = ${course_code}`;
+            query += ` AND SectionDB.subject = '${subject}' AND SectionDB.course_code = ${course_code}`;
 
         if (year != null)
-            query += ` AND Sections.year = ${year}`;
+            query += ` AND SectionDB.year = ${year}`;
 
         if (term != null)
-            query += ` AND Sections.term = ${term}`;
+            query += ` AND SectionDB.term = ${term}`;
 
         if (crn != null)
-            query += ` AND Sections.crn = ${crn}`;
+            query += ` AND SectionDB.crn = ${crn}`;
 
-        query += ` ORDER BY Sections.year DESC, Sections.term DESC, Sections.subject ASC, Sections.course_code ASC, Sections.section ASC`;
+        query += ` ORDER BY SectionDB.year DESC, SectionDB.term DESC, SectionDB.subject ASC, SectionDB.course_code ASC, SectionDB.section ASC`;
 
         const rows = this.executeQuery(query);
 
@@ -107,31 +109,29 @@ class Database {
             out.push(c);
         }
 
-
         return out
     }
 
     getSchedules(year, term, crn) {
         let query
         if (year == null || term == null || crn == null) {
-            query = "SELECT * FROM Schedules";
+            query = "SELECT * FROM ScheduleEntryDB";
         } else {
-            query = `SELECT * FROM Schedules WHERE year=${year} AND term=${term} AND crn=${crn}`;
+            query = `SELECT * FROM ScheduleEntryDB WHERE year=${year} AND term=${term} AND crn=${crn}`;
         }
 
-        query += ` ORDER BY Schedules.type DESC`;
+        query += ` ORDER BY ScheduleEntryDB.type DESC`;
 
         const rows = this.executeQuery(query);
         return rows
     }
 
     getTransfers(subject = null, course_code = null) {
-
         let query
         if (subject == null || course_code == null) {
-            query = "SELECT * FROM TransferInformation";
+            query = "SELECT * FROM TransferDB";
         } else {
-            query = `SELECT * FROM TransferInformation WHERE subject='${subject}' AND course_code=${course_code}`;
+            query = `SELECT * FROM TransferDB WHERE subject='${subject}' AND course_code=${course_code}`;
         }
 
         const rows = this.executeQuery(query);
@@ -141,7 +141,7 @@ class Database {
     getAvailableSemesters() {
         const query = `
             SELECT DISTINCT year, term
-            FROM Sections
+            FROM SectionDB
             ORDER BY year DESC, term DESC
         `;
 
@@ -151,7 +151,7 @@ class Database {
 
     getSubjects() {
         const query = `
-        SELECT DISTINCT subject FROM CourseInfo
+        SELECT DISTINCT subject FROM CourseMaxDB
         `
 
         const rows = this.executeQuery(query);
@@ -169,13 +169,13 @@ class Database {
     
         switch(randomIndex) {
             case 0:
-                query = `SELECT room FROM Schedules ORDER BY RANDOM() LIMIT 1`;
+                query = `SELECT room FROM ScheduleEntryDB ORDER BY RANDOM() LIMIT 1`;
                 break;
             case 1:
-                query = `SELECT time FROM Schedules ORDER BY RANDOM() LIMIT 1`;
+                query = `SELECT time FROM ScheduleEntryDB ORDER BY RANDOM() LIMIT 1`;
                 break;
             case 2:
-                query = `SELECT instructor FROM Schedules ORDER BY RANDOM() LIMIT 1`;
+                query = `SELECT instructor FROM ScheduleEntryDB ORDER BY RANDOM() LIMIT 1`;
                 break;
             default:
                 return null;
@@ -184,7 +184,4 @@ class Database {
             console.log("Rows:", rows); // Debugging log
             return rows[0][0];
     }
-    
-
-
 }

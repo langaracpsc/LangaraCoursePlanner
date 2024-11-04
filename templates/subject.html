@@ -67,19 +67,19 @@
 </head>
 <body>
     
-    <p class="nomargin"><a href="/course">subjects</a> > {{subject}} ></p>
+    <p class="nomargin"><a href="/courses">All Courses</a> > {{subject}} ></p>
 
 
     <h1>{{subject}}</h1>
 
-    <h2>Courses:</h2>
+    <h2>Active Courses:</h2>
     {% for course in active_courses %}
-        <p><a href="/course/{{course.subject}}/{{course.course_code}}">{{course.subject}} {{course.course_code}}: {{course.title}}</a></p>
+        <p><a href="/courses/{{course.subject}}/{{course.course_code}}">{{course.subject}} {{course.course_code}}: {{course.title}}</a></p>
     {% endfor %}
 
     <h2>Discontinued courses:</h2>
     {% for course in inactive_courses %}
-        <p><a href="/course/{{course.subject}}/{{course.course_code}}">{{course.subject}} {{course.course_code}}
+        <p><a href="/courses/{{course.subject}}/{{course.course_code}}">{{course.subject}} {{course.course_code}}
         {% if course.title %}
             : {{course.title}}
         {% endif %}

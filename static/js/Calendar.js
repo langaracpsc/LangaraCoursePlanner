@@ -106,12 +106,12 @@ class Calendar {
         const year = parseInt(yearterm.split("-")[0])
         const term = parseInt(yearterm.split("-")[1])
 
-        const query = `SELECT start_date FROM Schedules WHERE year = ${year} AND term = ${term} AND start_date IS NOT NULL GROUP BY start_date ORDER BY COUNT(*) ASC;`
-        let start_date = this.db.executeQuery(query)
+        // const query = `SELECT start_date FROM Schedules WHERE year = ${year} AND term = ${term} AND start_date IS NOT NULL GROUP BY start_date ORDER BY COUNT(*) ASC;`
+        // let start_date = this.db.executeQuery(query)
 
-        let start = start_date[0]
+        // let start = start_date[0]
         //console.log(start_date)
-
+        return
         if (start == undefined)
             return
 

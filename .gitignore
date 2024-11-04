@@ -2,3 +2,5 @@
 *.pyo
 **/.idea
 /database
+/.venv
+demo_cache.sqlite

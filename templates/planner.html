@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png">
+    <link rel="manifest" href="assets/favicons/site.webmanifest">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plan your Langara course schedule efficiently with an intuitive and visual planner. Easily search, select, and organize courses for upcoming semesters. Optimize your academic timetable and stay on track of your college studies.">
+    <title>Langara Course Planner</title>
+
+    <!--Load stylesheet-->
+    <link rel="preload" href="/styles.css" as="style">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+
+    <!--Load Fullcalendar -->
+    <script src='/libraries/fullcalendar/dist/index.global.min.js'></script>
+    <!--Load Fuse.js
+    <script src="/libraries/fuse/fuse.js" defer></script> -->
+    <!--Load sql.js
+    <script src='/libraries/sql/sql.js' defer></script> -->
+
+    <!--Load javascript 
+    <script src='/js/Database.js' defer></script> 
+    <script src='/js/Calendar.js' defer></script>
+    <script src='/js/Course.js' defer></script>
+    <script src='/js/SaveManager.js' defer></script>-->
+    <script src='/js/FCalendarHelpers.js' defer></script>
+
+    <!-- Analytics -->
+    <script defer data-domain="planner.langaracs.ca" src="https://a.langaracs.ca/js/script.js"></script>
+
+    <!-- <script src='main.js' defer></script> -->
+    <script type="text/javascript">
+        const year = {{year}}
+        const term = {{term}}
+        
+        const courses = {{ courses|tojson|safe }}
+        const transfer_destinations = {{ transfer_destinations|tojson|safe }}
+        const semesters = {{ semesters|tojson|safe }}
+
+        {# var sections = {{ sections|tojson|safe }} #}
+        var database = null
+    </script>
+    <script src='planner.js' defer></script>
+
+</head>
+
+<body>
+    
+    <div class="container">
+
+        <div id="sidebar" class="sidebar">
+
+            <fieldset id="modeSelector" class="header-button-bar">
+                <label>
+                    <input type="button" id="mode1Button" class="buttonSelected" value="Langara Course Planner">
+                </label>
+                <!--<label>
+                    <input type="button" id="mode2Button" value="Generate Timetables">
+                </label>-->
+                <!-- <label>
+                    <input type="button" id="mode3Button" value="Load">
+                </label> -->
+                <title>Langara Course Planner</title>
+                <br>
+                <label>
+                    <input type="button" id="colorModeButton" value="🌒">
+                </label>
+            </fieldset>
+
+            <fieldset id="schSelector" class="header-button-bar hidden">
+                <label>
+                    <input type="button" id="sch1Button" class="buttonSelected" value="Schedule 1">
+                </label>
+                <label>
+                    <input type="button" id="sch2Button" value="Sch. 2">
+                </label>
+                <label>
+                    <input type="button" id="sch3Button" value="Sch. 3">
+                </label>
+                <label>
+                    <input type="button" id="sch4Button" value="Sch. 4">
+                </label>
+                <!-- <label>
+                    <input type="button" id="saveButton" value="Save">
+                </label> -->
+            </fieldset>
+
+            <div id="sidebar_mode1">
+                <div class="search">
+                    <input type="text" id="courseSearchBar" placeholder="Search courses">
+                    <label>
+                        <p id="searchResults">Loading courses...</p>
+                    </label>
+                </div>
+
+                <fieldset class="search-options" id="search-options">
+
+                    <label>Select term:
+                        <select id="termSelector">
+                            {% for semester in semesters %}
+                            <option value={{semester.id}} {{'selected' if term == semester.term and year == semester.year}}>
+                                {{ semester.year }} {{semester.term|num_to_term}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </label>
+
+                    <!--<label>
+                        <input type="checkbox" id="conflictCheckbox"> Hide courses that conflict with selected courses.
+                    </label>-->
+                    <label class="hidden">
+                        <input type="checkbox" id="showColors" checked> Highlight courses by seats available.
+                    </label>
+                    <label class="hidden">
+                        <input type="checkbox" id="notesCheckbox" checked> Show course notes (where available).
+                    </label>
+                    <label class="hidden">
+                        <input type="checkbox" id="weekendCheckbox"> Always show Saturday.
+                    </label>
+
+                    <div class="button-container">
+                        <label>
+                            <input type="button" id="showAllButton" value="Show all in sidebar.">
+                        </label>
+                        <label>
+                            <input type="button" id="hideAllButton" value="Hide all in sidebar.">
+                        </label>
+                        <label>
+                            <input type="button" id="clearButton" value="Hide all courses.">
+                        </label>
+                        <!--<label>
+                            <input type="button" id="showCRNsButton" value="Show selected courses.">
+                        </label>-->
+                    </div>
+
+
+
+                </fieldset>
+                
+                <!-- the important part-->
+                <div id="courselist" class="sidebarlist">
+
+                    {% for course in courses if course.sections %}    
+                        
+                        
+                        
+                        {% for section in course.sections %}
+                        <div id="{{ section.id }}" class="section 
+                            {% if section.seats|int == 0 %}
+                                red
+                            {% elif section.seats|int <= 10 %}
+                                yellow
+                            {% else %}
+                                green
+                            {% endif %}">
+
+                            <h3><a class="cl" href="/courses/{{ course.subject }}/{{ course.course_code }}" target="_blank">{{ course.subject }} {{ course.course_code }} {{section.section}}: {{course.attributes.abbreviated_title}}</a></h3>
+                            
+                            <span>{{section.seats}} seats available. {{section.waitlist}}{{'None' if section.waitlist == " "}} on waitlist.</span>
+
+                            <div class="schedules">
+                                {% for schedule in section.schedule %}
+                                <span>{{schedule.type}} {{schedule.days}} {{schedule.time}} {{schedule.room}} {{schedule.instructor}}</span>
+                                <br>
+                                {% endfor %}
+                            </div>
+
+                            {% if section.notes != none%} 
+                            <span>{{section.notes}}</span>
+                            {% endif %}
+                            
+                        </div>
+                        {% endfor%}
+
+                    {% endfor %}
+                    <!--<div class="csidebar">
+                        <h3>INSERT COURSES HERE</h3>
+                        <p>This should only take a few seconds.</p>
+                    </div> -->
+                    <!-- Add more course entries here -->
+                </div>
+            </div>
+
+
+
+            <div id="sidebar_mode2" class="hidden">
+
+                <fieldset id="timetableGeneratorSearch">
+                    <label>Select term:
+                        <select id="termSelector2">
+                            <select id="termSelector">
+                                {% for semester in semesters %}
+                                <option value={{semester.id}}>{{semester.term|num_to_term}} {{ semester.year }}</option>
+                                {% endfor %}
+                            </select>
+                        </select>
+                    </label>
+                    <input type="text" id="timetableField1" placeholder="Course #1..." value="cpsc 1030 OR cpsc 1045 NOT 0830">
+                    <input type="text" id="timetableField2" placeholder="Course #2..." value="cpsc 2190 and a275">
+                    <input type="text" id="timetableField3" placeholder="Course #3..." value="cpsc 2280">
+                    <input type="text" id="timetableField4" placeholder="Course #4...">
+                    <input type="text" id="timetableField5" placeholder="Course #5...">
+                    <input type="text" id="timetableField6" placeholder="Course #6...">
+                    <label>
+                        <input type="button" id="generateTimetableButton" value="Generate Potential Timetables.">
+                    </label>
+                    <p id="timetableText"></p>
+                </fieldset>
+
+                <div id="timetablecourselist" class="sidebarlist">
+                    <!-- Add timetables here -->
+                </div>
+
+            </div>
+
+            <div id="sidebar_mode3" class="hidden">
+                <!--
+                <fieldset id="saveScheduleFieldset" disabled >
+                    <input type="text" id="saveNameInput" placeholder="Schedule Name...">
+                    <input type="button" id="saveScheduleButton" value="Save">
+                </fieldset>
+                <p id="saveResultText"></p>
+                -->
+                <div class="csidebar savediv green" id="betterSaveButton"><h3><span>Click here to create a new save.<br>(note: it will not autosave)</span></h3></div>
+
+                <div id="savedSchedulesList" class="sidebarlist">
+                    <!-- Add timetables here -->
+                </div>
+            </div>
+
+            <div id="sidebar_mode4" class="hidden"> 
+
+                <div class="sidebarlist">
+                    <h1>Thank you for using the Langara Course Planner!</h1>
+
+                    <p>This website was developed by Anderson Tseng in collaboration with the Langara Computer Science Club.</p>
+
+                    <p>It uses data parsed from the Langara Course Search and BCTransferPlanner.</p>
+                </div>
+                
+            </div>
+
+            <footer id="footer" class="footer">
+                <a href="about" target="_blank">About</a>
+                <!-- <label>
+                    <input type="button" id="mode4Button" value="About">
+                </label> -->
+                •
+                <a href="https://github.com/langaracpsc/LangaraCoursePlanner" target="_blank">Github</a>
+                •
+                <a href="https://forms.gle/CYKP7xsp2an6gNEK9" target="_blank">Provide Feedback</a>
+            </footer>
+
+
+        </div>
+
+        <div id="calendarwrapper" class="calendar">
+            <div id='calendar'></div>
+        </div>
+
+    </div>
+</body>
+
+
+</html>

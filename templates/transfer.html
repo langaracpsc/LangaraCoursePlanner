@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transfers from Langara to {{institution}}</title>
-    <meta content="Transfers from Langara to {{institution}}" property="og:title" />
+    <title>Transfers from Langara to {{institution_name}}</title>
+    <meta content="Transfers from Langara to {{institution_name}}" property="og:title" />
     
     <style>
         body {
@@ -90,9 +90,9 @@
 </head>
 <body>
 
-    <p class="nomargin"><a>transfers</a> > <a href="/transfer/{{institution}}">{{institution}}</a></p>
+    <p class="nomargin"><a href="/transfers">All Transfers</a> > <a>{{institution_name}}</a></p>
     
-    <h1>Transfers from LANG to {{institution}}</h1>
+    <h1>Transfers from Langara to {{institution_name}} ({{institution}})</h1>
 
     <h2>Active transfers:</h2>
     <table class="transferTable"> 
@@ -121,7 +121,7 @@
                     {% endif %}
                 {% endif %}
                 <tr class="{{ classes|join(' ') }} {{ transfer.source }}">
-                    <td class="tablePriority"><a href="/course/{{ transfer.subject }}/{{ transfer.course_code }}">{{ transfer.subject }} {{ transfer.course_code }}</a></td>
+                    <td class="tablePriority"><a href="/courses/{{ transfer.subject }}/{{ transfer.course_code }}">{{ transfer.subject }} {{ transfer.course_code }}</a></td>
                     <td class="tablePriority">{{ transfer.destination }}</td>
                     <td>{{ transfer.credit }} </td>
                     {% if transfer.condition %}
@@ -166,7 +166,7 @@
                     {% endif %}
                 {% endif %}
                 <tr class="{{ classes|join(' ') }} {{ transfer.source }}">
-                    <td class="tablePriority"><a href="/course/{{ transfer.subject }}/{{ transfer.course_code }}">{{ transfer.subject }} {{ transfer.course_code }}</a></td>
+                    <td class="tablePriority"><a href="/courses/{{ transfer.subject }}/{{ transfer.course_code }}">{{ transfer.subject }} {{ transfer.course_code }}</a></td>
                     <td class="tablePriority">{{ transfer.destination }}</td>
                     <td>{{ transfer.credit }} </td>
                     {% if transfer.condition %}

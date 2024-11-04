@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{course_info.subject}} {{course_info.course_code}}</title>
-    <meta content="{{course_info.subject}} {{course_info.course_code}}" property="og:title" />
-    <meta content="Information about {{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}." property="og:description" />
+    <title>{{subject}} {{course_code}}: {{course_info.title}}</title>
+    <meta content="{{subject}} {{course_code}}: {{course_info.title}}" property="og:title" />
+    <meta content="Information about {{subject}} {{course_code}}: {{course_info.title}}." property="og:description" />
     <style>
         body {
             background: white;
@@ -66,17 +66,17 @@
 </head>
 <body>
 
-    <p class="nomargin"><a href="/course">subjects</a> > <a href="/course/{{course_info.subject}}">{{course_info.subject}}</a> > {{course_info.subject}} {{course_info.course_code}}</p>
+    <p class="nomargin"><a href="/courses">All Courses</a> > <a href="/courses/{{subject}}">{{subject}}</a> > {{subject}} {{course_code}}</p>
     
     {% if not course_info.active%}
-    <h1>{{course_info.subject}} {{course_info.course_code}}
+    <h1>{{subject}} {{course_code}}
         {% if course_info.title%}
         : {{course_info.title}}
         {% endif%}
     </h2>
     <p class="bigtext nomargin red">WARNING: This course is no longer offered by Langara. Information provided here is solely for historical purposes.</p>   
     {% else %}
-    <h1><a href="https://langara.ca/programs-and-courses/courses/{{course_info.subject}}/{{course_info.course_code}}.html">{{course_info.subject}} {{course_info.course_code}}: {{course_info.title}}</a></h2>
+    <h1><a href="https://langara.ca/programs-and-courses/courses/{{subject}}/{{course_code}}.html">{{subject}} {{course_code}}: {{course_info.title}}</a></h2>
     {% endif%}
 
     {% if course_info.desc_replacement_course %}
@@ -94,7 +94,7 @@
         <p class="bigtext">{{ course_info.desc_registration_restriction }}</p> 
     {% endif %}
     {% if course_info.desc_duplicate_credit %}
-        <p class="bigtext">{{ course_info.desc_duplicate_credit }}</p> 
+        <p class="bigtext">{{ course_info.desc_duplicate_credit|fmt_text_with_links|safe }}</p> 
     {% endif %}
     {% if course_info.desc_prerequisite %}
         <p class="bigtext">{{ course_info.desc_prerequisite|fmt_text_with_links|safe }}</p> 
@@ -134,13 +134,13 @@
 
     <table>
         <tr>
-            <th class="{{ course_info.attr_ar|attr_color }}">2AR</th>
-            <th class="{{ course_info.attr_sc|attr_color }}">2SC</th>
-            <th class="{{ course_info.attr_hum|attr_color }}">HUM</th>
-            <th class="{{ course_info.attr_lsc|attr_color }}">LSC</th>
-            <th class="{{ course_info.attr_sci|attr_color }}">SCI</th>
-            <th class="{{ course_info.attr_soc|attr_color }}">SOC</th>
-            <th class="{{ course_info.attr_ut|attr_color }}">UT</th>
+            <th class="{{ course_info.attr_ar|attr_color }}" title="Meets second-year arts requirement.">2AR</th>
+            <th class="{{ course_info.attr_sc|attr_color }}" title="Meets second-year science requirement">2SC</th>
+            <th class="{{ course_info.attr_hum|attr_color }}" title="Meets humanities requirement">HUM</th>
+            <th class="{{ course_info.attr_lsc|attr_color }}" title="Meets lab-science requirement">LSC</th>
+            <th class="{{ course_info.attr_sci|attr_color }}" title="Meets science requirement">SCI</th>
+            <th class="{{ course_info.attr_soc|attr_color }}" title="Meets social science requirement">SOC</th>
+            <th class="{{ course_info.attr_ut|attr_color }}" title='Meets "university-transferable" requirements. Course transfers to at least one of UBC, UBCO, SFU, UVIC, and UNBC'>UT</th>
         </tr>
         <tr>
             <td class="{{ course_info.attr_ar|attr_color }}">{{ course_info.attr_ar|format_attribute }}</td>
@@ -181,7 +181,7 @@
                     {% endif %}
                     <tr class="{{ classes|join(' ') }} {{ transfer.source }}">
                         <td class="tablePriority">{{ transfer.subject }} {{ transfer.course_code }}</td>
-                        <td class="tablePriority"><a href="/transfer/{{transfer.destination}}">{{ transfer.destination }}</a></td>
+                        <td class="tablePriority"><a href="/transfers/{{transfer.destination}}">{{ transfer.destination }}</a></td>
                         {% if transfer.condition %}
                             <td>{{ transfer.credit }} {{transfer.condition}}</td>
                         {% else %}
@@ -284,13 +284,14 @@
     <h2>Previous Offerings:</h2>
     {% if offerings %}
     <table class="offeredTable mono"> 
-        <thead><th>Semester</th> <th>Seats</th> <th>Waitlist</th> <th>Days</th> <th>Time</th> <th>Room</th> <th>Type</th> <th>Instructor</th></thead>
+        <thead><th>Semester</th> <!--<th>Section</th>--> <th>Seats</th> <th>Waitlist</th> <th>Days</th> <th>Time</th> <th>Room</th> <th>Type</th> <th>Instructor</th></thead>
         {% for offering in offerings %}
             {% set schedule_length = offering.schedule|length %}
             {% for schedule in offering.schedule %}
                 <tr>
                     {% if loop.first %}
                         <td rowspan="{{ schedule_length }}">{{ offering.year }} {{ offering.term }}</td>
+                        <!--<td rowspan="{{ schedule_length }}">{{ offering.section }}</td>-->
                         <td rowspan="{{ schedule_length }}">{{ offering.seats|default('N/A', true) }}</td>
                         <td rowspan="{{ schedule_length }}">{{ offering.waitlist|default('N/A', true) }}</td>
                     {% endif %}

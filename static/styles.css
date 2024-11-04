@@ -135,11 +135,17 @@ a.fc-event {
     margin: 2px;
 }
 
-h3 {
-    width: fit-content;
+.section {
+    margin-bottom: 10px;
+    padding: 2px;
 }
 
-h3:hover {
+h3 {
+    width: fit-content;
+    margin: 0;
+}
+
+h3 > a:hover {
     text-decoration: underline;
     color: #0645AD;
 }
@@ -172,7 +178,7 @@ footer.dark-mode > a:visited {
 }
 
 .calendar {
-    width: 100vw;
+    width: 100%;
     margin: 10px;
     overflow-y: auto; /* Make the calendar div scrollable if it overflows */
     height: calc( 100vh - 20px );
@@ -206,7 +212,7 @@ footer.dark-mode > a:visited {
 
 .blue {
     background-color: #9ac7f7 !important;
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
 }
 
 .hidden {

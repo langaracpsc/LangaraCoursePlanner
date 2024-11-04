@@ -2,7 +2,8 @@
 var c
 
 var CONSTANTS = {
-  "db_api_url": "https://api2.langaracs.ca/courseDB.db",
+  "API_URL": "http://127.0.0.1:8000",
+  "db_api_url": "http://127.0.0.1:8000/v1/export/database.db",
   "max_shown_courses": 1500,
   "dark_mode_enabled" : false,
   "max_timetables" : 100
@@ -308,6 +309,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     FCalendar.updateSize()
   }
   onResize()
+  
   addEventListener('mousemove', (event) => { 
     if (event.buttons === 1) { onResize() } // Not ideal but I can't think of a better way to check for resize
   })

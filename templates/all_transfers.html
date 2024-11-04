@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{subject}}</title>
-    <meta content="All courses for {{subject}}." property="og:title" />
-    <meta content="Information about courses in {{subject}}." property="og:description" />
+    <title>Transfer Destinations</title>
+    <meta content="Course transfer destinations from Langara College." property="og:title" />
+    <meta content="All Course transfer destinations from Langara College." property="og:description" />
     <style>
         body {
             background: white;
@@ -34,15 +34,10 @@
             text-align: left;
             padding: 5px;
         }
-                
-        #transferTable {
+        td {
             width: fit-content;
-            table-layout: fixed;
         }
-        .tablePriority {
-            min-width: max-content;
-        }
-
+                
         .offeredTable {
             width: fit-content;
         }
@@ -66,41 +61,26 @@
 
 </head>
 <body>
-    <p class="nomargin"><a>All Courses</a> > </p>
+    <p class="nomargin">All Transfers > </p>
+    <h1>All Transfer Destinations</h1>
 
-    <h1>All Courses</h1>
-    <p>Found {{count_s}} subjects ({{count_s_active}} active and {{count_s_inactive}} discontinued) 
-        and 
-        {{count_c}} courses ({{count_c_active}} active and {{count_c_inactive}} discontinued).</p>
-
-    {% for subject in subjects %}
-        <h2><a href="/courses/{{subject}}">{{subject}}</a></h2>
-        
-        {% if subjects[subject][0] %}
-        <h3>Active courses:</h3>
-        {% else%}
-        <p>No active courses.</p>
-        {% endif %}
-
-        {% for course in subjects[subject][0] %}
-            <p><a href="/courses/{{course.subject}}/{{course.course_code}}">{{course.subject}} {{course.course_code}}: {{course.title}}</a></p>
-        {% endfor %}
-
-        {% if subjects[subject][1] %}
-        <h3>Discontinued courses:</h3>
-        {% else%}
-        <p>No discontinued courses.</p>
-        {% endif %}
-        
-        {% for course in subjects[subject][1] %}
-            <p><a href="/courses/{{course.subject}}/{{course.course_code}}">{{course.subject}} {{course.course_code}}
-            {% if course.title %}
-                : {{course.title}}
-            {% endif %}
-            </a></p>
-        {% endfor %}
-    
-    {% endfor %}
+    <table id="transferTable">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transfer in transfers %}
+            <tr>
+                <td><a href="/transfers/{{ transfer.code }}">{{ transfer.code }}</a></td>
+                <td>{{ transfer.name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 </body>
+
 </html>
