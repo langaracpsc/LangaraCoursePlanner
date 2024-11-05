@@ -8,7 +8,7 @@ var ghost_section = null
 var ghost_section_sidebar = null
 
 // const API_URL = "http://127.0.0.1:8000"
-const API_URL = "coursesapi.langaracs.ca"
+const API_URL = "https://coursesapi.langaracs.ca"
 
 for (let course of courses) {
 
