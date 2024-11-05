@@ -21,8 +21,8 @@ requests_cache.install_cache(
 
 ALL_COURSES: list[str] = []
 SUBJECT_CODES: list[str] = []
-API_URL = f"http://127.0.0.1:8000"
-# api_url = f"https://coursesapi.langaracs.ca/index/courses"
+# API_URL = f"http://127.0.0.1:8000"
+API_URL = f"https://coursesapi.langaracs.ca"
 
 app = Flask(
     __name__, 
