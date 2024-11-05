@@ -70,7 +70,7 @@ def updateGlobals():
         ALL_COURSES.append(f'{course["subject"]} {course["course_code"]}')
         if course["subject"] not in SUBJECT_CODES:
             SUBJECT_CODES.append(course["subject"])
-
+updateGlobals()
 
 # Routes
 @app.route('/')
