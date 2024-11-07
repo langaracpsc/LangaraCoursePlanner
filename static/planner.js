@@ -148,7 +148,7 @@ function getSidebarEventTarget(event, skiptitle=true) {
     // unless we want to skip because we want to ghost on hover
     // TODO: flip this conditional
     if (target.nodeName == "A") {
-        if (!skiptitle)
+        if (skiptitle)
             return null
         else
         target = target.parentElement
