@@ -312,7 +312,7 @@ def transfer(institution):
     data = api_request(f"{API_URL}/v1/transfers/{institution}")['transfers']
     
     institutions = api_request(f"{API_URL}/v1/index/transfer_destinations")['transfers']
-    print(institutions)
+    # print(institutions)
     
     institution_name = None
     for i in institutions:
