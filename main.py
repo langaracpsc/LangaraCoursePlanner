@@ -216,7 +216,7 @@ def all_courses():
         if course['subject'] not in subjects:
             subjects[course['subject']] = ([], [])
        
-        if course["active"]:
+        if course["on_langara_website"]:
             subjects[course['subject']][0].append(course)
             active_c+=1
         else:
