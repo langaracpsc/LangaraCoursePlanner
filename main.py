@@ -256,7 +256,7 @@ def subject(department:str):
     inactive_courses = []
     
     for c in subject_courses:
-        if c["active"]:
+        if c["on_langara_website"]:
             active_courses.append(c)
         else:
             inactive_courses.append(c)
