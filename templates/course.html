@@ -68,7 +68,7 @@
 
     <p class="nomargin"><a href="/courses">All Courses</a> > <a href="/courses/{{subject}}">{{subject}}</a> > {{subject}} {{course_code}}</p>
     
-    {% if not course_info.active%}
+    {% if not course_info.on_langara_website%}
     <h1>{{subject}} {{course_code}}
         {% if course_info.title%}
         : {{course_info.title}}
