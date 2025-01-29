@@ -117,9 +117,9 @@
         <p>Offered online:</p><p>{{course_info.offered_online|format_attribute}}</p>
 
         <p>Course outline(s):</p>   
-        {% if course_info.outlines%}
+        {% if outlines%}
             <p>
-            {% for outline in course_info.outlines %}
+            {% for outline in outlines %}
                 <a href={{outline.url}} target="_blank">{{outline.file_name}}</a><br>
             {% endfor %}
             </p>

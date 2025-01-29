@@ -292,7 +292,7 @@ def course(department, course_number):
     if data['attributes']["title"] == "" or data['attributes']["title"] == None:
         data['attributes']["title"] = data['attributes']["abbreviated_title"]
         
-    return render_template('course.html', subject=data['subject'], course_code=data['course_code'], course_info=data['attributes'], transfers=current_transfers, inactive_transfers=inactive_transfers, offerings=old_offerings, current_offerings=offered_in_current_semester, current_term=current_term)
+    return render_template('course.html', subject=data['subject'], course_code=data['course_code'], course_info=data['attributes'], transfers=current_transfers, inactive_transfers=inactive_transfers, offerings=old_offerings, current_offerings=offered_in_current_semester, current_term=current_term, outlines=data['outlines'])
 
 
 # route for getting specific course
