@@ -77,7 +77,7 @@ FCalendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
       let tags = info.event.extendedProps["description"].split(" ")
 
       a.innerHTML = tags[0] + " " + tags[1]
-      a.href=`/courses/${tags[0]}/${tags[1]}`
+      a.href=`https://planner.langaracs.ca/courses/${tags[0]}/${tags[1]}`
       a.target = "_blank"
       
       tags.shift()

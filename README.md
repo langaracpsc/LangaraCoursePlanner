@@ -1,3 +1,6 @@
+Note: the current version of the project is version 3 at [https://github.com/langaracpsc/coursys](https://github.com/langaracpsc/coursys). However, this github repository will remain active as moving this codebase to Next.js is not currently planned as it will take a lot of time.
+
+
 # Langara Course Planner
 
 Welcome to the github repository of the Langara Course Planner!
