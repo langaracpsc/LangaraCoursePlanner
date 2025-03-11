@@ -40,7 +40,7 @@ FCalendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
     resourceAreaWidth: "120px",
 
     // show course section information when clicked
-    eventClick: function (eventClickInfo) { 
+    eventClick: function (eventClickInfo) {
         let tags = eventClickInfo.event.id.split("-")
 
         console.log(tags)
@@ -54,14 +54,14 @@ FCalendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
     displayEventTime: false, // honestly not sure what this does
 
     headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
-    //   right: 'resourceTimelineDay,resourceTimelineWeek dayGridMonth,timeGridWeek,timeGridDay'
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        //   right: 'resourceTimelineDay,resourceTimelineWeek dayGridMonth,timeGridWeek,timeGridDay'
     },
-    
+
     //weekends: document.getElementById("weekendCheckbox").checked,
-    hiddenDays: [ 0, 6 ],
+    hiddenDays: [0, 6],
     //initialDate: new Date(new Date(calendarClass.courses_first_day).getTime() + 604800000), // start on the second week of courses
     slotEventOverlap: false, // I also don't know what this does
     allDaySlot: false, // don't show the allday row on the calendar
@@ -69,32 +69,32 @@ FCalendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
     // fires when event is created, adds a second line of text to each event because you can't by default ._.
     // also makes it an <a>
     eventContent: function (info) {
-      let p = document.createElement('div')
+        let p = document.createElement('div')
 
-      let a = document.createElement('a')
-      let s = document.createElement('span')
-      
-      let tags = info.event.extendedProps["description"].split(" ")
+        let a = document.createElement('a')
+        let s = document.createElement('span')
 
-      a.innerHTML = tags[0] + " " + tags[1]
-      a.href=`https://planner.langaracs.ca/courses/${tags[0]}/${tags[1]}`
-      a.target = "_blank"
-      
-      tags.shift()
-      tags.shift()
+        let tags = info.event.extendedProps["description"].split(" ")
 
-      s.innerHTML = "&nbsp;" + tags.join(" ")
+        a.innerHTML = tags[0] + " " + tags[1]
+        a.href = `https://planner.langaracs.ca/courses/${tags[0]}/${tags[1]}`
+        a.target = "_blank"
 
-      p.classList.add("event")
-      p.appendChild(a)
-      p.appendChild(s)
+        tags.shift()
+        tags.shift()
 
-      return { domNodes: [p] }
+        s.innerHTML = "&nbsp;" + tags.join(" ")
+
+        p.classList.add("event")
+        p.appendChild(a)
+        p.appendChild(s)
+
+        return { domNodes: [p] }
     },
 
 })
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     FCalendar.render();
     onResize()
 })
@@ -141,7 +141,7 @@ function getSectionVariable(section_id) {
 
 
 
-function getSidebarEventTarget(event, skiptitle=true) {
+function getSidebarEventTarget(event, skiptitle = true) {
     let target = event.target
 
     // do nothing if we click the link on h3
@@ -151,7 +151,7 @@ function getSidebarEventTarget(event, skiptitle=true) {
         if (skiptitle)
             return null
         else
-        target = target.parentElement
+            target = target.parentElement
     }
 
     // do nothing if we click on the gap between courses
@@ -163,7 +163,7 @@ function getSidebarEventTarget(event, skiptitle=true) {
     if (target.nodeName != "DIV")
         target = target.parentElement
     if (target.nodeName == 'DIV' && target.id == "")
-      target = target.parentElement
+        target = target.parentElement
 
     if (!(target.classList.contains("section"))) {
         console.log(`Original and final target:`)
@@ -190,7 +190,7 @@ document.getElementById("clearButton").addEventListener("click", function (event
     let course_list = document.getElementById("courselist")
     for (let s of course_list.children) {
         let section_object = getSectionVariable(s.id)
-        if(section_object.selected)
+        if (section_object.selected)
             hideSection(section_object, s)
     }
 })
@@ -201,7 +201,7 @@ document.getElementById("hideAllButton").addEventListener("click", function (eve
         if (s.classList.contains("hidden"))
             continue
         let section_object = getSectionVariable(s.id)
-        if(section_object.selected)
+        if (section_object.selected)
             hideSection(section_object, s)
     }
 })
@@ -231,7 +231,7 @@ function showSection(section_object, sidebar_html) {
     section_object.selected = true
 }
 
-function hideSection(section_object, sidebar_html, reghost_section=false, saturday_courses) {
+function hideSection(section_object, sidebar_html, reghost_section = false, saturday_courses) {
     hideFCalendar(FCalendar, section_object)
     sidebar_html.classList.remove("blue")
     section_object.selected = false
@@ -245,13 +245,13 @@ function ghostSection(section_object, sidebar_html) {
     if (section_object.ghost)
         throw Error("Trying to ghost object that is already ghosted.")
 
-    
+
     if (ghost_section) {
         // this happens if you go too fast and the event listeners can't keep up
         // console.warn("Unghosted previous ghost before creating new ghost.")
         unghostSection(ghost_section)
     }
-    
+
     ghost_section = section_object
     showFCalendar(FCalendar, ghost_section, "#b7b2b2")
     ghost_section.ghost = true
@@ -345,7 +345,7 @@ function filterSidebarCourses(sections_to_be_shown) {
     for (let s of course_list.children) {
         // let section_object = getSectionVariable(s.id)
 
-        if(sections_to_be_shown.includes(s.id)) {
+        if (sections_to_be_shown.includes(s.id)) {
             s.classList.remove("hidden")
         } else {
             s.classList.add("hidden")
@@ -357,7 +357,7 @@ function filterSidebarCourses(sections_to_be_shown) {
 document.addEventListener("DOMContentLoaded", function () {
     const termSelector = document.getElementById("termSelector");
     const yearTerm = `SMTR-${year}-${term}`;
-    
+
     for (const option of termSelector.options) {
         if (option.value === yearTerm) {
             option.selected = true;
@@ -386,7 +386,7 @@ function onResize(event) {
     const newwidth = `${finalWidth}px`
 
     if (document.getElementById("calendarwrapper").style.width == newwidth)
-      return 
+        return
 
     document.getElementById("calendarwrapper").style.width = newwidth
 
@@ -395,8 +395,8 @@ function onResize(event) {
 
 document.addEventListener("DOMContentLoaded", onResize());
 
-addEventListener('mousemove', (event) => { 
-if (event.buttons === 1) { onResize() } // Not ideal but I can't think of a better way to check for resize
+addEventListener('mousemove', (event) => {
+    if (event.buttons === 1) { onResize() } // Not ideal but I can't think of a better way to check for resize
 })
 addEventListener("mouseup", onResize)
 addEventListener("resize", onResize);
@@ -406,18 +406,18 @@ addEventListener("resize", onResize);
 const useDark = window.matchMedia("(prefers-color-scheme: dark)");
 
 function toggleDarkMode(state) {
-//   if (!CONSTANTS.dark_mode_enabled) 
-//     return
+    //   if (!CONSTANTS.dark_mode_enabled) 
+    //     return
 
-  document.documentElement.classList.toggle("dark-mode", state)
-  document.getElementById("footer").classList.toggle("dark-mode", state)
+    document.documentElement.classList.toggle("dark-mode", state)
+    document.getElementById("footer").classList.toggle("dark-mode", state)
 
-  const button = document.getElementById("colorModeButton");
-  if (state) {
-    button.value = "☀️";
-  } else {
-    button.value = "🌒";
-  }
+    const button = document.getElementById("colorModeButton");
+    if (state) {
+        button.value = "☀️";
+    } else {
+        button.value = "🌒";
+    }
 }
 
 // toggleDarkMode(useDark.matches);
@@ -425,15 +425,137 @@ function toggleDarkMode(state) {
 useDark.addEventListener("change", (evt) => toggleDarkMode(evt.matches));
 
 document.getElementById("colorModeButton").addEventListener("click", () => {
-  document.documentElement.classList.toggle("dark-mode");
-  document.getElementById("footer").classList.toggle("dark-mode")
+    document.documentElement.classList.toggle("dark-mode");
+    document.getElementById("footer").classList.toggle("dark-mode")
 
-  const root = document.documentElement;
-  const button = document.getElementById("colorModeButton");
-  
-  if (root.classList.contains("dark-mode")) {
-    button.value = "☀️";
-  } else {
-    button.value = "🌒";
-  }
+    const root = document.documentElement;
+    const button = document.getElementById("colorModeButton");
+
+    if (root.classList.contains("dark-mode")) {
+        button.value = "☀️";
+    } else {
+        button.value = "🌒";
+    }
 });
+
+function termToSeason(term) {
+    switch (term) {
+        case 10:
+            return "Spring"
+        case 20:
+            return "Summer"
+        case 30:
+            return "Fall"
+        default:
+            return "Unknown"
+    }
+}
+
+document.getElementById("showCRNsButton").addEventListener("click", function (event) {
+    let selected_sections = sections.filter(s => s.selected)
+    let crns = selected_sections.map(s => s.crn).join(", ")
+
+    // Create modal div
+    const modal = document.createElement('div')
+    modal.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+        font-size: 16px;
+    `
+
+    let content
+    let clipboard
+    if (!crns) {
+        content = "<p>No sections selected. Select some courses first.</p>"
+    } else {
+        content = `
+            <p><strong>Course Schedule:</strong></p>
+            <p>Generated at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} for term ${termToSeason(term)} ${year}.</p>
+            <p>CRNS: ${crns}</p>
+            <br/>
+
+            ${selected_sections.map(s => `
+            <p>
+            <p><strong>${s.parent.subject} ${s.parent.course_code}</strong> : ${s.section} ${s.crn}</p> 
+            <p>${s.parent.attributes.title}</p>
+            <table>
+
+                ${s.schedule.map(time =>
+            `<tr>
+                    <td>${time.type}</td>
+                    <td>${time.days}</td>
+                    <td>${time.time}</td>
+                    <td>${time.room}</td>
+                    <td>${time.instructor}</td>
+                </tr>`
+        ).join('')}
+            </table>
+            </p>
+            `).join('')}
+        `
+        clipboard = `Course Schedule:
+Generated at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} for term ${termToSeason(term)} ${year}.
+CRNS: ${crns}
+
+${selected_sections.map(s =>
+        `${s.parent.subject} ${s.parent.course_code} : ${s.section} ${s.crn}
+${s.parent.attributes.title}
+${s.schedule.map(time =>
+    `\t${time.type} ${time.days} ${time.time} ${time.room} ${time.instructor}`
+).join('\n')}
+`).join('\n')}
+Made @ https://planner.langaracs.ca`
+
+    }
+
+
+    modal.innerHTML = crns ? `
+        ${content}
+        <button id="copyBtn" style="font-size: 16px; padding: 8px 16px; margin: 4px;">Copy to clipboard</button>
+        <button id="closeBtn" style="font-size: 16px; padding: 8px 16px; margin: 4px;">Close</button>
+    ` : `
+        ${content}
+        <button id="closeBtn" style="font-size: 16px; padding: 8px 16px; margin: 4px;">Close</button>
+    `;
+
+
+    // Add backdrop
+    const backdrop = document.createElement('div')
+    backdrop.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+    `
+
+    // Add to DOM
+    document.body.appendChild(backdrop)
+    document.body.appendChild(modal)
+
+    // Event handlers
+    const closeModal = () => {
+        modal.remove()
+        backdrop.remove()
+    }
+
+    backdrop.addEventListener('click', closeModal)
+    modal.querySelector('#closeBtn').addEventListener('click', closeModal)
+    modal.querySelector('#copyBtn').addEventListener('click', () => {
+        navigator.clipboard.writeText(clipboard)
+        
+        modal.querySelector('#copyBtn').textContent = 'Copied to clipboard!'
+    })
+
+    // Focus modal
+    modal.querySelector('#copyBtn').focus()
+})
